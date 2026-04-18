@@ -36,14 +36,14 @@ left join sales s
 left join rents r
     on p.area_code = r.area_code
    and p.date_month = r.date_month
-left join lateral (
+join lateral (
     select
         reference_year,
         median_gross_annual_pay,
         earnings_yoy_pct
     from earnings e
     where e.area_code = p.area_code
-      and e.reference_year <= extract(year from p.date_month)
+      and e.median_gross_annual_pay is not null
     order by e.reference_year desc
     limit 1
 ) e on true

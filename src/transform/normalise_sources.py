@@ -1,4 +1,5 @@
 from pathlib import Path
+import re
 import pandas as pd
 
 RAW = Path("data/raw")
@@ -6,7 +7,7 @@ NORM = Path("data/normalised")
 NORM.mkdir(parents=True, exist_ok=True)
 
 PIPR_FILE = RAW / "pipr_monthly_price_statistics_2026_03.xlsx"
-ASHE_FILE = RAW / "ashe_table8_median_gross_annual_pay.csv"
+ASHE_FILE = RAW / "ashe_extracted" / "PROV - Home Geography Table 8.7a   Annual pay - Gross 2025.xlsx"
 
 LONDON_LAD_REGEX = r"^E09"
 
@@ -224,26 +225,10 @@ def normalise_hpi_property_type():
 
 
 def normalise_pipr():
-    df, sheet, header_row = find_excel_table(
-        PIPR_FILE,
-        required_candidates=[
-            ["area", "geography", "local authority"],
-            ["code"],
-            ["rent", "price level", "average price"],
-            ["date", "month", "time"],
-        ],
-        max_header_row=10,
-    )
+    df = pd.read_excel(PIPR_FILE, sheet_name="Table 1", header=2)
+    df.columns = [clean_col(c) for c in df.columns]
 
-    print(f"[pipr] using sheet='{sheet}', header_row={header_row}")
-
-    area_name_col = match_col(df.columns, ["area name", "local authority", "geography"])
-    area_code_col = match_col(df.columns, ["area code", "geography code", "code"])
-    date_col = match_col(df.columns, ["date", "month", "time"])
-    rent_col = match_col(df.columns, ["average rent", "price level", "average price"])
-    yoy_col = match_col(df.columns, ["annual inflation", "annual percentage change", "12 month"])
-
-    out = df[[date_col, area_name_col, area_code_col, rent_col, yoy_col]].copy()
+    out = df[["time period", "area name", "area code", "rental price", "annual change"]].copy()
     out.columns = ["date_month", "area_name", "area_code", "avg_monthly_rent", "rent_yoy_pct"]
 
     out["date_month"] = pd.to_datetime(out["date_month"], errors="coerce")
@@ -257,18 +242,18 @@ def normalise_pipr():
 
 
 def normalise_ashe():
-    df = pd.read_csv(ASHE_FILE)
+    df = pd.read_excel(ASHE_FILE, sheet_name="All", header=4)
     df.columns = [clean_col(c) for c in df.columns]
 
-    year_col = match_col(df.columns, ["year", "time", "reference year"])
-    area_name_col = match_col(df.columns, ["area name", "geography"])
-    area_code_col = match_col(df.columns, ["area code", "geography code", "code"])
-    pay_col = match_col(df.columns, ["annual pay - gross", "annual pay gross", "median gross annual pay"])
+    match = re.search(r"(20\d{2})", ASHE_FILE.name)
+    if not match:
+        raise ValueError(f"Could not extract reference year from {ASHE_FILE.name}")
 
-    out = df[[year_col, area_name_col, area_code_col, pay_col]].copy()
-    out.columns = ["reference_year", "area_name", "area_code", "median_gross_annual_pay"]
+    out = df[["description", "code", "median"]].copy()
+    out.columns = ["area_name", "area_code", "median_gross_annual_pay"]
+    out["reference_year"] = int(match.group(1))
+    out = out[["reference_year", "area_name", "area_code", "median_gross_annual_pay"]]
 
-    out["reference_year"] = pd.to_numeric(out["reference_year"], errors="coerce").astype("Int64")
     out["area_name"] = out["area_name"].astype(str).str.strip()
     out["area_code"] = out["area_code"].astype(str).str.strip()
     out["median_gross_annual_pay"] = pd.to_numeric(out["median_gross_annual_pay"], errors="coerce")

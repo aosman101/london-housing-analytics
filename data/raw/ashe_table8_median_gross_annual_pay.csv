@@ -1,5 +1,6 @@
-reference_year,area_name,area_code,median_gross_annual_pay
+year,area name,area code,median gross annual pay
 2025,Camden,E09000007,53133.0
+2025,City of London,E09000001,
 2025,Hackney,E09000012,49482.0
 2025,Hammersmith and Fulham,E09000013,47192.0
 2025,Haringey,E09000014,43995.0
@@ -31,4 +32,3 @@ reference_year,area_name,area_code,median_gross_annual_pay
 2025,Richmond upon Thames,E09000027,57233.0
 2025,Sutton,E09000029,44393.0
 2025,Waltham Forest,E09000031,45350.0
-2025,London,E12000007,46414.0

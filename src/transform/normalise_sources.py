@@ -7,7 +7,8 @@ NORM = Path("data/normalised")
 NORM.mkdir(parents=True, exist_ok=True)
 
 PIPR_FILE = RAW / "pipr_monthly_price_statistics_2026_03.xlsx"
-ASHE_FILE = RAW / "ashe_extracted" / "PROV - Home Geography Table 8.7a   Annual pay - Gross 2025.xlsx"
+ASHE_WORKBOOK = RAW / "ashe_extracted" / "PROV - Home Geography Table 8.7a   Annual pay - Gross 2025.xlsx"
+ASHE_FILE = RAW / "ashe_table8_median_gross_annual_pay.csv"
 
 LONDON_LAD_REGEX = r"^E09"
 LONDON_REGION_CODE = "E12000007"
@@ -242,22 +243,63 @@ def normalise_pipr():
     out.to_csv(NORM / "pipr_local_rents.csv", index=False)
 
 
-def normalise_ashe():
-    df = pd.read_excel(ASHE_FILE, sheet_name="All", header=4)
+def extract_ashe_slice():
+    df = pd.read_excel(ASHE_WORKBOOK, sheet_name="Full-Time", header=4)
     df.columns = [clean_col(c) for c in df.columns]
 
-    match = re.search(r"(20\d{2})", ASHE_FILE.name)
+    match = re.search(r"(20\d{2})", ASHE_WORKBOOK.name)
     if not match:
-        raise ValueError(f"Could not extract reference year from {ASHE_FILE.name}")
+        raise ValueError(f"Could not extract year from {ASHE_WORKBOOK.name}")
 
     out = df[["description", "code", "median"]].copy()
-    out.columns = ["area_name", "area_code", "median_gross_annual_pay"]
-    out["reference_year"] = int(match.group(1))
-    out = out[["reference_year", "area_name", "area_code", "median_gross_annual_pay"]]
+    out.columns = ["area name", "area code", "median gross annual pay"]
+    out["year"] = int(match.group(1))
+    out = out[["year", "area name", "area code", "median gross annual pay"]]
 
+    out["area name"] = out["area name"].astype(str).str.strip()
+    out["area code"] = out["area code"].astype(str).str.strip()
+    out["median gross annual pay"] = pd.to_numeric(
+        out["median gross annual pay"], errors="coerce"
+    )
+
+    out = out[out["area code"].str.match(LONDON_LAD_REGEX, na=False)]
+    out.to_csv(ASHE_FILE, index=False)
+
+
+def normalise_ashe():
+    if not ASHE_FILE.exists():
+        extract_ashe_slice()
+
+    df = pd.read_csv(ASHE_FILE)
+    df.columns = [clean_col(c) for c in df.columns]
+
+    out = df[["year", "area name", "area code", "median gross annual pay"]].copy()
+    out.columns = ["reference_year", "area_name", "area_code", "median_gross_annual_pay"]
+
+    out["reference_year"] = pd.to_numeric(out["reference_year"], errors="coerce").astype("Int64")
     out["area_name"] = out["area_name"].astype(str).str.strip()
     out["area_code"] = out["area_code"].astype(str).str.strip()
-    out["median_gross_annual_pay"] = pd.to_numeric(out["median_gross_annual_pay"], errors="coerce")
+    out["median_gross_annual_pay"] = pd.to_numeric(
+        out["median_gross_annual_pay"], errors="coerce"
+    )
+
+    london_region = pd.read_excel(ASHE_WORKBOOK, sheet_name="Full-Time", header=4)
+    london_region.columns = [clean_col(c) for c in london_region.columns]
+    london_region = london_region[
+        london_region["code"].astype(str).str.strip().eq(LONDON_REGION_CODE)
+    ][["description", "code", "median"]].copy()
+    london_region.columns = ["area_name", "area_code", "median_gross_annual_pay"]
+    london_region["reference_year"] = out["reference_year"].dropna().max()
+    london_region = london_region[
+        ["reference_year", "area_name", "area_code", "median_gross_annual_pay"]
+    ]
+    london_region["area_name"] = london_region["area_name"].astype(str).str.strip()
+    london_region["area_code"] = london_region["area_code"].astype(str).str.strip()
+    london_region["median_gross_annual_pay"] = pd.to_numeric(
+        london_region["median_gross_annual_pay"], errors="coerce"
+    )
+
+    out = pd.concat([out, london_region], ignore_index=True)
 
     out = out[
         out["area_code"].str.match(LONDON_LAD_REGEX, na=False)
@@ -272,5 +314,6 @@ if __name__ == "__main__":
     normalise_hpi_sales()
     normalise_hpi_property_type()
     normalise_pipr()
+    extract_ashe_slice()
     normalise_ashe()
     print("[done] normalised London files written to data/normalised")

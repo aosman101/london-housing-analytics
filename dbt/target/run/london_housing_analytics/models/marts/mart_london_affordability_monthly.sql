@@ -34,6 +34,7 @@ select
     e.reference_year as earnings_year,
     e.median_gross_annual_pay,
     e.earnings_yoy_pct,
+    (e.area_code <> p.area_code) as earnings_fallback_used,
     round(p.average_price / nullif(e.median_gross_annual_pay, 0), 2) as price_to_earnings_ratio,
     round((r.avg_monthly_rent * 12) / nullif(e.median_gross_annual_pay, 0), 2) as annual_rent_to_earnings_ratio,
     round((p.average_price * 0.10) / nullif(e.median_gross_annual_pay / 12.0, 0), 1) as months_to_save_10pct_deposit,
@@ -48,6 +49,7 @@ left join rents r
    and p.date_month = r.date_month
 join lateral (
     select
+        area_code,
         reference_year,
         median_gross_annual_pay,
         earnings_yoy_pct

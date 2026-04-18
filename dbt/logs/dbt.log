@@ -6364,3 +6364,794 @@ where area_code is null
 [0m15:57:18.566162 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'end', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x10049ec90>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x10483e270>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x103fe7a10>]}
 [0m15:57:18.567276 [debug] [MainThread]: Flushing usage events
 [0m15:57:18.964105 [debug] [MainThread]: An error was encountered while trying to flush usage events
+[0m15:59:14.668050 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'start', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x11062a630>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x10fc45280>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x10fc446b0>]}
+
+
+============================== 15:59:14.681730 | 9ecf0b40-a2d2-4d81-bc47-c247a1b3c265 ==============================
+[0m15:59:14.681730 [info ] [MainThread]: Running with dbt=1.11.8
+[0m15:59:14.682843 [debug] [MainThread]: running dbt with arguments {'profiles_dir': '/Users/adilosman/.dbt', 'version_check': 'True', 'warn_error': 'None', 'printer_width': '80', 'quiet': 'False', 'cache_selected_only': 'False', 'use_experimental_parser': 'False', 'target_path': 'None', 'introspect': 'True', 'log_cache_events': 'False', 'indirect_selection': 'eager', 'warn_error_options': 'WarnErrorOptionsV2(error=[], warn=[], silence=[])', 'log_path': '/Users/adilosman/Downloads/london-housing-analytics/dbt/logs', 'use_colors': 'True', 'static_parser': 'True', 'invocation_command': 'dbt run --select mart_london_affordability_monthly mart_london_borough_snapshot_latest', 'write_json': 'True', 'log_format': 'default', 'fail_fast': 'False', 'send_anonymous_usage_stats': 'True', 'no_print': 'None', 'debug': 'False', 'partial_parse': 'True', 'empty': 'False'}
+[0m15:59:15.203424 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'project_id', 'label': '9ecf0b40-a2d2-4d81-bc47-c247a1b3c265', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x1109e00e0>]}
+[0m15:59:15.305442 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'adapter_info', 'label': '9ecf0b40-a2d2-4d81-bc47-c247a1b3c265', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x1109f12b0>]}
+[0m15:59:15.309009 [info ] [MainThread]: Registered adapter: postgres=1.8.2
+[0m15:59:15.606283 [debug] [MainThread]: checksum: 7d524ac048c2100769df89d592e662e060a73ca564e31bd9c2a37efdfe8d8ab6, vars: {}, profile: , target: , version: 1.11.8
+[0m15:59:16.046109 [debug] [MainThread]: Partial parsing enabled: 0 files deleted, 0 files added, 1 files changed.
+[0m15:59:16.047914 [debug] [MainThread]: Partial parsing: updated file: london_housing_analytics://models/marts/mart_london_affordability_monthly.sql
+[0m15:59:16.790855 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'load_project', 'label': '9ecf0b40-a2d2-4d81-bc47-c247a1b3c265', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x111a07860>]}
+[0m15:59:17.036990 [debug] [MainThread]: Wrote artifact WritableManifest to /Users/adilosman/Downloads/london-housing-analytics/dbt/target/manifest.json
+[0m15:59:17.045748 [debug] [MainThread]: Wrote artifact SemanticManifest to /Users/adilosman/Downloads/london-housing-analytics/dbt/target/semantic_manifest.json
+[0m15:59:17.096897 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'resource_counts', 'label': '9ecf0b40-a2d2-4d81-bc47-c247a1b3c265', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x111b764b0>]}
+[0m15:59:17.097674 [info ] [MainThread]: Found 8 models, 7 data tests, 5 sources, 463 macros
+[0m15:59:17.098383 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'runnable_timing', 'label': '9ecf0b40-a2d2-4d81-bc47-c247a1b3c265', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x110397560>]}
+[0m15:59:17.103400 [info ] [MainThread]: 
+[0m15:59:17.104510 [info ] [MainThread]: Concurrency: 4 threads (target='dev')
+[0m15:59:17.105721 [info ] [MainThread]: 
+[0m15:59:17.107120 [debug] [MainThread]: Acquiring new postgres connection 'master'
+[0m15:59:17.113546 [debug] [ThreadPool]: Acquiring new postgres connection 'list_housing_warehouse'
+[0m15:59:18.181192 [debug] [ThreadPool]: Using postgres connection "list_housing_warehouse"
+[0m15:59:18.181716 [debug] [ThreadPool]: On list_housing_warehouse: /* {"app": "dbt", "dbt_version": "1.11.8", "profile_name": "housing_warehouse", "target_name": "dev", "connection_name": "list_housing_warehouse"} */
+
+    select distinct nspname from pg_namespace
+  
+[0m15:59:18.182113 [debug] [ThreadPool]: Opening a new connection, currently in state init
+[0m15:59:18.388683 [debug] [ThreadPool]: SQL status: SELECT 6 in 0.206 seconds
+[0m15:59:18.391251 [debug] [ThreadPool]: On list_housing_warehouse: Close
+[0m15:59:18.394101 [debug] [ThreadPool]: Re-using an available connection from the pool (formerly list_housing_warehouse, now list_housing_warehouse_analytics)
+[0m15:59:18.405183 [debug] [ThreadPool]: Using postgres connection "list_housing_warehouse_analytics"
+[0m15:59:18.406021 [debug] [ThreadPool]: On list_housing_warehouse_analytics: BEGIN
+[0m15:59:18.406604 [debug] [ThreadPool]: Opening a new connection, currently in state closed
+[0m15:59:18.439113 [debug] [ThreadPool]: SQL status: BEGIN in 0.032 seconds
+[0m15:59:18.440149 [debug] [ThreadPool]: Using postgres connection "list_housing_warehouse_analytics"
+[0m15:59:18.441031 [debug] [ThreadPool]: On list_housing_warehouse_analytics: /* {"app": "dbt", "dbt_version": "1.11.8", "profile_name": "housing_warehouse", "target_name": "dev", "connection_name": "list_housing_warehouse_analytics"} */
+select
+      'housing_warehouse' as database,
+      tablename as name,
+      schemaname as schema,
+      'table' as type
+    from pg_tables
+    where schemaname ilike 'analytics'
+    union all
+    select
+      'housing_warehouse' as database,
+      viewname as name,
+      schemaname as schema,
+      'view' as type
+    from pg_views
+    where schemaname ilike 'analytics'
+    union all
+    select
+      'housing_warehouse' as database,
+      matviewname as name,
+      schemaname as schema,
+      'materialized_view' as type
+    from pg_matviews
+    where schemaname ilike 'analytics'
+  
+[0m15:59:18.451241 [debug] [ThreadPool]: SQL status: SELECT 8 in 0.009 seconds
+[0m15:59:18.454371 [debug] [ThreadPool]: On list_housing_warehouse_analytics: ROLLBACK
+[0m15:59:18.461383 [debug] [ThreadPool]: On list_housing_warehouse_analytics: Close
+[0m15:59:18.538160 [debug] [MainThread]: Using postgres connection "master"
+[0m15:59:18.539280 [debug] [MainThread]: On master: BEGIN
+[0m15:59:18.540036 [debug] [MainThread]: Opening a new connection, currently in state init
+[0m15:59:18.581765 [debug] [MainThread]: SQL status: BEGIN in 0.042 seconds
+[0m15:59:18.582642 [debug] [MainThread]: Using postgres connection "master"
+[0m15:59:18.583219 [debug] [MainThread]: On master: /* {"app": "dbt", "dbt_version": "1.11.8", "profile_name": "housing_warehouse", "target_name": "dev", "connection_name": "master"} */
+with relation as (
+        select
+            pg_rewrite.ev_class as class,
+            pg_rewrite.oid as id
+        from pg_rewrite
+    ),
+    class as (
+        select
+            oid as id,
+            relname as name,
+            relnamespace as schema,
+            relkind as kind
+        from pg_class
+    ),
+    dependency as (
+        select distinct
+            pg_depend.objid as id,
+            pg_depend.refobjid as ref
+        from pg_depend
+    ),
+    schema as (
+        select
+            pg_namespace.oid as id,
+            pg_namespace.nspname as name
+        from pg_namespace
+        where nspname != 'information_schema' and nspname not like 'pg\_%'
+    ),
+    referenced as (
+        select
+            relation.id AS id,
+            referenced_class.name ,
+            referenced_class.schema ,
+            referenced_class.kind
+        from relation
+        join class as referenced_class on relation.class=referenced_class.id
+        where referenced_class.kind in ('r', 'v', 'm')
+    ),
+    relationships as (
+        select
+            referenced.name as referenced_name,
+            referenced.schema as referenced_schema_id,
+            dependent_class.name as dependent_name,
+            dependent_class.schema as dependent_schema_id,
+            referenced.kind as kind
+        from referenced
+        join dependency on referenced.id=dependency.id
+        join class as dependent_class on dependency.ref=dependent_class.id
+        where
+            (referenced.name != dependent_class.name or
+             referenced.schema != dependent_class.schema)
+    )
+
+    select
+        referenced_schema.name as referenced_schema,
+        relationships.referenced_name as referenced_name,
+        dependent_schema.name as dependent_schema,
+        relationships.dependent_name as dependent_name
+    from relationships
+    join schema as dependent_schema on relationships.dependent_schema_id=dependent_schema.id
+    join schema as referenced_schema on relationships.referenced_schema_id=referenced_schema.id
+    group by referenced_schema, referenced_name, dependent_schema, dependent_name
+    order by referenced_schema, referenced_name, dependent_schema, dependent_name;
+[0m15:59:18.597465 [debug] [MainThread]: SQL status: SELECT 5 in 0.014 seconds
+[0m15:59:18.602039 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'runnable_timing', 'label': '9ecf0b40-a2d2-4d81-bc47-c247a1b3c265', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x111cdb320>]}
+[0m15:59:18.602974 [debug] [MainThread]: On master: ROLLBACK
+[0m15:59:18.604791 [debug] [MainThread]: Using postgres connection "master"
+[0m15:59:18.605667 [debug] [MainThread]: On master: BEGIN
+[0m15:59:18.610785 [debug] [MainThread]: SQL status: BEGIN in 0.004 seconds
+[0m15:59:18.611431 [debug] [MainThread]: On master: COMMIT
+[0m15:59:18.611926 [debug] [MainThread]: Using postgres connection "master"
+[0m15:59:18.612372 [debug] [MainThread]: On master: COMMIT
+[0m15:59:18.614624 [debug] [MainThread]: SQL status: COMMIT in 0.002 seconds
+[0m15:59:18.615901 [debug] [MainThread]: On master: Close
+[0m15:59:18.629253 [debug] [Thread-1 (]: Began running node model.london_housing_analytics.mart_london_affordability_monthly
+[0m15:59:18.630779 [info ] [Thread-1 (]: 1 of 2 START sql table model analytics.mart_london_affordability_monthly ....... [RUN]
+[0m15:59:18.634718 [debug] [Thread-1 (]: Re-using an available connection from the pool (formerly list_housing_warehouse_analytics, now model.london_housing_analytics.mart_london_affordability_monthly)
+[0m15:59:18.636284 [debug] [Thread-1 (]: Began compiling node model.london_housing_analytics.mart_london_affordability_monthly
+[0m15:59:18.650551 [debug] [Thread-1 (]: Writing injected SQL for node "model.london_housing_analytics.mart_london_affordability_monthly"
+[0m15:59:18.652833 [debug] [Thread-1 (]: Began executing node model.london_housing_analytics.mart_london_affordability_monthly
+[0m15:59:18.775957 [debug] [Thread-1 (]: Writing runtime sql for node "model.london_housing_analytics.mart_london_affordability_monthly"
+[0m15:59:18.780144 [debug] [Thread-1 (]: Using postgres connection "model.london_housing_analytics.mart_london_affordability_monthly"
+[0m15:59:18.781077 [debug] [Thread-1 (]: On model.london_housing_analytics.mart_london_affordability_monthly: BEGIN
+[0m15:59:18.781819 [debug] [Thread-1 (]: Opening a new connection, currently in state closed
+[0m15:59:18.809724 [debug] [Thread-1 (]: SQL status: BEGIN in 0.028 seconds
+[0m15:59:18.811278 [debug] [Thread-1 (]: Using postgres connection "model.london_housing_analytics.mart_london_affordability_monthly"
+[0m15:59:18.812427 [debug] [Thread-1 (]: On model.london_housing_analytics.mart_london_affordability_monthly: /* {"app": "dbt", "dbt_version": "1.11.8", "profile_name": "housing_warehouse", "target_name": "dev", "node_id": "model.london_housing_analytics.mart_london_affordability_monthly"} */
+
+  
+    
+
+  create  table "housing_warehouse"."analytics"."mart_london_affordability_monthly__dbt_tmp"
+  
+  
+    as
+  
+  (
+    with prices as (
+    select * from "housing_warehouse"."analytics"."stg_hpi_average_prices"
+),
+rents as (
+    select * from "housing_warehouse"."analytics"."stg_pipr_local_rents"
+),
+sales as (
+    select * from "housing_warehouse"."analytics"."stg_hpi_sales"
+),
+earnings as (
+    select * from "housing_warehouse"."analytics"."stg_ashe_earnings"
+)
+
+select
+    p.date_month,
+    p.area_code,
+    p.area_name,
+    p.average_price,
+    p.hpi_index,
+    p.house_price_yoy_pct,
+    s.sales_volume,
+    r.avg_monthly_rent,
+    r.rent_yoy_pct,
+    e.reference_year as earnings_year,
+    e.median_gross_annual_pay,
+    e.earnings_yoy_pct,
+    (e.area_code <> p.area_code) as earnings_fallback_used,
+    round(p.average_price / nullif(e.median_gross_annual_pay, 0), 2) as price_to_earnings_ratio,
+    round((r.avg_monthly_rent * 12) / nullif(e.median_gross_annual_pay, 0), 2) as annual_rent_to_earnings_ratio,
+    round((p.average_price * 0.10) / nullif(e.median_gross_annual_pay / 12.0, 0), 1) as months_to_save_10pct_deposit,
+    round(r.rent_yoy_pct - e.earnings_yoy_pct, 2) as rent_growth_minus_income_growth_pct,
+    round(p.house_price_yoy_pct - e.earnings_yoy_pct, 2) as house_price_growth_minus_income_growth_pct
+from prices p
+left join sales s
+    on p.area_code = s.area_code
+   and p.date_month = s.date_month
+left join rents r
+    on p.area_code = r.area_code
+   and p.date_month = r.date_month
+join lateral (
+    select
+        area_code,
+        reference_year,
+        median_gross_annual_pay,
+        earnings_yoy_pct
+    from earnings e
+    where e.area_code in (p.area_code, 'E12000007')
+      and e.median_gross_annual_pay is not null
+    order by
+        case when e.area_code = p.area_code then 0 else 1 end,
+        e.reference_year desc
+    limit 1
+) e on true
+  );
+  
+[0m15:59:19.092566 [debug] [Thread-1 (]: SQL status: SELECT 12309 in 0.279 seconds
+[0m15:59:19.108729 [debug] [Thread-1 (]: Using postgres connection "model.london_housing_analytics.mart_london_affordability_monthly"
+[0m15:59:19.110395 [debug] [Thread-1 (]: On model.london_housing_analytics.mart_london_affordability_monthly: /* {"app": "dbt", "dbt_version": "1.11.8", "profile_name": "housing_warehouse", "target_name": "dev", "node_id": "model.london_housing_analytics.mart_london_affordability_monthly"} */
+alter table "housing_warehouse"."analytics"."mart_london_affordability_monthly" rename to "mart_london_affordability_monthly__dbt_backup"
+[0m15:59:19.112904 [debug] [Thread-1 (]: SQL status: ALTER TABLE in 0.002 seconds
+[0m15:59:19.117636 [debug] [Thread-1 (]: Using postgres connection "model.london_housing_analytics.mart_london_affordability_monthly"
+[0m15:59:19.118233 [debug] [Thread-1 (]: On model.london_housing_analytics.mart_london_affordability_monthly: /* {"app": "dbt", "dbt_version": "1.11.8", "profile_name": "housing_warehouse", "target_name": "dev", "node_id": "model.london_housing_analytics.mart_london_affordability_monthly"} */
+alter table "housing_warehouse"."analytics"."mart_london_affordability_monthly__dbt_tmp" rename to "mart_london_affordability_monthly"
+[0m15:59:19.119972 [debug] [Thread-1 (]: SQL status: ALTER TABLE in 0.001 seconds
+[0m15:59:19.149180 [debug] [Thread-1 (]: On model.london_housing_analytics.mart_london_affordability_monthly: COMMIT
+[0m15:59:19.149836 [debug] [Thread-1 (]: Using postgres connection "model.london_housing_analytics.mart_london_affordability_monthly"
+[0m15:59:19.150306 [debug] [Thread-1 (]: On model.london_housing_analytics.mart_london_affordability_monthly: COMMIT
+[0m15:59:19.153934 [debug] [Thread-1 (]: SQL status: COMMIT in 0.003 seconds
+[0m15:59:19.163816 [debug] [Thread-1 (]: Applying DROP to: "housing_warehouse"."analytics"."mart_london_affordability_monthly__dbt_backup"
+[0m15:59:19.179264 [debug] [Thread-1 (]: Using postgres connection "model.london_housing_analytics.mart_london_affordability_monthly"
+[0m15:59:19.179884 [debug] [Thread-1 (]: On model.london_housing_analytics.mart_london_affordability_monthly: /* {"app": "dbt", "dbt_version": "1.11.8", "profile_name": "housing_warehouse", "target_name": "dev", "node_id": "model.london_housing_analytics.mart_london_affordability_monthly"} */
+drop table if exists "housing_warehouse"."analytics"."mart_london_affordability_monthly__dbt_backup" cascade
+[0m15:59:19.185998 [debug] [Thread-1 (]: SQL status: DROP TABLE in 0.005 seconds
+[0m15:59:19.189431 [debug] [Thread-1 (]: On model.london_housing_analytics.mart_london_affordability_monthly: Close
+[0m15:59:19.194630 [debug] [Thread-1 (]: Sending event: {'category': 'dbt', 'action': 'run_model', 'label': '9ecf0b40-a2d2-4d81-bc47-c247a1b3c265', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x10dd812e0>]}
+[0m15:59:19.195658 [info ] [Thread-1 (]: 1 of 2 OK created sql table model analytics.mart_london_affordability_monthly .. [[32mSELECT 12309[0m in 0.56s]
+[0m15:59:19.197344 [debug] [Thread-1 (]: Finished running node model.london_housing_analytics.mart_london_affordability_monthly
+[0m15:59:19.200644 [debug] [Thread-3 (]: Began running node model.london_housing_analytics.mart_london_borough_snapshot_latest
+[0m15:59:19.201658 [info ] [Thread-3 (]: 2 of 2 START sql table model analytics.mart_london_borough_snapshot_latest ..... [RUN]
+[0m15:59:19.202857 [debug] [Thread-3 (]: Acquiring new postgres connection 'model.london_housing_analytics.mart_london_borough_snapshot_latest'
+[0m15:59:19.203688 [debug] [Thread-3 (]: Began compiling node model.london_housing_analytics.mart_london_borough_snapshot_latest
+[0m15:59:19.207490 [debug] [Thread-3 (]: Writing injected SQL for node "model.london_housing_analytics.mart_london_borough_snapshot_latest"
+[0m15:59:19.209924 [debug] [Thread-3 (]: Began executing node model.london_housing_analytics.mart_london_borough_snapshot_latest
+[0m15:59:19.217397 [debug] [Thread-3 (]: Writing runtime sql for node "model.london_housing_analytics.mart_london_borough_snapshot_latest"
+[0m15:59:19.221996 [debug] [Thread-3 (]: Using postgres connection "model.london_housing_analytics.mart_london_borough_snapshot_latest"
+[0m15:59:19.222671 [debug] [Thread-3 (]: On model.london_housing_analytics.mart_london_borough_snapshot_latest: BEGIN
+[0m15:59:19.223198 [debug] [Thread-3 (]: Opening a new connection, currently in state init
+[0m15:59:19.241119 [debug] [Thread-3 (]: SQL status: BEGIN in 0.018 seconds
+[0m15:59:19.241727 [debug] [Thread-3 (]: Using postgres connection "model.london_housing_analytics.mart_london_borough_snapshot_latest"
+[0m15:59:19.242684 [debug] [Thread-3 (]: On model.london_housing_analytics.mart_london_borough_snapshot_latest: /* {"app": "dbt", "dbt_version": "1.11.8", "profile_name": "housing_warehouse", "target_name": "dev", "node_id": "model.london_housing_analytics.mart_london_borough_snapshot_latest"} */
+
+  
+    
+
+  create  table "housing_warehouse"."analytics"."mart_london_borough_snapshot_latest__dbt_tmp"
+  
+  
+    as
+  
+  (
+    with latest_month as (
+    select max(date_month) as latest_month
+    from "housing_warehouse"."analytics"."mart_london_affordability_monthly"
+)
+select *
+from "housing_warehouse"."analytics"."mart_london_affordability_monthly"
+where date_month = (select latest_month from latest_month)
+  );
+  
+[0m15:59:19.259805 [debug] [Thread-3 (]: SQL status: SELECT 33 in 0.016 seconds
+[0m15:59:19.265799 [debug] [Thread-3 (]: Using postgres connection "model.london_housing_analytics.mart_london_borough_snapshot_latest"
+[0m15:59:19.266463 [debug] [Thread-3 (]: On model.london_housing_analytics.mart_london_borough_snapshot_latest: /* {"app": "dbt", "dbt_version": "1.11.8", "profile_name": "housing_warehouse", "target_name": "dev", "node_id": "model.london_housing_analytics.mart_london_borough_snapshot_latest"} */
+alter table "housing_warehouse"."analytics"."mart_london_borough_snapshot_latest" rename to "mart_london_borough_snapshot_latest__dbt_backup"
+[0m15:59:19.268845 [debug] [Thread-3 (]: SQL status: ALTER TABLE in 0.002 seconds
+[0m15:59:19.274455 [debug] [Thread-3 (]: Using postgres connection "model.london_housing_analytics.mart_london_borough_snapshot_latest"
+[0m15:59:19.275170 [debug] [Thread-3 (]: On model.london_housing_analytics.mart_london_borough_snapshot_latest: /* {"app": "dbt", "dbt_version": "1.11.8", "profile_name": "housing_warehouse", "target_name": "dev", "node_id": "model.london_housing_analytics.mart_london_borough_snapshot_latest"} */
+alter table "housing_warehouse"."analytics"."mart_london_borough_snapshot_latest__dbt_tmp" rename to "mart_london_borough_snapshot_latest"
+[0m15:59:19.277480 [debug] [Thread-3 (]: SQL status: ALTER TABLE in 0.002 seconds
+[0m15:59:19.280164 [debug] [Thread-3 (]: On model.london_housing_analytics.mart_london_borough_snapshot_latest: COMMIT
+[0m15:59:19.281055 [debug] [Thread-3 (]: Using postgres connection "model.london_housing_analytics.mart_london_borough_snapshot_latest"
+[0m15:59:19.281726 [debug] [Thread-3 (]: On model.london_housing_analytics.mart_london_borough_snapshot_latest: COMMIT
+[0m15:59:19.285396 [debug] [Thread-3 (]: SQL status: COMMIT in 0.003 seconds
+[0m15:59:19.296974 [debug] [Thread-3 (]: Applying DROP to: "housing_warehouse"."analytics"."mart_london_borough_snapshot_latest__dbt_backup"
+[0m15:59:19.298482 [debug] [Thread-3 (]: Using postgres connection "model.london_housing_analytics.mart_london_borough_snapshot_latest"
+[0m15:59:19.299187 [debug] [Thread-3 (]: On model.london_housing_analytics.mart_london_borough_snapshot_latest: /* {"app": "dbt", "dbt_version": "1.11.8", "profile_name": "housing_warehouse", "target_name": "dev", "node_id": "model.london_housing_analytics.mart_london_borough_snapshot_latest"} */
+drop table if exists "housing_warehouse"."analytics"."mart_london_borough_snapshot_latest__dbt_backup" cascade
+[0m15:59:19.309669 [debug] [Thread-3 (]: SQL status: DROP TABLE in 0.010 seconds
+[0m15:59:19.312339 [debug] [Thread-3 (]: On model.london_housing_analytics.mart_london_borough_snapshot_latest: Close
+[0m15:59:19.314005 [debug] [Thread-3 (]: Sending event: {'category': 'dbt', 'action': 'run_model', 'label': '9ecf0b40-a2d2-4d81-bc47-c247a1b3c265', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x111dd4b30>]}
+[0m15:59:19.316003 [info ] [Thread-3 (]: 2 of 2 OK created sql table model analytics.mart_london_borough_snapshot_latest  [[32mSELECT 33[0m in 0.11s]
+[0m15:59:19.318318 [debug] [Thread-3 (]: Finished running node model.london_housing_analytics.mart_london_borough_snapshot_latest
+[0m15:59:19.322422 [debug] [MainThread]: Using postgres connection "master"
+[0m15:59:19.323148 [debug] [MainThread]: On master: BEGIN
+[0m15:59:19.323760 [debug] [MainThread]: Opening a new connection, currently in state closed
+[0m15:59:19.351435 [debug] [MainThread]: SQL status: BEGIN in 0.028 seconds
+[0m15:59:19.352128 [debug] [MainThread]: On master: COMMIT
+[0m15:59:19.352655 [debug] [MainThread]: Using postgres connection "master"
+[0m15:59:19.353058 [debug] [MainThread]: On master: COMMIT
+[0m15:59:19.354526 [debug] [MainThread]: SQL status: COMMIT in 0.001 seconds
+[0m15:59:19.355146 [debug] [MainThread]: On master: Close
+[0m15:59:19.356067 [debug] [MainThread]: Connection 'master' was properly closed.
+[0m15:59:19.356966 [debug] [MainThread]: Connection 'model.london_housing_analytics.mart_london_affordability_monthly' was properly closed.
+[0m15:59:19.357827 [debug] [MainThread]: Connection 'model.london_housing_analytics.mart_london_borough_snapshot_latest' was properly closed.
+[0m15:59:19.358439 [info ] [MainThread]: 
+[0m15:59:19.359127 [info ] [MainThread]: Finished running 2 table models in 0 hours 0 minutes and 2.25 seconds (2.25s).
+[0m15:59:19.362315 [debug] [MainThread]: Command end result
+[0m15:59:19.411256 [debug] [MainThread]: Wrote artifact WritableManifest to /Users/adilosman/Downloads/london-housing-analytics/dbt/target/manifest.json
+[0m15:59:19.418900 [debug] [MainThread]: Wrote artifact SemanticManifest to /Users/adilosman/Downloads/london-housing-analytics/dbt/target/semantic_manifest.json
+[0m15:59:19.432953 [debug] [MainThread]: Wrote artifact RunExecutionResult to /Users/adilosman/Downloads/london-housing-analytics/dbt/target/run_results.json
+[0m15:59:19.433862 [info ] [MainThread]: 
+[0m15:59:19.434711 [info ] [MainThread]: [32mCompleted successfully[0m
+[0m15:59:19.436161 [info ] [MainThread]: 
+[0m15:59:19.437319 [info ] [MainThread]: Done. PASS=2 WARN=0 ERROR=0 SKIP=0 NO-OP=0 TOTAL=2
+[0m15:59:19.446090 [debug] [MainThread]: Resource report: {"command_name": "run", "command_success": true, "command_wall_clock_time": 4.916714, "process_in_blocks": "0", "process_kernel_time": 1.085442, "process_mem_max_rss": "129101824", "process_out_blocks": "0", "process_user_time": 4.395387}
+[0m15:59:19.447547 [debug] [MainThread]: Command `dbt run` succeeded at 15:59:19.447209 after 4.92 seconds
+[0m15:59:19.448285 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'end', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x10c0a2cf0>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x11062a630>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x10ce96fc0>]}
+[0m15:59:19.448987 [debug] [MainThread]: Flushing usage events
+[0m15:59:19.939327 [debug] [MainThread]: An error was encountered while trying to flush usage events
+[0m15:59:30.954368 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'start', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x107957d70>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x107975100>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x107975010>]}
+
+
+============================== 15:59:30.974493 | 0c301272-538e-4325-8153-af547ee0ba3a ==============================
+[0m15:59:30.974493 [info ] [MainThread]: Running with dbt=1.11.8
+[0m15:59:30.976135 [debug] [MainThread]: running dbt with arguments {'invocation_command': 'dbt test', 'partial_parse': 'True', 'log_format': 'default', 'version_check': 'True', 'write_json': 'True', 'quiet': 'False', 'warn_error_options': 'WarnErrorOptionsV2(error=[], warn=[], silence=[])', 'target_path': 'None', 'send_anonymous_usage_stats': 'True', 'profiles_dir': '/Users/adilosman/.dbt', 'introspect': 'True', 'warn_error': 'None', 'cache_selected_only': 'False', 'empty': 'None', 'log_cache_events': 'False', 'printer_width': '80', 'debug': 'False', 'static_parser': 'True', 'use_experimental_parser': 'False', 'use_colors': 'True', 'log_path': '/Users/adilosman/Downloads/london-housing-analytics/dbt/logs', 'fail_fast': 'False', 'no_print': 'None', 'indirect_selection': 'eager'}
+[0m15:59:31.730011 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'project_id', 'label': '0c301272-538e-4325-8153-af547ee0ba3a', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x108acb3e0>]}
+[0m15:59:31.932483 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'adapter_info', 'label': '0c301272-538e-4325-8153-af547ee0ba3a', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x1061d2f60>]}
+[0m15:59:31.935501 [info ] [MainThread]: Registered adapter: postgres=1.8.2
+[0m15:59:34.304962 [debug] [MainThread]: checksum: 7d524ac048c2100769df89d592e662e060a73ca564e31bd9c2a37efdfe8d8ab6, vars: {}, profile: , target: , version: 1.11.8
+[0m15:59:35.628205 [debug] [MainThread]: Partial parsing enabled: 0 files deleted, 0 files added, 0 files changed.
+[0m15:59:35.629073 [debug] [MainThread]: Nothing changed, skipping partial parsing.
+[0m15:59:35.629674 [debug] [MainThread]: Partial parsing enabled, no changes found, skipping parsing
+[0m15:59:35.943365 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'load_project', 'label': '0c301272-538e-4325-8153-af547ee0ba3a', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x108cab650>]}
+[0m15:59:38.416133 [debug] [MainThread]: Wrote artifact WritableManifest to /Users/adilosman/Downloads/london-housing-analytics/dbt/target/manifest.json
+[0m15:59:38.456945 [debug] [MainThread]: Wrote artifact SemanticManifest to /Users/adilosman/Downloads/london-housing-analytics/dbt/target/semantic_manifest.json
+[0m15:59:39.338661 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'resource_counts', 'label': '0c301272-538e-4325-8153-af547ee0ba3a', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x109682420>]}
+[0m15:59:39.340789 [info ] [MainThread]: Found 8 models, 7 data tests, 5 sources, 463 macros
+[0m15:59:39.342597 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'runnable_timing', 'label': '0c301272-538e-4325-8153-af547ee0ba3a', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x108b05430>]}
+[0m15:59:39.454837 [info ] [MainThread]: 
+[0m15:59:39.456516 [info ] [MainThread]: Concurrency: 4 threads (target='dev')
+[0m15:59:39.458302 [info ] [MainThread]: 
+[0m15:59:39.462165 [debug] [MainThread]: Acquiring new postgres connection 'master'
+[0m15:59:39.666982 [debug] [ThreadPool]: Acquiring new postgres connection 'list_housing_warehouse_analytics'
+[0m15:59:42.712329 [debug] [ThreadPool]: Using postgres connection "list_housing_warehouse_analytics"
+[0m15:59:42.713116 [debug] [ThreadPool]: On list_housing_warehouse_analytics: BEGIN
+[0m15:59:42.714722 [debug] [ThreadPool]: Opening a new connection, currently in state init
+[0m15:59:42.836395 [debug] [ThreadPool]: SQL status: BEGIN in 0.121 seconds
+[0m15:59:42.838486 [debug] [ThreadPool]: Using postgres connection "list_housing_warehouse_analytics"
+[0m15:59:42.840108 [debug] [ThreadPool]: On list_housing_warehouse_analytics: /* {"app": "dbt", "dbt_version": "1.11.8", "profile_name": "housing_warehouse", "target_name": "dev", "connection_name": "list_housing_warehouse_analytics"} */
+select
+      'housing_warehouse' as database,
+      tablename as name,
+      schemaname as schema,
+      'table' as type
+    from pg_tables
+    where schemaname ilike 'analytics'
+    union all
+    select
+      'housing_warehouse' as database,
+      viewname as name,
+      schemaname as schema,
+      'view' as type
+    from pg_views
+    where schemaname ilike 'analytics'
+    union all
+    select
+      'housing_warehouse' as database,
+      matviewname as name,
+      schemaname as schema,
+      'materialized_view' as type
+    from pg_matviews
+    where schemaname ilike 'analytics'
+  
+[0m15:59:42.857421 [debug] [ThreadPool]: SQL status: SELECT 8 in 0.016 seconds
+[0m15:59:42.861416 [debug] [ThreadPool]: On list_housing_warehouse_analytics: ROLLBACK
+[0m15:59:42.866942 [debug] [ThreadPool]: On list_housing_warehouse_analytics: Close
+[0m15:59:42.892644 [debug] [MainThread]: Using postgres connection "master"
+[0m15:59:42.893449 [debug] [MainThread]: On master: BEGIN
+[0m15:59:42.894016 [debug] [MainThread]: Opening a new connection, currently in state init
+[0m15:59:42.933961 [debug] [MainThread]: SQL status: BEGIN in 0.040 seconds
+[0m15:59:42.935129 [debug] [MainThread]: Using postgres connection "master"
+[0m15:59:42.936013 [debug] [MainThread]: On master: /* {"app": "dbt", "dbt_version": "1.11.8", "profile_name": "housing_warehouse", "target_name": "dev", "connection_name": "master"} */
+with relation as (
+        select
+            pg_rewrite.ev_class as class,
+            pg_rewrite.oid as id
+        from pg_rewrite
+    ),
+    class as (
+        select
+            oid as id,
+            relname as name,
+            relnamespace as schema,
+            relkind as kind
+        from pg_class
+    ),
+    dependency as (
+        select distinct
+            pg_depend.objid as id,
+            pg_depend.refobjid as ref
+        from pg_depend
+    ),
+    schema as (
+        select
+            pg_namespace.oid as id,
+            pg_namespace.nspname as name
+        from pg_namespace
+        where nspname != 'information_schema' and nspname not like 'pg\_%'
+    ),
+    referenced as (
+        select
+            relation.id AS id,
+            referenced_class.name ,
+            referenced_class.schema ,
+            referenced_class.kind
+        from relation
+        join class as referenced_class on relation.class=referenced_class.id
+        where referenced_class.kind in ('r', 'v', 'm')
+    ),
+    relationships as (
+        select
+            referenced.name as referenced_name,
+            referenced.schema as referenced_schema_id,
+            dependent_class.name as dependent_name,
+            dependent_class.schema as dependent_schema_id,
+            referenced.kind as kind
+        from referenced
+        join dependency on referenced.id=dependency.id
+        join class as dependent_class on dependency.ref=dependent_class.id
+        where
+            (referenced.name != dependent_class.name or
+             referenced.schema != dependent_class.schema)
+    )
+
+    select
+        referenced_schema.name as referenced_schema,
+        relationships.referenced_name as referenced_name,
+        dependent_schema.name as dependent_schema,
+        relationships.dependent_name as dependent_name
+    from relationships
+    join schema as dependent_schema on relationships.dependent_schema_id=dependent_schema.id
+    join schema as referenced_schema on relationships.referenced_schema_id=referenced_schema.id
+    group by referenced_schema, referenced_name, dependent_schema, dependent_name
+    order by referenced_schema, referenced_name, dependent_schema, dependent_name;
+[0m15:59:42.958539 [debug] [MainThread]: SQL status: SELECT 5 in 0.021 seconds
+[0m15:59:42.964275 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'runnable_timing', 'label': '0c301272-538e-4325-8153-af547ee0ba3a', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x1096c58e0>]}
+[0m15:59:42.966881 [debug] [MainThread]: On master: ROLLBACK
+[0m15:59:42.969329 [debug] [MainThread]: Using postgres connection "master"
+[0m15:59:42.970074 [debug] [MainThread]: On master: BEGIN
+[0m15:59:42.976156 [debug] [MainThread]: SQL status: BEGIN in 0.005 seconds
+[0m15:59:42.976911 [debug] [MainThread]: On master: COMMIT
+[0m15:59:42.978940 [debug] [MainThread]: Using postgres connection "master"
+[0m15:59:42.979611 [debug] [MainThread]: On master: COMMIT
+[0m15:59:42.982206 [debug] [MainThread]: SQL status: COMMIT in 0.001 seconds
+[0m15:59:42.982976 [debug] [MainThread]: On master: Close
+[0m15:59:42.999727 [debug] [Thread-1 (]: Began running node test.london_housing_analytics.not_null_mart_london_affordability_monthly_area_code.091d735b8d
+[0m15:59:43.000592 [debug] [Thread-2 (]: Began running node test.london_housing_analytics.not_null_mart_london_affordability_monthly_area_name.b7a855f09c
+[0m15:59:43.001361 [debug] [Thread-3 (]: Began running node test.london_housing_analytics.not_null_mart_london_affordability_monthly_date_month.5fc1705a37
+[0m15:59:43.002461 [info ] [Thread-1 (]: 1 of 7 START test not_null_mart_london_affordability_monthly_area_code ......... [RUN]
+[0m15:59:43.003818 [debug] [Thread-4 (]: Began running node test.london_housing_analytics.not_null_mart_london_affordability_monthly_price_to_earnings_ratio.89c0171f3a
+[0m15:59:43.005737 [info ] [Thread-2 (]: 2 of 7 START test not_null_mart_london_affordability_monthly_area_name ......... [RUN]
+[0m15:59:43.007057 [info ] [Thread-3 (]: 3 of 7 START test not_null_mart_london_affordability_monthly_date_month ........ [RUN]
+[0m15:59:43.011545 [debug] [Thread-1 (]: Re-using an available connection from the pool (formerly list_housing_warehouse_analytics, now test.london_housing_analytics.not_null_mart_london_affordability_monthly_area_code.091d735b8d)
+[0m15:59:43.014205 [info ] [Thread-4 (]: 4 of 7 START test not_null_mart_london_affordability_monthly_price_to_earnings_ratio  [RUN]
+[0m15:59:43.017567 [debug] [Thread-2 (]: Acquiring new postgres connection 'test.london_housing_analytics.not_null_mart_london_affordability_monthly_area_name.b7a855f09c'
+[0m15:59:43.019446 [debug] [Thread-3 (]: Acquiring new postgres connection 'test.london_housing_analytics.not_null_mart_london_affordability_monthly_date_month.5fc1705a37'
+[0m15:59:43.020390 [debug] [Thread-1 (]: Began compiling node test.london_housing_analytics.not_null_mart_london_affordability_monthly_area_code.091d735b8d
+[0m15:59:43.021434 [debug] [Thread-4 (]: Acquiring new postgres connection 'test.london_housing_analytics.not_null_mart_london_affordability_monthly_price_to_earnings_ratio.89c0171f3a'
+[0m15:59:43.022929 [debug] [Thread-2 (]: Began compiling node test.london_housing_analytics.not_null_mart_london_affordability_monthly_area_name.b7a855f09c
+[0m15:59:43.025640 [debug] [Thread-3 (]: Began compiling node test.london_housing_analytics.not_null_mart_london_affordability_monthly_date_month.5fc1705a37
+[0m15:59:43.045893 [debug] [Thread-4 (]: Began compiling node test.london_housing_analytics.not_null_mart_london_affordability_monthly_price_to_earnings_ratio.89c0171f3a
+[0m15:59:43.089456 [debug] [Thread-1 (]: Writing injected SQL for node "test.london_housing_analytics.not_null_mart_london_affordability_monthly_area_code.091d735b8d"
+[0m15:59:43.091814 [debug] [Thread-2 (]: Writing injected SQL for node "test.london_housing_analytics.not_null_mart_london_affordability_monthly_area_name.b7a855f09c"
+[0m15:59:43.119760 [debug] [Thread-4 (]: Writing injected SQL for node "test.london_housing_analytics.not_null_mart_london_affordability_monthly_price_to_earnings_ratio.89c0171f3a"
+[0m15:59:43.111341 [debug] [Thread-3 (]: Writing injected SQL for node "test.london_housing_analytics.not_null_mart_london_affordability_monthly_date_month.5fc1705a37"
+[0m15:59:43.124117 [debug] [Thread-1 (]: Began executing node test.london_housing_analytics.not_null_mart_london_affordability_monthly_area_code.091d735b8d
+[0m15:59:43.151983 [debug] [Thread-3 (]: Began executing node test.london_housing_analytics.not_null_mart_london_affordability_monthly_date_month.5fc1705a37
+[0m15:59:43.165098 [debug] [Thread-2 (]: Began executing node test.london_housing_analytics.not_null_mart_london_affordability_monthly_area_name.b7a855f09c
+[0m15:59:43.186752 [debug] [Thread-4 (]: Began executing node test.london_housing_analytics.not_null_mart_london_affordability_monthly_price_to_earnings_ratio.89c0171f3a
+[0m15:59:43.224613 [debug] [Thread-1 (]: Writing runtime sql for node "test.london_housing_analytics.not_null_mart_london_affordability_monthly_area_code.091d735b8d"
+[0m15:59:43.226366 [debug] [Thread-2 (]: Writing runtime sql for node "test.london_housing_analytics.not_null_mart_london_affordability_monthly_area_name.b7a855f09c"
+[0m15:59:43.242839 [debug] [Thread-3 (]: Writing runtime sql for node "test.london_housing_analytics.not_null_mart_london_affordability_monthly_date_month.5fc1705a37"
+[0m15:59:43.232649 [debug] [Thread-4 (]: Writing runtime sql for node "test.london_housing_analytics.not_null_mart_london_affordability_monthly_price_to_earnings_ratio.89c0171f3a"
+[0m15:59:43.248430 [debug] [Thread-1 (]: Using postgres connection "test.london_housing_analytics.not_null_mart_london_affordability_monthly_area_code.091d735b8d"
+[0m15:59:43.251130 [debug] [Thread-1 (]: On test.london_housing_analytics.not_null_mart_london_affordability_monthly_area_code.091d735b8d: BEGIN
+[0m15:59:43.252003 [debug] [Thread-1 (]: Opening a new connection, currently in state closed
+[0m15:59:43.253663 [debug] [Thread-4 (]: Using postgres connection "test.london_housing_analytics.not_null_mart_london_affordability_monthly_price_to_earnings_ratio.89c0171f3a"
+[0m15:59:43.255043 [debug] [Thread-4 (]: On test.london_housing_analytics.not_null_mart_london_affordability_monthly_price_to_earnings_ratio.89c0171f3a: BEGIN
+[0m15:59:43.256446 [debug] [Thread-3 (]: Using postgres connection "test.london_housing_analytics.not_null_mart_london_affordability_monthly_date_month.5fc1705a37"
+[0m15:59:43.257701 [debug] [Thread-4 (]: Opening a new connection, currently in state init
+[0m15:59:43.258975 [debug] [Thread-2 (]: Using postgres connection "test.london_housing_analytics.not_null_mart_london_affordability_monthly_area_name.b7a855f09c"
+[0m15:59:43.260804 [debug] [Thread-3 (]: On test.london_housing_analytics.not_null_mart_london_affordability_monthly_date_month.5fc1705a37: BEGIN
+[0m15:59:43.262559 [debug] [Thread-2 (]: On test.london_housing_analytics.not_null_mart_london_affordability_monthly_area_name.b7a855f09c: BEGIN
+[0m15:59:43.264176 [debug] [Thread-3 (]: Opening a new connection, currently in state init
+[0m15:59:43.265554 [debug] [Thread-2 (]: Opening a new connection, currently in state init
+[0m15:59:43.293573 [debug] [Thread-1 (]: SQL status: BEGIN in 0.041 seconds
+[0m15:59:43.294916 [debug] [Thread-1 (]: Using postgres connection "test.london_housing_analytics.not_null_mart_london_affordability_monthly_area_code.091d735b8d"
+[0m15:59:43.296175 [debug] [Thread-1 (]: On test.london_housing_analytics.not_null_mart_london_affordability_monthly_area_code.091d735b8d: /* {"app": "dbt", "dbt_version": "1.11.8", "profile_name": "housing_warehouse", "target_name": "dev", "node_id": "test.london_housing_analytics.not_null_mart_london_affordability_monthly_area_code.091d735b8d"} */
+
+    
+    select
+      count(*) as failures,
+      count(*) != 0 as should_warn,
+      count(*) != 0 as should_error
+    from (
+      
+    
+  
+    
+    
+
+
+
+select area_code
+from "housing_warehouse"."analytics"."mart_london_affordability_monthly"
+where area_code is null
+
+
+
+  
+  
+      
+    ) dbt_internal_test
+[0m15:59:43.306218 [debug] [Thread-1 (]: SQL status: SELECT 1 in 0.006 seconds
+[0m15:59:43.307082 [debug] [Thread-3 (]: SQL status: BEGIN in 0.043 seconds
+[0m15:59:43.309665 [debug] [Thread-2 (]: SQL status: BEGIN in 0.044 seconds
+[0m15:59:43.330406 [debug] [Thread-2 (]: Using postgres connection "test.london_housing_analytics.not_null_mart_london_affordability_monthly_area_name.b7a855f09c"
+[0m15:59:43.318168 [debug] [Thread-3 (]: Using postgres connection "test.london_housing_analytics.not_null_mart_london_affordability_monthly_date_month.5fc1705a37"
+[0m15:59:43.331139 [debug] [Thread-2 (]: On test.london_housing_analytics.not_null_mart_london_affordability_monthly_area_name.b7a855f09c: /* {"app": "dbt", "dbt_version": "1.11.8", "profile_name": "housing_warehouse", "target_name": "dev", "node_id": "test.london_housing_analytics.not_null_mart_london_affordability_monthly_area_name.b7a855f09c"} */
+
+    
+    select
+      count(*) as failures,
+      count(*) != 0 as should_warn,
+      count(*) != 0 as should_error
+    from (
+      
+    
+  
+    
+    
+
+
+
+select area_name
+from "housing_warehouse"."analytics"."mart_london_affordability_monthly"
+where area_name is null
+
+
+
+  
+  
+      
+    ) dbt_internal_test
+[0m15:59:43.329698 [debug] [Thread-1 (]: On test.london_housing_analytics.not_null_mart_london_affordability_monthly_area_code.091d735b8d: ROLLBACK
+[0m15:59:43.310480 [debug] [Thread-4 (]: SQL status: BEGIN in 0.053 seconds
+[0m15:59:43.331993 [debug] [Thread-3 (]: On test.london_housing_analytics.not_null_mart_london_affordability_monthly_date_month.5fc1705a37: /* {"app": "dbt", "dbt_version": "1.11.8", "profile_name": "housing_warehouse", "target_name": "dev", "node_id": "test.london_housing_analytics.not_null_mart_london_affordability_monthly_date_month.5fc1705a37"} */
+
+    
+    select
+      count(*) as failures,
+      count(*) != 0 as should_warn,
+      count(*) != 0 as should_error
+    from (
+      
+    
+  
+    
+    
+
+
+
+select date_month
+from "housing_warehouse"."analytics"."mart_london_affordability_monthly"
+where date_month is null
+
+
+
+  
+  
+      
+    ) dbt_internal_test
+[0m15:59:43.334157 [debug] [Thread-4 (]: Using postgres connection "test.london_housing_analytics.not_null_mart_london_affordability_monthly_price_to_earnings_ratio.89c0171f3a"
+[0m15:59:43.336929 [debug] [Thread-1 (]: On test.london_housing_analytics.not_null_mart_london_affordability_monthly_area_code.091d735b8d: Close
+[0m15:59:43.338797 [debug] [Thread-4 (]: On test.london_housing_analytics.not_null_mart_london_affordability_monthly_price_to_earnings_ratio.89c0171f3a: /* {"app": "dbt", "dbt_version": "1.11.8", "profile_name": "housing_warehouse", "target_name": "dev", "node_id": "test.london_housing_analytics.not_null_mart_london_affordability_monthly_price_to_earnings_ratio.89c0171f3a"} */
+
+    
+    select
+      count(*) as failures,
+      count(*) != 0 as should_warn,
+      count(*) != 0 as should_error
+    from (
+      
+    
+  
+    
+    
+
+
+
+select price_to_earnings_ratio
+from "housing_warehouse"."analytics"."mart_london_affordability_monthly"
+where price_to_earnings_ratio is null
+
+
+
+  
+  
+      
+    ) dbt_internal_test
+[0m15:59:43.340298 [debug] [Thread-2 (]: SQL status: SELECT 1 in 0.007 seconds
+[0m15:59:43.345804 [debug] [Thread-2 (]: On test.london_housing_analytics.not_null_mart_london_affordability_monthly_area_name.b7a855f09c: ROLLBACK
+[0m15:59:43.346935 [debug] [Thread-3 (]: SQL status: SELECT 1 in 0.009 seconds
+[0m15:59:43.348665 [info ] [Thread-1 (]: 1 of 7 PASS not_null_mart_london_affordability_monthly_area_code ............... [[32mPASS[0m in 0.34s]
+[0m15:59:43.369536 [debug] [Thread-1 (]: Finished running node test.london_housing_analytics.not_null_mart_london_affordability_monthly_area_code.091d735b8d
+[0m15:59:43.366290 [debug] [Thread-3 (]: On test.london_housing_analytics.not_null_mart_london_affordability_monthly_date_month.5fc1705a37: ROLLBACK
+[0m15:59:43.368093 [debug] [Thread-2 (]: On test.london_housing_analytics.not_null_mart_london_affordability_monthly_area_name.b7a855f09c: Close
+[0m15:59:43.361208 [debug] [Thread-4 (]: SQL status: SELECT 1 in 0.019 seconds
+[0m15:59:43.373677 [debug] [Thread-1 (]: Began running node test.london_housing_analytics.not_null_mart_london_borough_snapshot_latest_area_code.fc19d0aace
+[0m15:59:43.377693 [info ] [Thread-2 (]: 2 of 7 PASS not_null_mart_london_affordability_monthly_area_name ............... [[32mPASS[0m in 0.36s]
+[0m15:59:43.384207 [debug] [Thread-4 (]: On test.london_housing_analytics.not_null_mart_london_affordability_monthly_price_to_earnings_ratio.89c0171f3a: ROLLBACK
+[0m15:59:43.387577 [info ] [Thread-1 (]: 5 of 7 START test not_null_mart_london_borough_snapshot_latest_area_code ....... [RUN]
+[0m15:59:43.389388 [debug] [Thread-3 (]: On test.london_housing_analytics.not_null_mart_london_affordability_monthly_date_month.5fc1705a37: Close
+[0m15:59:43.392516 [debug] [Thread-2 (]: Finished running node test.london_housing_analytics.not_null_mart_london_affordability_monthly_area_name.b7a855f09c
+[0m15:59:43.394130 [debug] [Thread-1 (]: Re-using an available connection from the pool (formerly test.london_housing_analytics.not_null_mart_london_affordability_monthly_area_code.091d735b8d, now test.london_housing_analytics.not_null_mart_london_borough_snapshot_latest_area_code.fc19d0aace)
+[0m15:59:43.395288 [debug] [Thread-4 (]: On test.london_housing_analytics.not_null_mart_london_affordability_monthly_price_to_earnings_ratio.89c0171f3a: Close
+[0m15:59:43.396460 [debug] [Thread-2 (]: Began running node test.london_housing_analytics.not_null_mart_london_property_type_latest_area_code.6d55e6a677
+[0m15:59:43.397486 [info ] [Thread-3 (]: 3 of 7 PASS not_null_mart_london_affordability_monthly_date_month .............. [[32mPASS[0m in 0.38s]
+[0m15:59:43.398661 [debug] [Thread-1 (]: Began compiling node test.london_housing_analytics.not_null_mart_london_borough_snapshot_latest_area_code.fc19d0aace
+[0m15:59:43.401111 [info ] [Thread-4 (]: 4 of 7 PASS not_null_mart_london_affordability_monthly_price_to_earnings_ratio . [[32mPASS[0m in 0.38s]
+[0m15:59:43.402821 [info ] [Thread-2 (]: 6 of 7 START test not_null_mart_london_property_type_latest_area_code .......... [RUN]
+[0m15:59:43.405878 [debug] [Thread-3 (]: Finished running node test.london_housing_analytics.not_null_mart_london_affordability_monthly_date_month.5fc1705a37
+[0m15:59:43.416773 [debug] [Thread-1 (]: Writing injected SQL for node "test.london_housing_analytics.not_null_mart_london_borough_snapshot_latest_area_code.fc19d0aace"
+[0m15:59:43.418057 [debug] [Thread-4 (]: Finished running node test.london_housing_analytics.not_null_mart_london_affordability_monthly_price_to_earnings_ratio.89c0171f3a
+[0m15:59:43.418878 [debug] [Thread-2 (]: Re-using an available connection from the pool (formerly test.london_housing_analytics.not_null_mart_london_affordability_monthly_area_name.b7a855f09c, now test.london_housing_analytics.not_null_mart_london_property_type_latest_area_code.6d55e6a677)
+[0m15:59:43.419842 [debug] [Thread-3 (]: Began running node test.london_housing_analytics.not_null_mart_london_property_type_latest_property_type.310189f57a
+[0m15:59:43.422189 [debug] [Thread-2 (]: Began compiling node test.london_housing_analytics.not_null_mart_london_property_type_latest_area_code.6d55e6a677
+[0m15:59:43.423918 [info ] [Thread-3 (]: 7 of 7 START test not_null_mart_london_property_type_latest_property_type ...... [RUN]
+[0m15:59:43.434583 [debug] [Thread-2 (]: Writing injected SQL for node "test.london_housing_analytics.not_null_mart_london_property_type_latest_area_code.6d55e6a677"
+[0m15:59:43.437673 [debug] [Thread-3 (]: Re-using an available connection from the pool (formerly test.london_housing_analytics.not_null_mart_london_affordability_monthly_date_month.5fc1705a37, now test.london_housing_analytics.not_null_mart_london_property_type_latest_property_type.310189f57a)
+[0m15:59:43.438642 [debug] [Thread-1 (]: Began executing node test.london_housing_analytics.not_null_mart_london_borough_snapshot_latest_area_code.fc19d0aace
+[0m15:59:43.439351 [debug] [Thread-3 (]: Began compiling node test.london_housing_analytics.not_null_mart_london_property_type_latest_property_type.310189f57a
+[0m15:59:43.448252 [debug] [Thread-1 (]: Writing runtime sql for node "test.london_housing_analytics.not_null_mart_london_borough_snapshot_latest_area_code.fc19d0aace"
+[0m15:59:43.613645 [debug] [Thread-2 (]: Began executing node test.london_housing_analytics.not_null_mart_london_property_type_latest_area_code.6d55e6a677
+[0m15:59:43.630479 [debug] [Thread-2 (]: Writing runtime sql for node "test.london_housing_analytics.not_null_mart_london_property_type_latest_area_code.6d55e6a677"
+[0m15:59:43.645447 [debug] [Thread-3 (]: Writing injected SQL for node "test.london_housing_analytics.not_null_mart_london_property_type_latest_property_type.310189f57a"
+[0m15:59:43.646350 [debug] [Thread-2 (]: Using postgres connection "test.london_housing_analytics.not_null_mart_london_property_type_latest_area_code.6d55e6a677"
+[0m15:59:43.647197 [debug] [Thread-2 (]: On test.london_housing_analytics.not_null_mart_london_property_type_latest_area_code.6d55e6a677: BEGIN
+[0m15:59:43.647807 [debug] [Thread-2 (]: Opening a new connection, currently in state closed
+[0m15:59:43.651225 [debug] [Thread-1 (]: Using postgres connection "test.london_housing_analytics.not_null_mart_london_borough_snapshot_latest_area_code.fc19d0aace"
+[0m15:59:43.653610 [debug] [Thread-1 (]: On test.london_housing_analytics.not_null_mart_london_borough_snapshot_latest_area_code.fc19d0aace: BEGIN
+[0m15:59:43.656118 [debug] [Thread-1 (]: Opening a new connection, currently in state closed
+[0m15:59:43.658897 [debug] [Thread-3 (]: Began executing node test.london_housing_analytics.not_null_mart_london_property_type_latest_property_type.310189f57a
+[0m15:59:43.671329 [debug] [Thread-3 (]: Writing runtime sql for node "test.london_housing_analytics.not_null_mart_london_property_type_latest_property_type.310189f57a"
+[0m15:59:43.676828 [debug] [Thread-3 (]: Using postgres connection "test.london_housing_analytics.not_null_mart_london_property_type_latest_property_type.310189f57a"
+[0m15:59:43.678753 [debug] [Thread-3 (]: On test.london_housing_analytics.not_null_mart_london_property_type_latest_property_type.310189f57a: BEGIN
+[0m15:59:43.679801 [debug] [Thread-3 (]: Opening a new connection, currently in state closed
+[0m15:59:43.685145 [debug] [Thread-2 (]: SQL status: BEGIN in 0.036 seconds
+[0m15:59:43.686786 [debug] [Thread-2 (]: Using postgres connection "test.london_housing_analytics.not_null_mart_london_property_type_latest_area_code.6d55e6a677"
+[0m15:59:43.688241 [debug] [Thread-2 (]: On test.london_housing_analytics.not_null_mart_london_property_type_latest_area_code.6d55e6a677: /* {"app": "dbt", "dbt_version": "1.11.8", "profile_name": "housing_warehouse", "target_name": "dev", "node_id": "test.london_housing_analytics.not_null_mart_london_property_type_latest_area_code.6d55e6a677"} */
+
+    
+    select
+      count(*) as failures,
+      count(*) != 0 as should_warn,
+      count(*) != 0 as should_error
+    from (
+      
+    
+  
+    
+    
+
+
+
+select area_code
+from "housing_warehouse"."analytics"."mart_london_property_type_latest"
+where area_code is null
+
+
+
+  
+  
+      
+    ) dbt_internal_test
+[0m15:59:43.694327 [debug] [Thread-2 (]: SQL status: SELECT 1 in 0.003 seconds
+[0m15:59:43.699569 [debug] [Thread-2 (]: On test.london_housing_analytics.not_null_mart_london_property_type_latest_area_code.6d55e6a677: ROLLBACK
+[0m15:59:43.702759 [debug] [Thread-2 (]: On test.london_housing_analytics.not_null_mart_london_property_type_latest_area_code.6d55e6a677: Close
+[0m15:59:43.710138 [debug] [Thread-1 (]: SQL status: BEGIN in 0.054 seconds
+[0m15:59:43.712287 [debug] [Thread-1 (]: Using postgres connection "test.london_housing_analytics.not_null_mart_london_borough_snapshot_latest_area_code.fc19d0aace"
+[0m15:59:43.713581 [debug] [Thread-1 (]: On test.london_housing_analytics.not_null_mart_london_borough_snapshot_latest_area_code.fc19d0aace: /* {"app": "dbt", "dbt_version": "1.11.8", "profile_name": "housing_warehouse", "target_name": "dev", "node_id": "test.london_housing_analytics.not_null_mart_london_borough_snapshot_latest_area_code.fc19d0aace"} */
+
+    
+    select
+      count(*) as failures,
+      count(*) != 0 as should_warn,
+      count(*) != 0 as should_error
+    from (
+      
+    
+  
+    
+    
+
+
+
+select area_code
+from "housing_warehouse"."analytics"."mart_london_borough_snapshot_latest"
+where area_code is null
+
+
+
+  
+  
+      
+    ) dbt_internal_test
+[0m15:59:43.707031 [info ] [Thread-2 (]: 6 of 7 PASS not_null_mart_london_property_type_latest_area_code ................ [[32mPASS[0m in 0.29s]
+[0m15:59:43.716833 [debug] [Thread-2 (]: Finished running node test.london_housing_analytics.not_null_mart_london_property_type_latest_area_code.6d55e6a677
+[0m15:59:43.719672 [debug] [Thread-1 (]: SQL status: SELECT 1 in 0.005 seconds
+[0m15:59:43.747673 [debug] [Thread-1 (]: On test.london_housing_analytics.not_null_mart_london_borough_snapshot_latest_area_code.fc19d0aace: ROLLBACK
+[0m15:59:43.754702 [debug] [Thread-1 (]: On test.london_housing_analytics.not_null_mart_london_borough_snapshot_latest_area_code.fc19d0aace: Close
+[0m15:59:43.760116 [info ] [Thread-1 (]: 5 of 7 PASS not_null_mart_london_borough_snapshot_latest_area_code ............. [[32mPASS[0m in 0.37s]
+[0m15:59:43.766233 [debug] [Thread-1 (]: Finished running node test.london_housing_analytics.not_null_mart_london_borough_snapshot_latest_area_code.fc19d0aace
+[0m15:59:43.825574 [debug] [Thread-3 (]: SQL status: BEGIN in 0.143 seconds
+[0m15:59:43.829273 [debug] [Thread-3 (]: Using postgres connection "test.london_housing_analytics.not_null_mart_london_property_type_latest_property_type.310189f57a"
+[0m15:59:43.830331 [debug] [Thread-3 (]: On test.london_housing_analytics.not_null_mart_london_property_type_latest_property_type.310189f57a: /* {"app": "dbt", "dbt_version": "1.11.8", "profile_name": "housing_warehouse", "target_name": "dev", "node_id": "test.london_housing_analytics.not_null_mart_london_property_type_latest_property_type.310189f57a"} */
+
+    
+    select
+      count(*) as failures,
+      count(*) != 0 as should_warn,
+      count(*) != 0 as should_error
+    from (
+      
+    
+  
+    
+    
+
+
+
+select property_type
+from "housing_warehouse"."analytics"."mart_london_property_type_latest"
+where property_type is null
+
+
+
+  
+  
+      
+    ) dbt_internal_test
+[0m15:59:43.836097 [debug] [Thread-3 (]: SQL status: SELECT 1 in 0.005 seconds
+[0m15:59:43.839564 [debug] [Thread-3 (]: On test.london_housing_analytics.not_null_mart_london_property_type_latest_property_type.310189f57a: ROLLBACK
+[0m15:59:43.844828 [debug] [Thread-3 (]: On test.london_housing_analytics.not_null_mart_london_property_type_latest_property_type.310189f57a: Close
+[0m15:59:43.847744 [info ] [Thread-3 (]: 7 of 7 PASS not_null_mart_london_property_type_latest_property_type ............ [[32mPASS[0m in 0.41s]
+[0m15:59:43.850275 [debug] [Thread-3 (]: Finished running node test.london_housing_analytics.not_null_mart_london_property_type_latest_property_type.310189f57a
+[0m15:59:43.854824 [debug] [MainThread]: Using postgres connection "master"
+[0m15:59:43.855916 [debug] [MainThread]: On master: BEGIN
+[0m15:59:43.856478 [debug] [MainThread]: Opening a new connection, currently in state closed
+[0m15:59:43.885048 [debug] [MainThread]: SQL status: BEGIN in 0.028 seconds
+[0m15:59:43.886259 [debug] [MainThread]: On master: COMMIT
+[0m15:59:43.887270 [debug] [MainThread]: Using postgres connection "master"
+[0m15:59:43.888168 [debug] [MainThread]: On master: COMMIT
+[0m15:59:43.890362 [debug] [MainThread]: SQL status: COMMIT in 0.001 seconds
+[0m15:59:43.891040 [debug] [MainThread]: On master: Close
+[0m15:59:43.891986 [debug] [MainThread]: Connection 'master' was properly closed.
+[0m15:59:43.892739 [debug] [MainThread]: Connection 'test.london_housing_analytics.not_null_mart_london_borough_snapshot_latest_area_code.fc19d0aace' was properly closed.
+[0m15:59:43.893588 [debug] [MainThread]: Connection 'test.london_housing_analytics.not_null_mart_london_property_type_latest_area_code.6d55e6a677' was properly closed.
+[0m15:59:43.895107 [debug] [MainThread]: Connection 'test.london_housing_analytics.not_null_mart_london_property_type_latest_property_type.310189f57a' was properly closed.
+[0m15:59:43.896857 [debug] [MainThread]: Connection 'test.london_housing_analytics.not_null_mart_london_affordability_monthly_price_to_earnings_ratio.89c0171f3a' was properly closed.
+[0m15:59:43.897758 [info ] [MainThread]: 
+[0m15:59:43.899770 [info ] [MainThread]: Finished running 7 data tests in 0 hours 0 minutes and 4.44 seconds (4.44s).
+[0m15:59:43.905310 [debug] [MainThread]: Command end result
+[0m15:59:43.997322 [debug] [MainThread]: Wrote artifact WritableManifest to /Users/adilosman/Downloads/london-housing-analytics/dbt/target/manifest.json
+[0m15:59:44.011742 [debug] [MainThread]: Wrote artifact SemanticManifest to /Users/adilosman/Downloads/london-housing-analytics/dbt/target/semantic_manifest.json
+[0m15:59:44.060914 [debug] [MainThread]: Wrote artifact RunExecutionResult to /Users/adilosman/Downloads/london-housing-analytics/dbt/target/run_results.json
+[0m15:59:44.062483 [info ] [MainThread]: 
+[0m15:59:44.065112 [info ] [MainThread]: [32mCompleted successfully[0m
+[0m15:59:44.071295 [info ] [MainThread]: 
+[0m15:59:44.076344 [info ] [MainThread]: Done. PASS=7 WARN=0 ERROR=0 SKIP=0 NO-OP=0 TOTAL=7
+[0m15:59:44.089605 [debug] [MainThread]: Resource report: {"command_name": "test", "command_success": true, "command_wall_clock_time": 13.344146, "process_in_blocks": "0", "process_kernel_time": 1.3767, "process_mem_max_rss": "121561088", "process_out_blocks": "0", "process_user_time": 5.584801}
+[0m15:59:44.091089 [debug] [MainThread]: Command `dbt test` succeeded at 15:59:44.090788 after 13.35 seconds
+[0m15:59:44.092056 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'end', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x1081fd9a0>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x107957d70>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x1095a3d70>]}
+[0m15:59:44.093225 [debug] [MainThread]: Flushing usage events
+[0m15:59:44.503809 [debug] [MainThread]: An error was encountered while trying to flush usage events

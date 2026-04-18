@@ -1,0 +1,11 @@
+version: 2
+
+sources:
+  - name: raw
+    schema: raw
+    tables:
+      - name: hpi_average_prices
+      - name: hpi_property_type_prices
+      - name: hpi_sales
+      - name: pipr_local_rents
+      - name: ashe_earnings

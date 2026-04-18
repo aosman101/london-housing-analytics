@@ -1,0 +1,25 @@
+version: 2
+
+models:
+  - name: mart_london_affordability_monthly
+    columns:
+      - name: date_month
+        tests: [not_null]
+      - name: area_code
+        tests: [not_null]
+      - name: area_name
+        tests: [not_null]
+      - name: price_to_earnings_ratio
+        tests: [not_null]
+
+  - name: mart_london_property_type_latest
+    columns:
+      - name: area_code
+        tests: [not_null]
+      - name: property_type
+        tests: [not_null]
+
+  - name: mart_london_borough_snapshot_latest
+    columns:
+      - name: area_code
+        tests: [not_null]

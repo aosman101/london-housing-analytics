@@ -33,22 +33,68 @@ TABLE_MAP = {
     "ashe_earnings.csv": "ashe_earnings",
 }
 
+EMPTY_TABLE_COLUMNS = {
+    "hpi_average_prices": [
+        "date_month",
+        "area_name",
+        "area_code",
+        "average_price",
+        "hpi_index",
+        "pct_change_1m",
+        "pct_change_12m",
+    ],
+    "hpi_property_type_prices": [
+        "date_month",
+        "area_name",
+        "area_code",
+        "average_price",
+        "hpi_index",
+        "pct_change_1m",
+        "pct_change_12m",
+        "property_type",
+    ],
+    "hpi_sales": [
+        "date_month",
+        "area_name",
+        "area_code",
+        "sales_volume",
+    ],
+    "pipr_local_rents": [
+        "date_month",
+        "area_name",
+        "area_code",
+        "avg_monthly_rent",
+        "rent_yoy_pct",
+    ],
+    "ashe_earnings": [
+        "reference_year",
+        "area_name",
+        "area_code",
+        "median_gross_annual_pay",
+    ],
+}
+
 with engine.begin() as conn:
     conn.execute(text("create schema if not exists raw;"))
 
 for file_name, table_name in TABLE_MAP.items():
     path = NORM / file_name
     if not path.exists():
-        print(f"[skip] missing file: {path}")
-        continue
-    df = pd.read_csv(path)
+        df = pd.DataFrame(columns=EMPTY_TABLE_COLUMNS[table_name])
+        status = "created empty"
+    else:
+        df = pd.read_csv(path)
+        status = "loaded"
+    with engine.begin() as conn:
+        if conn.execute(text(f"select to_regclass('raw.{table_name}')")).scalar():
+            conn.execute(text(f'truncate table raw."{table_name}"'))
     df.to_sql(
         table_name,
         engine,
         schema="raw",
-        if_exists="replace",
+        if_exists="append",
         index=False,
         chunksize=5000,
         method="multi",
     )
-    print(f"[loaded] raw.{table_name}")
+    print(f"[{status}] raw.{table_name}")

@@ -10,6 +10,7 @@ PIPR_FILE = RAW / "pipr_monthly_price_statistics_2026_03.xlsx"
 ASHE_FILE = RAW / "ashe_extracted" / "PROV - Home Geography Table 8.7a   Annual pay - Gross 2025.xlsx"
 
 LONDON_LAD_REGEX = r"^E09"
+LONDON_REGION_CODE = "E12000007"
 
 
 def clean_col(x: str) -> str:
@@ -258,7 +259,10 @@ def normalise_ashe():
     out["area_code"] = out["area_code"].astype(str).str.strip()
     out["median_gross_annual_pay"] = pd.to_numeric(out["median_gross_annual_pay"], errors="coerce")
 
-    out = out[out["area_code"].str.match(LONDON_LAD_REGEX, na=False)]
+    out = out[
+        out["area_code"].str.match(LONDON_LAD_REGEX, na=False)
+        | out["area_code"].eq(LONDON_REGION_CODE)
+    ]
     out = out.dropna(subset=["reference_year", "area_code", "median_gross_annual_pay"])
     out.to_csv(NORM / "ashe_earnings.csv", index=False)
 

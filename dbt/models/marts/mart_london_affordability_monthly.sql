@@ -42,8 +42,10 @@ join lateral (
         median_gross_annual_pay,
         earnings_yoy_pct
     from earnings e
-    where e.area_code = p.area_code
+    where e.area_code in (p.area_code, 'E12000007')
       and e.median_gross_annual_pay is not null
-    order by e.reference_year desc
+    order by
+        case when e.area_code = p.area_code then 0 else 1 end,
+        e.reference_year desc
     limit 1
 ) e on true

@@ -1,17 +1,52 @@
-from pathlib import Path
 import re
+import sys
+import zipfile
+from pathlib import Path
+
 import pandas as pd
 
-RAW = Path("data/raw")
-NORM = Path("data/normalised")
+sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
+from src.common import config  # noqa: E402
+
+RAW = config.RAW_DIR
+NORM = config.NORMALISED_DIR
 NORM.mkdir(parents=True, exist_ok=True)
 
-PIPR_FILE = RAW / "pipr_monthly_price_statistics_2026_03.xlsx"
-ASHE_WORKBOOK = RAW / "ashe_extracted" / "PROV - Home Geography Table 8.7a   Annual pay - Gross 2025.xlsx"
-ASHE_FILE = RAW / "ashe_table8_median_gross_annual_pay.csv"
+# ASHE Table 8.7a is "Annual pay - Gross". Glob by pattern so next year's file works.
+ASHE_EXTRACT_DIR = RAW / "ashe_extracted"
+ASHE_WORKBOOK_PATTERN = "*Table 8.7a*Annual pay*Gross*.xlsx"
+ASHE_SLICE = RAW / "ashe_table8_median_gross_annual_pay.csv"
 
 LONDON_LAD_REGEX = r"^E09"
 LONDON_REGION_CODE = "E12000007"
+
+
+def ensure_ashe_extracted() -> Path:
+    """Extract the ASHE zip on first use and return the 8.7a workbook path."""
+    zip_path = config.raw_path("ashe_table8")
+    if not zip_path.exists():
+        raise FileNotFoundError(
+            f"ASHE zip not found at {zip_path}. Run download_sources.py first."
+        )
+
+    ASHE_EXTRACT_DIR.mkdir(parents=True, exist_ok=True)
+    matches = list(ASHE_EXTRACT_DIR.rglob(ASHE_WORKBOOK_PATTERN))
+    if not matches:
+        with zipfile.ZipFile(zip_path, "r") as z:
+            for m in z.namelist():
+                if m.lower().endswith((".csv", ".xlsx")):
+                    z.extract(m, path=ASHE_EXTRACT_DIR)
+        matches = list(ASHE_EXTRACT_DIR.rglob(ASHE_WORKBOOK_PATTERN))
+
+    if not matches:
+        raise FileNotFoundError(
+            f"No ASHE workbook matched {ASHE_WORKBOOK_PATTERN} after extracting {zip_path.name}."
+        )
+    if len(matches) > 1:
+        raise RuntimeError(
+            f"Multiple ASHE workbooks matched {ASHE_WORKBOOK_PATTERN}: {matches}"
+        )
+    return matches[0]
 
 
 def clean_col(x: str) -> str:
@@ -31,38 +66,8 @@ def to_numeric(df, cols):
     return df
 
 
-def match_col(columns, candidates):
-    cols = list(columns)
-    for cand in candidates:
-        for c in cols:
-            if cand in c:
-                return c
-    raise KeyError(f"No column found for {candidates}. Columns were: {cols}")
-
-
-def find_excel_table(path: Path, required_candidates: list[list[str]], max_header_row: int = 10):
-    xls = pd.ExcelFile(path)
-    for sheet in xls.sheet_names:
-        for header_row in range(max_header_row + 1):
-            try:
-                sample = pd.read_excel(path, sheet_name=sheet, header=header_row, nrows=8)
-                cols = [clean_col(c) for c in sample.columns]
-                ok = True
-                for group in required_candidates:
-                    if not any(any(token in col for token in group) for col in cols):
-                        ok = False
-                        break
-                if ok:
-                    full = pd.read_excel(path, sheet_name=sheet, header=header_row)
-                    full.columns = [clean_col(c) for c in full.columns]
-                    return full, sheet, header_row
-            except Exception:
-                continue
-    raise ValueError(f"Could not auto-detect a usable table in {path.name}")
-
-
 def normalise_hpi_average():
-    path = RAW / "hpi_average_prices_2026_01.csv"
+    path = config.raw_path("hpi_average_prices")
     df = pd.read_csv(path, header=None)
 
     if df.shape[1] != 7:
@@ -86,7 +91,7 @@ def normalise_hpi_average():
 
 
 def normalise_hpi_sales():
-    path = RAW / "hpi_sales_2026_01.csv"
+    path = config.raw_path("hpi_sales")
     df = pd.read_csv(path, header=None)
 
     if df.shape[1] != 4:
@@ -102,17 +107,12 @@ def normalise_hpi_sales():
 
 
 def normalise_hpi_property_type():
-    """
-    Defensive parser:
-    - Handles a long format if present (8 cols with property_type column)
-    - Handles a grouped wide format if present (headerless columns in 4-col property-type blocks)
-    """
-    path = RAW / "hpi_property_type_prices_2026_01.csv"
+    """Defensive parser for both long-format and 4-metric grouped wide-format HPI property-type files."""
+    path = config.raw_path("hpi_property_type_prices")
     df = pd.read_csv(path, header=None)
 
     property_types = ["Detached", "Semi-detached", "Terraced", "Flat/Maisonette"]
 
-    # Case 1: long format
     if df.shape[1] == 8:
         df.columns = [
             "date_month",
@@ -139,7 +139,6 @@ def normalise_hpi_property_type():
         )
         out = df.copy()
 
-    # Case 2: wide format in grouped blocks of 4 metrics
     else:
         if (df.shape[1] - 3) % 4 != 0:
             raise ValueError(
@@ -165,9 +164,9 @@ def normalise_hpi_property_type():
         metric_cols = [c for c in df.columns if c not in ["date_month", "area_name", "area_code"]]
         df = to_numeric(df, metric_cols)
 
-        # If 5 groups exist, identify which one is "All" by comparing it to the average-price table.
         groups_to_use = list(range(1, group_count + 1))
 
+        # If 5 groups exist, identify which one is "All" by comparing to the average-price table.
         if group_count == 5:
             avg = pd.read_csv(NORM / "hpi_average_prices.csv")
             avg["date_month"] = pd.to_datetime(avg["date_month"], errors="coerce")
@@ -178,10 +177,10 @@ def normalise_hpi_property_type():
                 how="left",
             )
 
-            diffs = {}
-            for i in groups_to_use:
-                diffs[i] = (cmp_df[f"group_{i}_price"] - cmp_df["average_price"]).abs().mean()
-
+            diffs = {
+                i: (cmp_df[f"group_{i}_price"] - cmp_df["average_price"]).abs().mean()
+                for i in groups_to_use
+            }
             all_group = min(diffs, key=diffs.get)
             groups_to_use = [i for i in groups_to_use if i != all_group]
 
@@ -227,7 +226,8 @@ def normalise_hpi_property_type():
 
 
 def normalise_pipr():
-    df = pd.read_excel(PIPR_FILE, sheet_name="Table 1", header=2)
+    pipr_file = config.raw_path("pipr_monthly_price_statistics")
+    df = pd.read_excel(pipr_file, sheet_name="Table 1", header=2)
     df.columns = [clean_col(c) for c in df.columns]
 
     out = df[["time period", "area name", "area code", "rental price", "annual change"]].copy()
@@ -244,12 +244,13 @@ def normalise_pipr():
 
 
 def extract_ashe_slice():
-    df = pd.read_excel(ASHE_WORKBOOK, sheet_name="Full-Time", header=4)
+    workbook = ensure_ashe_extracted()
+    df = pd.read_excel(workbook, sheet_name="Full-Time", header=4)
     df.columns = [clean_col(c) for c in df.columns]
 
-    match = re.search(r"(20\d{2})", ASHE_WORKBOOK.name)
+    match = re.search(r"(20\d{2})", workbook.name)
     if not match:
-        raise ValueError(f"Could not extract year from {ASHE_WORKBOOK.name}")
+        raise ValueError(f"Could not extract year from {workbook.name}")
 
     out = df[["description", "code", "median"]].copy()
     out.columns = ["area name", "area code", "median gross annual pay"]
@@ -263,14 +264,14 @@ def extract_ashe_slice():
     )
 
     out = out[out["area code"].str.match(LONDON_LAD_REGEX, na=False)]
-    out.to_csv(ASHE_FILE, index=False)
+    out.to_csv(ASHE_SLICE, index=False)
 
 
 def normalise_ashe():
-    if not ASHE_FILE.exists():
+    if not ASHE_SLICE.exists():
         extract_ashe_slice()
 
-    df = pd.read_csv(ASHE_FILE)
+    df = pd.read_csv(ASHE_SLICE)
     df.columns = [clean_col(c) for c in df.columns]
 
     out = df[["year", "area name", "area code", "median gross annual pay"]].copy()
@@ -283,7 +284,8 @@ def normalise_ashe():
         out["median_gross_annual_pay"], errors="coerce"
     )
 
-    london_region = pd.read_excel(ASHE_WORKBOOK, sheet_name="Full-Time", header=4)
+    workbook = ensure_ashe_extracted()
+    london_region = pd.read_excel(workbook, sheet_name="Full-Time", header=4)
     london_region.columns = [clean_col(c) for c in london_region.columns]
     london_region = london_region[
         london_region["code"].astype(str).str.strip().eq(LONDON_REGION_CODE)
@@ -300,7 +302,6 @@ def normalise_ashe():
     )
 
     out = pd.concat([out, london_region], ignore_index=True)
-
     out = out[
         out["area_code"].str.match(LONDON_LAD_REGEX, na=False)
         | out["area_code"].eq(LONDON_REGION_CODE)
@@ -310,6 +311,7 @@ def normalise_ashe():
 
 
 if __name__ == "__main__":
+    ensure_ashe_extracted()
     normalise_hpi_average()
     normalise_hpi_sales()
     normalise_hpi_property_type()

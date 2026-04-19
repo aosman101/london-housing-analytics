@@ -1,13 +1,17 @@
 import os
+import sys
 from pathlib import Path
 
 import pandas as pd
 from dotenv import load_dotenv
 from sqlalchemy import create_engine, text
 
-PROJECT_ROOT = Path(__file__).resolve().parents[2]
+sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
+from src.common import config  # noqa: E402
+
+PROJECT_ROOT = config.PROJECT_ROOT
 ENV_PATH = PROJECT_ROOT / ".env"
-NORM = PROJECT_ROOT / "data" / "normalised"
+NORM = config.NORMALISED_DIR
 REQUIRED_ENV_VARS = ["PGUSER", "PGPASSWORD", "PGHOST", "PGPORT", "PGDATABASE"]
 
 load_dotenv(ENV_PATH)
@@ -33,58 +37,21 @@ TABLE_MAP = {
     "ashe_earnings.csv": "ashe_earnings",
 }
 
-EMPTY_TABLE_COLUMNS = {
-    "hpi_average_prices": [
-        "date_month",
-        "area_name",
-        "area_code",
-        "average_price",
-        "hpi_index",
-        "pct_change_1m",
-        "pct_change_12m",
-    ],
-    "hpi_property_type_prices": [
-        "date_month",
-        "area_name",
-        "area_code",
-        "average_price",
-        "hpi_index",
-        "pct_change_1m",
-        "pct_change_12m",
-        "property_type",
-    ],
-    "hpi_sales": [
-        "date_month",
-        "area_name",
-        "area_code",
-        "sales_volume",
-    ],
-    "pipr_local_rents": [
-        "date_month",
-        "area_name",
-        "area_code",
-        "avg_monthly_rent",
-        "rent_yoy_pct",
-    ],
-    "ashe_earnings": [
-        "reference_year",
-        "area_name",
-        "area_code",
-        "median_gross_annual_pay",
-    ],
-}
-
 with engine.begin() as conn:
     conn.execute(text("create schema if not exists raw;"))
 
+missing_files = [NORM / fn for fn in TABLE_MAP if not (NORM / fn).exists()]
+if missing_files:
+    names = ", ".join(p.name for p in missing_files)
+    raise FileNotFoundError(
+        f"Missing normalised files: {names}. "
+        "Run src/transform/normalise_sources.py first. "
+        "Refusing to truncate raw tables without replacement data."
+    )
+
 for file_name, table_name in TABLE_MAP.items():
     path = NORM / file_name
-    if not path.exists():
-        df = pd.DataFrame(columns=EMPTY_TABLE_COLUMNS[table_name])
-        status = "created empty"
-    else:
-        df = pd.read_csv(path)
-        status = "loaded"
+    df = pd.read_csv(path)
     with engine.begin() as conn:
         if conn.execute(text(f"select to_regclass('raw.{table_name}')")).scalar():
             conn.execute(text(f'truncate table raw."{table_name}"'))
@@ -97,4 +64,4 @@ for file_name, table_name in TABLE_MAP.items():
         chunksize=5000,
         method="multi",
     )
-    print(f"[{status}] raw.{table_name}")
+    print(f"[loaded] raw.{table_name} ({len(df)} rows)")

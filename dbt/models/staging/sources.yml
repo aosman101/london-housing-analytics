@@ -5,7 +5,25 @@ sources:
     schema: raw
     tables:
       - name: hpi_average_prices
+        loaded_at_field: "cast(date_month as timestamp)"
+        freshness:
+          warn_after: {count: 45, period: day}
+          error_after: {count: 90, period: day}
       - name: hpi_property_type_prices
+        loaded_at_field: "cast(date_month as timestamp)"
+        freshness:
+          warn_after: {count: 45, period: day}
+          error_after: {count: 90, period: day}
       - name: hpi_sales
+        loaded_at_field: "cast(date_month as timestamp)"
+        freshness:
+          # HPI sales exclude the most recent two months, so allow a longer window.
+          warn_after: {count: 75, period: day}
+          error_after: {count: 120, period: day}
       - name: pipr_local_rents
+        loaded_at_field: "cast(date_month as timestamp)"
+        freshness:
+          warn_after: {count: 45, period: day}
+          error_after: {count: 90, period: day}
       - name: ashe_earnings
+        # ASHE is annual and has no date_month column; skip freshness.

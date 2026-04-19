@@ -1,0 +1,63 @@
+version: 2
+
+models:
+  - name: stg_hpi_average_prices
+    columns:
+      - name: date_month
+        tests: [not_null]
+      - name: area_code
+        tests: [not_null]
+      - name: average_price
+        tests: [not_null]
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns: [date_month, area_code]
+
+  - name: stg_hpi_property_type_prices
+    columns:
+      - name: date_month
+        tests: [not_null]
+      - name: area_code
+        tests: [not_null]
+      - name: property_type
+        tests:
+          - not_null
+          - accepted_values:
+              values: ["Detached", "Semi-detached", "Terraced", "Flat/Maisonette"]
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns: [date_month, area_code, property_type]
+
+  - name: stg_hpi_sales
+    columns:
+      - name: date_month
+        tests: [not_null]
+      - name: area_code
+        tests: [not_null]
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns: [date_month, area_code]
+
+  - name: stg_pipr_local_rents
+    columns:
+      - name: date_month
+        tests: [not_null]
+      - name: area_code
+        tests: [not_null]
+      - name: avg_monthly_rent
+        tests: [not_null]
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns: [date_month, area_code]
+
+  - name: stg_ashe_earnings
+    columns:
+      - name: reference_year
+        tests: [not_null]
+      - name: area_code
+        tests: [not_null]
+      - name: median_gross_annual_pay
+        tests: [not_null]
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns: [reference_year, area_code]

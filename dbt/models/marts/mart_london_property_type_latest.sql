@@ -18,13 +18,20 @@ select
     p.average_price,
     e.reference_year as earnings_year,
     e.median_gross_annual_pay,
+    (e.area_code <> p.area_code) as earnings_fallback_used,
     round(p.average_price / nullif(e.median_gross_annual_pay, 0), 2) as price_to_earnings_ratio
 from prices p
-left join lateral (
-    select reference_year, median_gross_annual_pay
+join lateral (
+    select
+        area_code,
+        reference_year,
+        median_gross_annual_pay
     from earnings e
-    where e.area_code = p.area_code
+    where e.area_code in (p.area_code, 'E12000007')
       and e.reference_year <= extract(year from p.date_month)
-    order by e.reference_year desc
+      and e.median_gross_annual_pay is not null
+    order by
+        case when e.area_code = p.area_code then 0 else 1 end,
+        e.reference_year desc
     limit 1
 ) e on true

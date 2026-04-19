@@ -17,7 +17,15 @@ models:
       - name: area_code
         tests: [not_null]
       - name: property_type
+        tests:
+          - not_null
+          - accepted_values:
+              values: ["Detached", "Semi-detached", "Terraced", "Flat/Maisonette"]
+      - name: price_to_earnings_ratio
         tests: [not_null]
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns: [area_code, property_type]
 
   - name: mart_london_borough_snapshot_latest
     columns:

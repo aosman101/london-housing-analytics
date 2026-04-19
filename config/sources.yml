@@ -1,0 +1,35 @@
+# Source vintages. Update these values when a new HPI/PIPR/ASHE release lands.
+# Filenames embed the vintage so older snapshots can be kept side-by-side.
+
+hpi_vintage: "2026_01"           # HPI reference month (YYYY_MM)
+pipr_vintage: "2026_03"          # PIPR release month (YYYY_MM)
+ashe_year: 2025                  # ASHE reference year
+ashe_release: "provisional"      # "provisional" or "revised"
+
+# Campaign/term parameters occasionally appear in HPI download URLs.
+# The live download page for any month lists the exact query-string — copy it here.
+hpi_url_query: "utm_campaign=average_price&utm_medium=GOV.UK&utm_source=datadownload&utm_term=9.30_25_03_26"
+
+# PIPR release page slug (e.g. "25march2026" from the ONS URL). Copy from ONS when the vintage changes.
+pipr_release_slug: "25march2026"
+
+sources:
+  hpi_average_prices:
+    filename_template: "hpi_average_prices_{hpi_vintage}.csv"
+    url_template: "https://publicdata.landregistry.gov.uk/market-trend-data/house-price-index-data/Average-prices-{hpi_vintage_dash}.csv?{hpi_url_query}"
+
+  hpi_property_type_prices:
+    filename_template: "hpi_property_type_prices_{hpi_vintage}.csv"
+    url_template: "https://publicdata.landregistry.gov.uk/market-trend-data/house-price-index-data/Average-prices-Property-Type-{hpi_vintage_dash}.csv?{hpi_url_query}"
+
+  hpi_sales:
+    filename_template: "hpi_sales_{hpi_vintage}.csv"
+    url_template: "https://publicdata.landregistry.gov.uk/market-trend-data/house-price-index-data/Sales-{hpi_vintage_dash}.csv?{hpi_url_query}"
+
+  pipr_monthly_price_statistics:
+    filename_template: "pipr_monthly_price_statistics_{pipr_vintage}.xlsx"
+    url_template: "https://www.ons.gov.uk/file?uri=%2Feconomy%2Finflationandpriceindices%2Fdatasets%2Fpriceindexofprivaterentsukmonthlypricestatistics%2F{pipr_release_slug}%2Fpriceindexofprivaterentsukmonthlypricestatistics.xlsx"
+
+  ashe_table8:
+    filename_template: "ashe_table8_{ashe_year}_{ashe_release}.zip"
+    url_template: "https://www.ons.gov.uk/file?uri=%2Femploymentandlabourmarket%2Fpeopleinwork%2Fearningsandworkinghours%2Fdatasets%2Fplaceofresidencebylocalauthorityashetable8%2F{ashe_year}{ashe_release}%2Fashetable8{ashe_year}{ashe_release}.zip"

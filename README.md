@@ -1,22 +1,28 @@
 # london-housing-analytics
 
+![Status](https://img.shields.io/badge/status-in%20progress-orange)
+![Python](https://img.shields.io/badge/python-3.12-blue)
+![PostgreSQL](https://img.shields.io/badge/postgresql-16-336791)
+![dbt](https://img.shields.io/badge/dbt-postgres-FC6D26)
+![Docker](https://img.shields.io/badge/docker-compose-2496ED)
+
 ## Project overview
 
-This project creates a housing analytics pipeline for London, which extracts data from official public datasets into a PostgreSQL warehouse and dbt marts for subsequent Tableau reporting.
+This project builds a London housing analytics pipeline from official public datasets into PostgreSQL and dbt marts for downstream Tableau reporting.
 
-Current progress reflected in this repo:
+Current repo progress:
 
-- Raw source download automation is in place for HM Land Registry HPI, ONS PIPR, and ONS ASHE data.
-- Source inspection and ASHE workbook extraction are implemented in `src/transform/inspect_sources.py`.
-- London-only normalised CSV outputs are generated in `data/normalised`.
-- Normalised datasets can be loaded into PostgreSQL `raw` tables with `src/load/load_to_postgres.py`.
-- dbt staging and mart models are implemented for affordability, borough snapshot, and property type analysis.
-- Local dbt artefacts in `dbt/target` show 8 models and 7 passing tests from the latest run.
-- Tableau delivery has not started yet, so the README sections for screenshots and Tableau Public are intentionally left empty.
+- Automated download for HM Land Registry HPI, ONS PIPR, and ONS ASHE
+- Source inspection and ASHE extraction
+- London-only normalised outputs in `data/normalised`
+- PostgreSQL raw-table loading via `src/load/load_to_postgres.py`
+- dbt staging and mart models for affordability, latest borough snapshot, and property type analysis
+- Existing dbt artifacts show 8 models and 7 passing tests
+- Tableau work has not started yet
 
 ## Why London
 
-This project examines housing affordability and rental pressures in various boroughs of London using official datasets from the HM Land Registry and the Office for National Statistics (ONS). It specifically focuses on London to provide in-depth stories at the borough level and to enhance the clarity of Tableau visualisations. Additionally, the data pipeline architecture is designed to be easily extended to include other regions in England and Wales in the future.
+This project analyses housing affordability and rental pressure across London boroughs using official HM Land Registry and ONS datasets. It is intentionally scoped to London for deeper borough-level storytelling and clearer Tableau outputs, while keeping the pipeline architecture extensible to wider England and Wales coverage later.
 
 ## Business questions
 
@@ -29,19 +35,49 @@ This project examines housing affordability and rental pressures in various boro
 ## Architecture diagram
 
 ```mermaid
-flowchart LR
-    A[HM Land Registry HPI<br/>ONS PIPR<br/>ONS ASHE<br/>ONS geography] --> B[src/extract/download_sources.py]
-    B --> C[data/raw]
-    C --> D[src/transform/inspect_sources.py]
-    C --> E[src/transform/normalise_sources.py]
-    D --> C1[data/raw/ashe_extracted]
-    C1 --> E
-    E --> F[data/normalised CSVs]
-    F --> G[src/load/load_to_postgres.py]
-    G --> H[Postgres raw schema]
-    H --> I[dbt staging models]
-    I --> J[dbt marts in analytics schema]
-    J --> K[Tableau dashboards]
+flowchart TD
+    subgraph S[Official sources]
+        HPI[HM Land Registry HPI]
+        PIPR[ONS PIPR]
+        ASHE[ONS ASHE]
+        GEO[ONS geography]
+    end
+
+    subgraph P[Python pipeline]
+        EX[src/extract/download_sources.py]
+        RAW[data/raw]
+        INS[src/transform/inspect_sources.py]
+        EXT[data/raw/ashe_extracted]
+        NORM[src/transform/normalise_sources.py]
+        CLEAN[data/normalised]
+        LOAD[src/load/load_to_postgres.py]
+    end
+
+    subgraph W[Warehouse and modelling]
+        RAWDB[(Postgres raw schema)]
+        STG[dbt staging views]
+        MARTS[dbt marts]
+    end
+
+    subgraph B[BI]
+        TAB[Tableau dashboards]
+    end
+
+    HPI --> EX
+    PIPR --> EX
+    ASHE --> EX
+    GEO --> RAW
+    EX --> RAW
+    RAW --> INS
+    INS --> EXT
+    RAW --> NORM
+    EXT --> NORM
+    NORM --> CLEAN
+    CLEAN --> LOAD
+    LOAD --> RAWDB
+    RAWDB --> STG
+    STG --> MARTS
+    MARTS --> TAB
 ```
 
 ## Data sources
@@ -53,35 +89,37 @@ flowchart LR
 - ONS Annual Survey of Hours and Earnings place-of-residence tables, stored in `data/raw/ashe_table8_2025_provisional.zip` and extracted into `data/raw/ashe_extracted`
 - ONS local authority district boundary geography for mapping support, stored in `data/spatial/lad_2024_bgc.geojson`
 
-Contains HM Land Registry data (C) Crown copyright and database right. Contains Office for National Statistics data licensed under the Open Government Licence v3.0 where applicable.
+Contains HM Land Registry data © Crown copyright and database right. Contains Office for National Statistics data licensed under the Open Government Licence v3.0 where applicable.
 
 The HPI pages and ONS geography pages are published under OGL-style terms and attribution conventions.
 
 ## Data model
 
-| Layer | Objects | Purpose |
-| --- | --- | --- |
-| Raw files | `data/raw/*` | Downloaded source files exactly as received from HM Land Registry and ONS |
-| Normalised files | `data/normalised/*` | London-filtered, cleaned flat files ready for database loading |
-| PostgreSQL raw schema | `raw.hpi_average_prices`, `raw.hpi_property_type_prices`, `raw.hpi_sales`, `raw.pipr_local_rents`, `raw.ashe_earnings` | Landing tables loaded from the normalised CSV outputs |
-| dbt staging | `stg_hpi_average_prices`, `stg_hpi_property_type_prices`, `stg_hpi_sales`, `stg_pipr_local_rents`, `stg_ashe_earnings` | Typed and renamed analytical views over the raw schema |
-| dbt marts | `mart_london_affordability_monthly`, `mart_london_borough_snapshot_latest`, `mart_london_property_type_latest` | Final analytical datasets for Tableau and borough-level storytelling |
+| Layer | Objects |
+| --- | --- |
+| Raw files | `data/raw/*` |
+| Normalised files | `data/normalised/*` |
+| PostgreSQL raw schema | `raw.hpi_average_prices`, `raw.hpi_property_type_prices`, `raw.hpi_sales`, `raw.pipr_local_rents`, `raw.ashe_earnings` |
+| dbt staging | `stg_hpi_average_prices`, `stg_hpi_property_type_prices`, `stg_hpi_sales`, `stg_pipr_local_rents`, `stg_ashe_earnings` |
+| dbt marts | `mart_london_affordability_monthly`, `mart_london_borough_snapshot_latest`, `mart_london_property_type_latest` |
 
 ## KPI definitions
 
-- `average_price`: Average residential sale price from HM Land Registry HPI.
-- `avg_monthly_rent`: Average monthly private rent from ONS PIPR.
-- `sales_volume`: Monthly sales count from HM Land Registry HPI.
-- `median_gross_annual_pay`: Median gross annual pay from ONS ASHE.
-- `house_price_yoy_pct`: Year-on-year house price change percentage from HPI.
-- `rent_yoy_pct`: Year-on-year rent change percentage from PIPR.
-- `earnings_yoy_pct`: Year-on-year earnings change percentage derived in dbt from ASHE.
-- `price_to_earnings_ratio`: `average_price / median_gross_annual_pay`
-- `annual_rent_to_earnings_ratio`: `(avg_monthly_rent * 12) / median_gross_annual_pay`
-- `months_to_save_10pct_deposit`: `(average_price * 0.10) / (median_gross_annual_pay / 12)`
-- `rent_growth_minus_income_growth_pct`: `rent_yoy_pct - earnings_yoy_pct`
-- `house_price_growth_minus_income_growth_pct`: `house_price_yoy_pct - earnings_yoy_pct`
-- `earnings_fallback_used`: Boolean flag showing whether the London regional earnings figure was used instead of a borough-specific value in the affordability mart.
+| KPI | Definition |
+| --- | --- |
+| `average_price` | Average residential sale price from HPI |
+| `avg_monthly_rent` | Average monthly private rent from PIPR |
+| `sales_volume` | Monthly sales count from HPI |
+| `median_gross_annual_pay` | Median gross annual pay from ASHE |
+| `house_price_yoy_pct` | Year-on-year house price change |
+| `rent_yoy_pct` | Year-on-year rent change |
+| `earnings_yoy_pct` | Year-on-year earnings change derived in dbt |
+| `price_to_earnings_ratio` | `average_price / median_gross_annual_pay` |
+| `annual_rent_to_earnings_ratio` | `(avg_monthly_rent * 12) / median_gross_annual_pay` |
+| `months_to_save_10pct_deposit` | `(average_price * 0.10) / (median_gross_annual_pay / 12)` |
+| `rent_growth_minus_income_growth_pct` | `rent_yoy_pct - earnings_yoy_pct` |
+| `house_price_growth_minus_income_growth_pct` | `house_price_yoy_pct - earnings_yoy_pct` |
+| `earnings_fallback_used` | `true` when the London regional earnings fallback is used |
 
 ## Tableau dashboard screenshots
 
@@ -89,7 +127,7 @@ The HPI pages and ONS geography pages are published under OGL-style terms and at
 
 ## How to run locally
 
-1. Create and activate a Python virtual environment, then install dependencies.
+1. Create the environment and install dependencies.
 
 ```bash
 python3.12 -m venv .venv
@@ -97,19 +135,14 @@ source .venv/bin/activate
 pip install -r requirements.txt
 ```
 
-2. Copy `.env.example` to `.env`.
+2. Copy `.env.example` to `.env` and start PostgreSQL.
 
 ```bash
 cp .env.example .env
-```
-
-3. Start PostgreSQL with Docker Compose.
-
-```bash
 docker compose up -d
 ```
 
-4. Create `~/.dbt/profiles.yml` so dbt can connect to the local warehouse.
+3. Create `~/.dbt/profiles.yml`.
 
 ```yaml
 housing_warehouse:
@@ -126,33 +159,13 @@ housing_warehouse:
       threads: 4
 ```
 
-5. Download the source files.
+4. Run the pipeline.
 
 ```bash
 python src/extract/download_sources.py
-```
-
-6. Inspect the sources and extract the ASHE workbook contents from the ZIP file.
-
-```bash
 python src/transform/inspect_sources.py
-```
-
-7. Build the normalised London-only CSV outputs.
-
-```bash
 python src/transform/normalise_sources.py
-```
-
-8. Load the normalised outputs into PostgreSQL.
-
-```bash
 python src/load/load_to_postgres.py
-```
-
-9. Run dbt models and tests.
-
-```bash
 cd dbt
 dbt run
 dbt test
@@ -160,15 +173,15 @@ dbt test
 
 ## Limitations
 
-- Local-level estimates of the UK House Price Index (HPI) below the regional level utilise a 3-month moving average. Therefore, results for boroughs are best interpreted as trend signals rather than precise figures for a single month.  
-- HPI sales volumes exclude data from the most recent two months, as this information is not sufficiently complete for reliable reporting.  
-- The City of London can exhibit volatility due to low transaction counts, which can distort monthly changes at the local level.  
-- The Property Price Index Revision (PIPR) is an official statistic that is still in development, and the data from the latest two months may be subject to revision.  
+- UK HPI local-level estimates below regional level use a 3-month moving average, so borough results are best interpreted as trend signals rather than as ultra-precise single-month spot estimates.
+- HPI sales volumes exclude the most recent two months because the data are not complete enough for reliable reporting.
+- City of London can be volatile because low transaction counts can distort local monthly changes.
+- PIPR is an official statistic in development, and the latest two months are subject to revision.
 
 ## Future improvements
 
-- Publish the initial Tableau workbook, along with relevant screenshots and the Tableau Public link.  
-- Parameterise the source vintages so that month-stamped file names and URLs do not require manual code updates.  
-- Implement more robust dbt tests for data freshness, uniqueness, accepted values, and cross-source reconciliation.  
-- Include the spatial boundary file in the reporting layer for borough-level mapping.  
+- Publish the first Tableau workbook, screenshots, and Tableau Public link.
+- Parameterise source vintages so month-stamped file names and URLs do not need manual code updates.
+- Add stronger dbt tests for freshness, uniqueness, accepted values, and cross-source reconciliation.
+- Bring the spatial boundary file into the reporting layer for borough-level mapping.
 - Extend the pipeline beyond London once the borough-level story and dashboard design are stable.

@@ -35,49 +35,35 @@ This project analyses housing affordability and rental pressure across London bo
 ## Architecture diagram
 
 ```mermaid
-flowchart TD
-    subgraph S[Official sources]
-        HPI[HM Land Registry HPI]
-        PIPR[ONS PIPR]
-        ASHE[ONS ASHE]
+flowchart LR
+    subgraph A[Sources]
+        SRC[HPI • PIPR • ASHE]
         GEO[ONS geography]
     end
 
-    subgraph P[Python pipeline]
-        EX[src/extract/download_sources.py]
-        RAW[data/raw]
-        INS[src/transform/inspect_sources.py]
-        EXT[data/raw/ashe_extracted]
-        NORM[src/transform/normalise_sources.py]
-        CLEAN[data/normalised]
-        LOAD[src/load/load_to_postgres.py]
+    subgraph B[Python]
+        EX[Download]
+        INS[Inspect ASHE]
+        NORM[Normalise]
+        LOAD[Load to Postgres]
     end
 
-    subgraph W[Warehouse and modelling]
-        RAWDB[(Postgres raw schema)]
-        STG[dbt staging views]
-        MARTS[dbt marts]
+    subgraph C[Warehouse]
+        RAW[(raw schema)]
+        DBT[dbt staging + marts]
     end
 
-    subgraph B[BI]
-        TAB[Tableau dashboards]
-    end
+    TAB[Tableau]
 
-    HPI --> EX
-    PIPR --> EX
-    ASHE --> EX
-    GEO --> RAW
-    EX --> RAW
-    RAW --> INS
-    INS --> EXT
-    RAW --> NORM
-    EXT --> NORM
-    NORM --> CLEAN
-    CLEAN --> LOAD
-    LOAD --> RAWDB
-    RAWDB --> STG
-    STG --> MARTS
-    MARTS --> TAB
+    SRC -->|raw files| EX
+    EX -->|data/raw| INS
+    EX -->|data/raw| NORM
+    INS -->|ASHE extract| NORM
+    GEO -->|spatial file| DBT
+    NORM -->|clean CSVs| LOAD
+    LOAD -->|raw tables| RAW
+    RAW -->|models| DBT
+    DBT -->|dashboard dataset| TAB
 ```
 
 ## Data sources

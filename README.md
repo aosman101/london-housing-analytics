@@ -2,7 +2,7 @@
 
 ## Project overview
 
-This project builds a London housing analytics pipeline from official public datasets into a PostgreSQL warehouse and dbt marts for downstream Tableau reporting.
+This project creates a housing analytics pipeline for London, which extracts data from official public datasets into a PostgreSQL warehouse and dbt marts for subsequent Tableau reporting.
 
 Current progress reflected in this repo:
 
@@ -11,12 +11,12 @@ Current progress reflected in this repo:
 - London-only normalised CSV outputs are generated in `data/normalised`.
 - Normalised datasets can be loaded into PostgreSQL `raw` tables with `src/load/load_to_postgres.py`.
 - dbt staging and mart models are implemented for affordability, borough snapshot, and property type analysis.
-- Local dbt artifacts in `dbt/target` show 8 models and 7 passing tests from the latest run.
+- Local dbt artefacts in `dbt/target` show 8 models and 7 passing tests from the latest run.
 - Tableau delivery has not started yet, so the README sections for screenshots and Tableau Public are intentionally left empty.
 
 ## Why London
 
-This project analyses housing affordability and rental pressure across London boroughs using official HM Land Registry and ONS datasets. It is intentionally scoped to London for deeper borough-level storytelling and clearer Tableau outputs, while keeping the pipeline architecture extensible to wider England and Wales coverage later.
+This project examines housing affordability and rental pressures in various boroughs of London using official datasets from the HM Land Registry and the Office for National Statistics (ONS). It specifically focuses on London to provide in-depth stories at the borough level and to enhance the clarity of Tableau visualisations. Additionally, the data pipeline architecture is designed to be easily extended to include other regions in England and Wales in the future.
 
 ## Business questions
 
@@ -160,15 +160,15 @@ dbt test
 
 ## Limitations
 
-- UK HPI local-level estimates below regional level use a 3-month moving average, so borough results are best interpreted as trend signals rather than as ultra-precise single-month spot estimates.
-- HPI sales volumes exclude the most recent two months because the data are not complete enough for reliable reporting.
-- City of London can be volatile because low transaction counts can distort local monthly changes.
-- PIPR is an official statistic in development, and the latest two months are subject to revision.
+- Local-level estimates of the UK House Price Index (HPI) below the regional level utilise a 3-month moving average. Therefore, results for boroughs are best interpreted as trend signals rather than precise figures for a single month.  
+- HPI sales volumes exclude data from the most recent two months, as this information is not sufficiently complete for reliable reporting.  
+- The City of London can exhibit volatility due to low transaction counts, which can distort monthly changes at the local level.  
+- The Property Price Index Revision (PIPR) is an official statistic that is still in development, and the data from the latest two months may be subject to revision.  
 
 ## Future improvements
 
-- Publish the first Tableau workbook, screenshots, and Tableau Public link.
-- Parameterise source vintages so month-stamped file names and URLs do not need manual code updates.
-- Add stronger dbt tests for freshness, uniqueness, accepted values, and cross-source reconciliation.
-- Bring the spatial boundary file into the reporting layer for borough-level mapping.
+- Publish the initial Tableau workbook, along with relevant screenshots and the Tableau Public link.  
+- Parameterise the source vintages so that month-stamped file names and URLs do not require manual code updates.  
+- Implement more robust dbt tests for data freshness, uniqueness, accepted values, and cross-source reconciliation.  
+- Include the spatial boundary file in the reporting layer for borough-level mapping.  
 - Extend the pipeline beyond London once the borough-level story and dashboard design are stable.

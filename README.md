@@ -9,22 +9,22 @@
 
 ## Project overview
 
-This project builds a London housing analytics pipeline from official public datasets into PostgreSQL and dbt marts for downstream Tableau reporting.
+This project creates a housing analytics pipeline for London that extracts data from official public datasets into PostgreSQL and dbt marts for subsequent Tableau reporting.
 
 Current repo progress:
 
-- Config-driven download for HM Land Registry HPI, ONS PIPR, and ONS ASHE (vintages live in `config/sources.yml`)
-- London-only normalised outputs in `data/normalised`; ASHE zip is extracted on demand and resolved by pattern
-- PostgreSQL raw-table loading via `src/load/load_to_postgres.py` (fails loudly on missing inputs)
-- dbt staging and mart models for affordability, latest borough snapshot, and property-type analysis
-- Staging and mart tests (uniqueness, not-null, accepted-values) plus source-freshness thresholds
-- `Makefile` orchestrates the full pipeline (`make all`) and serves dbt docs on :8080
-- GitHub Actions CI runs ruff and `dbt parse` on every push
-- Tableau work has not started yet
+- Config-driven download for HM Land Registry HPI, ONS PIPR, and ONS ASHE (vintages live in `config/sources.yml`).
+- London-only normalised outputs in `data/normalised`; ASHE zip is extracted on demand and resolved by pattern.
+- PostgreSQL raw-table loading via `src/load/load_to_postgres.py` (fails loudly on missing inputs).
+- dbt staging and mart models for affordability, latest borough snapshot, and property-type analysis.
+- Staging and mart tests (uniqueness, not-null, accepted-values) plus source-freshness thresholds.
+- `Makefile` orchestrates the full pipeline (`make all`) and serves dbt docs on:8080.
+- GitHub Actions CI runs ruff and `dbt parse` on every push.
+- Tableau work has not started yet.
 
 ## Why London
 
-This project analyses housing affordability and rental pressure across London boroughs using official HM Land Registry and ONS datasets. It is intentionally scoped to London for deeper borough-level storytelling and clearer Tableau outputs, while keeping the pipeline architecture extensible to wider England and Wales coverage later.
+This project examines housing affordability and rental pressure across London boroughs using official datasets from HM Land Registry and the Office for National Statistics (ONS). It is specifically focused on London to provide a more detailed narrative at the borough level and to create clearer visualisations in Tableau. Additionally, the pipeline architecture is designed to be adaptable for potential coverage of other regions in England and Wales in the future.
 
 ## Business questions
 
@@ -65,18 +65,18 @@ flowchart LR
     GEO -.->|joined in Tableau| TAB
 ```
 
-> The spatial geojson is consumed directly in Tableau for borough mapping; it is not loaded into dbt yet.
+> The spatial GeoJSON is consumed directly in Tableau for borough mapping; it is not loaded into dbt yet.
 
 ## Data sources
 
-- HM Land Registry UK House Price Index average prices
-- HM Land Registry UK House Price Index sales volumes
-- HM Land Registry UK House Price Index property type prices
-- ONS Price Index of Private Rents monthly price statistics
-- ONS Annual Survey of Hours and Earnings place-of-residence tables (Table 8.7a, "Annual pay - Gross")
-- ONS local authority district boundary geography for Tableau mapping (`data/spatial/lad_2024_bgc.geojson`)
+- HM Land Registry UK House Price Index: average property prices.
+- HM Land Registry UK House Price Index: sales volumes.
+- HM Land Registry UK House Price Index: property type prices.
+- ONS Price Index of Private Rents: monthly price statistics.
+- ONS Annual Survey of Hours and Earnings: place-of-residence tables (Table 8.7a, "Annual Pay - Gross").
+- ONS local authority district boundary geography for Tableau mapping (`data/spatial/lad_2024_bgc.geojson`).
 
-Vintages (release month / reference year) are configured in [`config/sources.yml`](config/sources.yml). Update that file when a new release lands — URLs and filenames are templated from it, so no code change is needed.
+Vintages (release month/reference year) are configured in [`config/sources.yml`](config/sources.yml). Update that file when a new release lands — URLs and filenames are templated from it, so no code change is needed.
 
 Contains HM Land Registry data © Crown copyright and database right. Contains Office for National Statistics data licensed under the Open Government Licence v3.0 where applicable.
 
@@ -150,7 +150,7 @@ housing_warehouse:
       threads: 4
 ```
 
-4. Run the pipeline end to end.
+4. Run the pipeline end-to-end.
 
 ```bash
 make all          # download + normalise + load + dbt deps + dbt run + dbt test + export
@@ -162,14 +162,14 @@ Or run individual steps: `make download`, `make normalise`, `make load`, `make d
 
 ## Limitations
 
-- UK HPI local-level estimates below regional level use a 3-month moving average, so borough results are best interpreted as trend signals rather than as ultra-precise single-month spot estimates.
-- HPI sales volumes exclude the most recent two months because the data are not complete enough for reliable reporting.
-- City of London can be volatile because low transaction counts can distort local monthly changes.
-- PIPR is an official statistic in development, and the latest two months are subject to revision.
+- Local-level estimates of the UK House Price Index (HPI) below the regional level utilise a three-month moving average. Therefore, results for boroughs should be viewed as trend indicators rather than precise estimates for any single month.  
+- HPI sales volume figures omit the most recent two months, as the data during this period are insufficient for reliable reporting.  
+- The City of London tends to experience fluctuations since low transaction counts can lead to significant changes in local monthly figures.  
+- The Property Index for Price Reporting (PIPR) is an official statistic currently in development, and the data for the last two months are subject to revision.  
 
 ## Future improvements
 
-- Publish the first Tableau workbook, screenshots, and Tableau Public link.
-- Bring the spatial boundary file into the reporting layer (currently consumed directly in Tableau).
-- Add cross-source reconciliation tests (e.g. borough coverage parity between HPI and PIPR).
-- Extend the pipeline beyond London once the borough-level story and dashboard design are stable.
+- Publish the initial Tableau workbook, including screenshots and a link to Tableau Public.
+- Integrate the spatial boundary file into the reporting layer, as it is currently being consumed directly in Tableau.
+- Implement cross-source reconciliation tests, such as comparing borough coverage between HPI and PIPR.
+- Once the borough-level narrative and dashboard design are stable, extend the pipeline beyond London.

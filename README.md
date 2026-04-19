@@ -1,6 +1,5 @@
 # london-housing-analytics
 
-![Status](https://img.shields.io/badge/status-in%20progress-orange)
 ![Python](https://img.shields.io/badge/python-3.12-blue)
 ![PostgreSQL](https://img.shields.io/badge/postgresql-16-336791)
 ![dbt](https://img.shields.io/badge/dbt-postgres-FC6D26)

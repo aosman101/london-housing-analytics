@@ -5,20 +5,22 @@
 ![PostgreSQL](https://img.shields.io/badge/postgresql-16-336791)
 ![dbt](https://img.shields.io/badge/dbt-postgres-FC6D26)
 ![Docker](https://img.shields.io/badge/docker-compose-2496ED)
+![Tableau](https://img.shields.io/badge/tableau-desktop-E97627)
+![Tableau Public](https://img.shields.io/badge/tableau%20public-pending-lightgrey)
 
 ## Project overview
 
-This project develops an analytics pipeline for London housing using official public datasets, PostgreSQL, and dbt marts for subsequent Tableau reporting.
+This project builds a London housing analytics pipeline from official public datasets into PostgreSQL and dbt marts for downstream Tableau reporting.
 
 Current repo progress:
 
-- Automated downloads for HM Land Registry House Price Index (HPI), Office for National Statistics (ONS) Property Market Indicators (PIPR), and ONS Annual Survey of Hours and Earnings (ASHE).
-- Inspection of sources and extraction of ASHE data.
-- Normalised outputs for London only are located in the `data/normalised` directory.
-- Raw data loading into PostgreSQL is done via `src/load/load_to_postgres.py`.
-- DBT (data build tool) staging and mart models have been created for affordability analysis, the latest borough snapshots, and property type analysis.
-- Existing DBT artefacts include 8 models, with 7 passing tests.
-- Tableau work has not yet commenced.
+- Automated download for HM Land Registry HPI, ONS PIPR, and ONS ASHE
+- Source inspection and ASHE extraction
+- London-only normalised outputs in `data/normalised`
+- PostgreSQL raw-table loading via `src/load/load_to_postgres.py`
+- dbt staging and mart models for affordability, latest borough snapshot, and property type analysis
+- Existing dbt artifacts show 8 models and 7 passing tests
+- Tableau work has not started yet
 
 ## Why London
 
@@ -41,19 +43,19 @@ flowchart LR
         GEO[ONS geography]
     end
 
-    subgraph B[Python]
+    subgraph B[Python pipeline]
         EX[Download]
         INS[Inspect ASHE]
         NORM[Normalise]
         LOAD[Load to Postgres]
     end
 
-    subgraph C[Warehouse]
+    subgraph C[Warehouse and modelling]
         RAW[(raw schema)]
         DBT[dbt staging + marts]
     end
 
-    TAB[Tableau]
+    TAB[Tableau dashboards]
 
     SRC -->|raw files| EX
     EX -->|data/raw| INS

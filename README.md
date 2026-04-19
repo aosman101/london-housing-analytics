@@ -8,17 +8,17 @@
 
 ## Project overview
 
-This project builds a London housing analytics pipeline from official public datasets into PostgreSQL and dbt marts for downstream Tableau reporting.
+This project develops an analytics pipeline for London housing using official public datasets, PostgreSQL, and dbt marts for subsequent Tableau reporting.
 
 Current repo progress:
 
-- Automated download for HM Land Registry HPI, ONS PIPR, and ONS ASHE
-- Source inspection and ASHE extraction
-- London-only normalised outputs in `data/normalised`
-- PostgreSQL raw-table loading via `src/load/load_to_postgres.py`
-- dbt staging and mart models for affordability, latest borough snapshot, and property type analysis
-- Existing dbt artifacts show 8 models and 7 passing tests
-- Tableau work has not started yet
+- Automated downloads for HM Land Registry House Price Index (HPI), Office for National Statistics (ONS) Property Market Indicators (PIPR), and ONS Annual Survey of Hours and Earnings (ASHE).
+- Inspection of sources and extraction of ASHE data.
+- Normalised outputs for London only are located in the `data/normalised` directory.
+- Raw data loading into PostgreSQL is done via `src/load/load_to_postgres.py`.
+- DBT (data build tool) staging and mart models have been created for affordability analysis, the latest borough snapshots, and property type analysis.
+- Existing DBT artefacts include 8 models, with 7 passing tests.
+- Tableau work has not yet commenced.
 
 ## Why London
 

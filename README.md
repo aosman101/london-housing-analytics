@@ -1,4 +1,4 @@
-# london-housing-analytics
+# London Housing Affordability & Rental Pressure Analytics
 
 ![Python](https://img.shields.io/badge/python-3.12-blue)
 ![PostgreSQL](https://img.shields.io/badge/postgresql-16-336791)

@@ -35,7 +35,7 @@ def download_file(name: str, url: str) -> None:
 
 if __name__ == "__main__":
     cfg = config.load()
-    for key, spec in cfg["sources"].items():
+    for spec in cfg["sources"].values():
         name = _render(spec["filename_template"], cfg)
         url = _render(spec["url_template"], cfg)
         download_file(name, url)

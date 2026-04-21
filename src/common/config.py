@@ -13,7 +13,7 @@ NORMALISED_DIR = PROJECT_ROOT / "data" / "normalised"
 
 @lru_cache(maxsize=1)
 def load() -> dict:
-    with open(CONFIG_PATH, "r") as f:
+    with open(CONFIG_PATH) as f:
         return yaml.safe_load(f)
 
 

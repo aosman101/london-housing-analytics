@@ -190,7 +190,7 @@ def normalise_hpi_property_type():
             )
 
         frames = []
-        for i, prop in zip(groups_to_use, property_types):
+        for i, prop in zip(groups_to_use, property_types, strict=False):
             sub = df[
                 [
                     "date_month",

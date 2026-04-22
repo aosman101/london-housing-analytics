@@ -1,13 +1,13 @@
 <claude-mem-context>
 # Memory Context
 
-# [london-housing-analytics] recent context, 2026-04-22 8:27pm GMT+1
+# [london-housing-analytics] recent context, 2026-04-22 8:47pm GMT+1
 
 Legend: 🎯session 🔴bugfix 🟣feature 🔄refactor ✅change 🔵discovery ⚖️decision
 Format: ID TIME TYPE TITLE
 Fetch details: get_observations([IDs]) | Search: mem-search skill
 
-Stats: 10 obs (3,934t read) | 68,956t work | 94% savings
+Stats: 15 obs (5,846t read) | 90,367t work | 94% savings
 
 ### Apr 22, 2026
 22 8:17p 🔵 London Housing Analytics Project Structure and Tableau-Ready Data Model
@@ -20,6 +20,11 @@ Stats: 10 obs (3,934t read) | 68,956t work | 94% savings
 30 " 🟣 dbt run Completed Successfully — All 8 Models Built in 13.7 Seconds
 31 8:25p 🔵 dbt test: 29/30 Pass; 3 Null price_to_earnings_ratio Rows in City of London Property-Type Mart
 32 8:26p 🔵 Live Analytics Results Queried from London Housing Marts
+33 8:29p 🔵 dbt profiles.yml Uses env_var() for Credentials; Second BigQuery Profile Found
+34 8:33p 🔵 Tableau JDBC Driver Fails to Connect to Local PostgreSQL Container
+35 8:34p 🔵 Tableau Desktop 2026.1.0 Confirmed Installed on macOS
+37 8:35p 🔵 PostgreSQL JDBC Driver Located at ~/Library/Tableau/Drivers
+39 " 🔵 PostgreSQL Container Running and Accessible; Tableau JDBC Failure is Not a Network Issue
 
-Access 69k tokens of past work via get_observations([IDs]) or mem-search skill.
+Access 90k tokens of past work via get_observations([IDs]) or mem-search skill.
 </claude-mem-context>

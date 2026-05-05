@@ -30,6 +30,9 @@ jobs:
       - name: Byte-compile Python (syntax check)
         run: python -m compileall -q src
 
+      - name: Run Python unit tests
+        run: python -m unittest discover -s tests
+
       - name: Render dbt profile for parse-only check
         run: |
           mkdir -p ~/.dbt

@@ -6,6 +6,7 @@ prices as (
     select *
     from {{ ref('stg_hpi_property_type_prices') }}
     where date_month = (select latest_month from latest_month)
+      and average_price is not null
 ),
 earnings as (
     select * from {{ ref('stg_ashe_earnings') }}

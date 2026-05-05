@@ -15,10 +15,26 @@ NORM.mkdir(parents=True, exist_ok=True)
 # ASHE Table 8.7a is "Annual pay - Gross". Glob by pattern so next year's file works.
 ASHE_EXTRACT_DIR = RAW / "ashe_extracted"
 ASHE_WORKBOOK_PATTERN = "*Table 8.7a*Annual pay*Gross*.xlsx"
-ASHE_SLICE = RAW / "ashe_table8_median_gross_annual_pay.csv"
 
 LONDON_LAD_REGEX = r"^E09"
 LONDON_REGION_CODE = "E12000007"
+
+PROPERTY_TYPE_LABELS = {
+    "D": "Detached",
+    "Detached": "Detached",
+    "S": "Semi-detached",
+    "Semi-detached": "Semi-detached",
+    "T": "Terraced",
+    "Terraced": "Terraced",
+    "F": "Flat/Maisonette",
+    "Flat or maisonette": "Flat/Maisonette",
+    "Flat/Maisonette": "Flat/Maisonette",
+}
+
+
+def ashe_slice_path() -> Path:
+    release = config.load()["ashe_release"]
+    return RAW / f"ashe_table8_median_gross_annual_pay_{config.ashe_year()}_{release}.csv"
 
 
 def ensure_ashe_extracted() -> Path:
@@ -64,6 +80,10 @@ def to_numeric(df, cols):
     for c in cols:
         df[c] = pd.to_numeric(df[c], errors="coerce")
     return df
+
+
+def normalise_property_type_label(value: str) -> str:
+    return PROPERTY_TYPE_LABELS.get(str(value).strip(), str(value).strip())
 
 
 def normalise_hpi_average():
@@ -128,14 +148,7 @@ def normalise_hpi_property_type():
             df["property_type"]
             .astype(str)
             .str.strip()
-            .replace({
-                "D": "Detached",
-                "S": "Semi-detached",
-                "T": "Terraced",
-                "F": "Flat/Maisonette",
-                "Flat or maisonette": "Flat/Maisonette",
-                "Flat/Maisonette": "Flat/Maisonette",
-            })
+            .map(normalise_property_type_label)
         )
         out = df.copy()
 
@@ -264,14 +277,15 @@ def extract_ashe_slice():
     )
 
     out = out[out["area code"].str.match(LONDON_LAD_REGEX, na=False)]
-    out.to_csv(ASHE_SLICE, index=False)
+    out.to_csv(ashe_slice_path(), index=False)
 
 
 def normalise_ashe():
-    if not ASHE_SLICE.exists():
+    slice_path = ashe_slice_path()
+    if not slice_path.exists():
         extract_ashe_slice()
 
-    df = pd.read_csv(ASHE_SLICE)
+    df = pd.read_csv(slice_path)
     df.columns = [clean_col(c) for c in df.columns]
 
     out = df[["year", "area name", "area code", "median gross annual pay"]].copy()

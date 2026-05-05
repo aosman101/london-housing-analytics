@@ -8,7 +8,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
 from src.common import config  # noqa: E402
 from src.common import db  # noqa: E402
 
-EXPORT_DIR = PROJECT_ROOT / "data" / "exports"
+EXPORT_DIR = config.PROJECT_ROOT / "data" / "exports"
 
 TABLES = [
     "mart_london_affordability_monthly",

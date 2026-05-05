@@ -1,4 +1,4 @@
-.PHONY: help install up down download normalise load pipeline dbt-deps dbt-run dbt-test dbt-docs export all clean
+.PHONY: help install up down download normalise load pipeline dbt-deps dbt-run dbt-test dbt-docs export test all clean
 
 PYTHON ?= python
 
@@ -15,7 +15,8 @@ help:
 	@echo "  dbt-test   — run dbt tests"
 	@echo "  dbt-docs   — generate and serve dbt docs on :8080"
 	@echo "  export     — export marts to data/exports as CSV"
-	@echo "  all        — pipeline + dbt-deps + dbt-run + dbt-test + export"
+	@echo "  test       — run Python unit tests"
+	@echo "  all        — test + pipeline + dbt-deps + dbt-run + dbt-test + export"
 	@echo "  clean      — remove data/ and dbt/target build outputs"
 
 install:
@@ -53,7 +54,10 @@ dbt-docs:
 export:
 	$(PYTHON) src/load/export_marts.py
 
-all: pipeline dbt-deps dbt-run dbt-test export
+test:
+	$(PYTHON) -m unittest discover -s tests
+
+all: test pipeline dbt-deps dbt-run dbt-test export
 
 clean:
 	rm -rf data/raw/* data/normalised/* data/exports/* dbt/target dbt/logs

@@ -27,7 +27,8 @@ models:
         tests:
           - not_null
           - accepted_values:
-              values: ["Detached", "Semi-detached", "Terraced", "Flat/Maisonette"]
+              arguments:
+                values: ["Detached", "Semi-detached", "Terraced", "Flat/Maisonette"]
       - name: price_to_earnings_ratio
         tests: [not_null]
     tests:

@@ -28,7 +28,7 @@ def ensure_inputs_exist() -> None:
         raise FileNotFoundError(
             f"Missing normalised files: {names}. "
             "Run src/transform/normalise_sources.py first. "
-            "Refusing to truncate raw tables without replacement data."
+            "Refusing to replace raw tables without complete replacement data."
         )
 
 
@@ -39,14 +39,11 @@ def load_tables(engine: Engine) -> None:
     for file_name, table_name in TABLE_MAP.items():
         path = NORM / file_name
         df = pd.read_csv(path)
-        with engine.begin() as conn:
-            if conn.execute(text("select to_regclass(:table_name)"), {"table_name": f"raw.{table_name}"}).scalar():
-                conn.execute(text(f'truncate table raw."{table_name}"'))
         df.to_sql(
             table_name,
             engine,
             schema="raw",
-            if_exists="append",
+            if_exists="replace",
             index=False,
             chunksize=5000,
             method="multi",

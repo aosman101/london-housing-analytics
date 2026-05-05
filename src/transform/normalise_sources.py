@@ -88,7 +88,7 @@ def normalise_property_type_label(value: str) -> str:
 
 def normalise_hpi_average():
     path = config.raw_path("hpi_average_prices")
-    df = pd.read_csv(path, header=None)
+    df = pd.read_csv(path, dtype=str)
 
     if df.shape[1] != 7:
         raise ValueError(f"HPI average prices expected 7 columns, got {df.shape[1]}")
@@ -98,27 +98,27 @@ def normalise_hpi_average():
         "area_name",
         "area_code",
         "average_price",
-        "hpi_index",
         "pct_change_1m",
         "pct_change_12m",
+        "average_price_sa",
     ]
-    df["date_month"] = pd.to_datetime(df["date_month"], errors="coerce")
+    df["date_month"] = pd.to_datetime(df["date_month"], format="%Y-%m-%d", errors="coerce")
     df["area_name"] = df["area_name"].astype(str).str.strip()
     df["area_code"] = df["area_code"].astype(str).str.strip()
-    df = to_numeric(df, ["average_price", "hpi_index", "pct_change_1m", "pct_change_12m"])
+    df = to_numeric(df, ["average_price", "pct_change_1m", "pct_change_12m", "average_price_sa"])
     df = df[df["area_code"].str.match(LONDON_LAD_REGEX, na=False)]
     df.to_csv(NORM / "hpi_average_prices.csv", index=False)
 
 
 def normalise_hpi_sales():
     path = config.raw_path("hpi_sales")
-    df = pd.read_csv(path, header=None)
+    df = pd.read_csv(path, dtype=str)
 
     if df.shape[1] != 4:
         raise ValueError(f"HPI sales expected 4 columns, got {df.shape[1]}")
 
     df.columns = ["date_month", "area_name", "area_code", "sales_volume"]
-    df["date_month"] = pd.to_datetime(df["date_month"], errors="coerce")
+    df["date_month"] = pd.to_datetime(df["date_month"], format="%Y-%m-%d", errors="coerce")
     df["area_name"] = df["area_name"].astype(str).str.strip()
     df["area_code"] = df["area_code"].astype(str).str.strip()
     df = to_numeric(df, ["sales_volume"])
@@ -129,7 +129,7 @@ def normalise_hpi_sales():
 def normalise_hpi_property_type():
     """Defensive parser for both long-format and 4-metric grouped wide-format HPI property-type files."""
     path = config.raw_path("hpi_property_type_prices")
-    df = pd.read_csv(path, header=None)
+    df = pd.read_csv(path, dtype=str)
 
     property_types = ["Detached", "Semi-detached", "Terraced", "Flat/Maisonette"]
 
@@ -170,7 +170,7 @@ def normalise_hpi_property_type():
             ]
         df.columns = headers
 
-        df["date_month"] = pd.to_datetime(df["date_month"], errors="coerce")
+        df["date_month"] = pd.to_datetime(df["date_month"], format="%Y-%m-%d", errors="coerce")
         df["area_name"] = df["area_name"].astype(str).str.strip()
         df["area_code"] = df["area_code"].astype(str).str.strip()
 
@@ -229,7 +229,7 @@ def normalise_hpi_property_type():
 
         out = pd.concat(frames, ignore_index=True)
 
-    out["date_month"] = pd.to_datetime(out["date_month"], errors="coerce")
+    out["date_month"] = pd.to_datetime(out["date_month"], format="%Y-%m-%d", errors="coerce")
     out["area_name"] = out["area_name"].astype(str).str.strip()
     out["area_code"] = out["area_code"].astype(str).str.strip()
     out = to_numeric(out, ["average_price", "hpi_index", "pct_change_1m", "pct_change_12m"])

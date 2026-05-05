@@ -16,7 +16,7 @@ select
     p.area_code,
     p.area_name,
     p.average_price,
-    p.hpi_index,
+    p.average_price_sa,
     p.house_price_yoy_pct,
     s.sales_volume,
     r.avg_monthly_rent,

@@ -23,7 +23,8 @@ models:
         tests:
           - not_null
           - accepted_values:
-              values: ["Detached", "Semi-detached", "Terraced", "Flat/Maisonette"]
+              arguments:
+                values: ["Detached", "Semi-detached", "Terraced", "Flat/Maisonette"]
     tests:
       - dbt_utils.unique_combination_of_columns:
           combination_of_columns: [date_month, area_code, property_type]

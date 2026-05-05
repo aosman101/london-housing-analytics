@@ -3,7 +3,7 @@ select
     trim(area_name) as area_name,
     trim(area_code) as area_code,
     cast(average_price as numeric) as average_price,
-    cast(hpi_index as numeric) as hpi_index,
     cast(pct_change_1m as numeric) as pct_change_1m,
-    cast(pct_change_12m as numeric) as house_price_yoy_pct
+    cast(pct_change_12m as numeric) as house_price_yoy_pct,
+    cast(average_price_sa as numeric) as average_price_sa
 from {{ source('raw', 'hpi_average_prices') }}

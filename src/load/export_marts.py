@@ -1,30 +1,14 @@
-import os
+import sys
 from pathlib import Path
 
 import pandas as pd
-from dotenv import load_dotenv
-from sqlalchemy import create_engine
+from sqlalchemy import Engine
 
-PROJECT_ROOT = Path(__file__).resolve().parents[2]
-ENV_PATH = PROJECT_ROOT / ".env"
+sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
+from src.common import config  # noqa: E402
+from src.common import db  # noqa: E402
+
 EXPORT_DIR = PROJECT_ROOT / "data" / "exports"
-REQUIRED_ENV_VARS = ["PGUSER", "PGPASSWORD", "PGHOST", "PGPORT", "PGDATABASE"]
-
-load_dotenv(ENV_PATH)
-EXPORT_DIR.mkdir(parents=True, exist_ok=True)
-
-missing_env_vars = [name for name in REQUIRED_ENV_VARS if not os.getenv(name)]
-if missing_env_vars:
-    missing = ", ".join(missing_env_vars)
-    raise RuntimeError(
-        f"Missing required environment variables: {missing}. "
-        f"Create {ENV_PATH} from .env.example first."
-    )
-
-engine = create_engine(
-    f"postgresql+psycopg2://{os.environ['PGUSER']}:{os.environ['PGPASSWORD']}"
-    f"@{os.environ['PGHOST']}:{os.environ['PGPORT']}/{os.environ['PGDATABASE']}"
-)
 
 TABLES = [
     "mart_london_affordability_monthly",
@@ -32,8 +16,20 @@ TABLES = [
     "mart_london_borough_snapshot_latest",
 ]
 
-for table in TABLES:
-    query = f"select * from analytics.{table}"
-    df = pd.read_sql(query, engine)
-    df.to_csv(EXPORT_DIR / f"{table}.csv", index=False)
-    print(f"[exported] {table}")
+
+def export_tables(engine: Engine) -> None:
+    EXPORT_DIR.mkdir(parents=True, exist_ok=True)
+    for table in TABLES:
+        query = f"select * from analytics.{table}"
+        df = pd.read_sql(query, engine)
+        df.to_csv(EXPORT_DIR / f"{table}.csv", index=False)
+        print(f"[exported] {table} ({len(df)} rows)")
+
+
+def main() -> None:
+    db.load_environment()
+    export_tables(db.create_db_engine())
+
+
+if __name__ == "__main__":
+    main()

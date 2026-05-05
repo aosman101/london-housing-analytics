@@ -1,13 +1,13 @@
 <claude-mem-context>
 # Memory Context
 
-# [london-housing-analytics] recent context, 2026-04-22 8:47pm GMT+1
+# [london-housing-analytics] recent context, 2026-05-05 6:46pm GMT+1
 
 Legend: 🎯session 🔴bugfix 🟣feature 🔄refactor ✅change 🔵discovery ⚖️decision
 Format: ID TIME TYPE TITLE
 Fetch details: get_observations([IDs]) | Search: mem-search skill
 
-Stats: 15 obs (5,846t read) | 90,367t work | 94% savings
+Stats: 18 obs (6,586t read) | 93,502t work | 93% savings
 
 ### Apr 22, 2026
 22 8:17p 🔵 London Housing Analytics Project Structure and Tableau-Ready Data Model
@@ -25,6 +25,10 @@ Stats: 15 obs (5,846t read) | 90,367t work | 94% savings
 35 8:34p 🔵 Tableau Desktop 2026.1.0 Confirmed Installed on macOS
 37 8:35p 🔵 PostgreSQL JDBC Driver Located at ~/Library/Tableau/Drivers
 39 " 🔵 PostgreSQL Container Running and Accessible; Tableau JDBC Failure is Not a Network Issue
+40 8:53p 🔵 PostgreSQL JDBC Driver Present in Both Downloads and Tableau Drivers
+41 8:54p 🔴 PostgreSQL JDBC Driver Installed to Correct Tableau Path on macOS
+42 " 🔵 London Housing PostgreSQL Container Credentials Confirmed Running
+S13 PostgreSQL JDBC Driver Installed to Correct Tableau Path on macOS (Apr 22 at 8:54 PM)
 
-Access 90k tokens of past work via get_observations([IDs]) or mem-search skill.
+Access 94k tokens of past work via get_observations([IDs]) or mem-search skill.
 </claude-mem-context>

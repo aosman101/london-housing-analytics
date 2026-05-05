@@ -39,11 +39,13 @@ def load_tables(engine: Engine) -> None:
     for file_name, table_name in TABLE_MAP.items():
         path = NORM / file_name
         df = pd.read_csv(path)
+        with engine.begin() as conn:
+            conn.execute(text(f'drop table if exists raw."{table_name}" cascade'))
         df.to_sql(
             table_name,
             engine,
             schema="raw",
-            if_exists="replace",
+            if_exists="fail",
             index=False,
             chunksize=5000,
             method="multi",

@@ -11,7 +11,8 @@ models:
         tests: [not_null]
     tests:
       - dbt_utils.unique_combination_of_columns:
-          combination_of_columns: [date_month, area_code]
+          arguments:
+            combination_of_columns: [date_month, area_code]
 
   - name: stg_hpi_property_type_prices
     columns:
@@ -27,7 +28,8 @@ models:
                 values: ["Detached", "Semi-detached", "Terraced", "Flat/Maisonette"]
     tests:
       - dbt_utils.unique_combination_of_columns:
-          combination_of_columns: [date_month, area_code, property_type]
+          arguments:
+            combination_of_columns: [date_month, area_code, property_type]
 
   - name: stg_hpi_sales
     columns:
@@ -37,7 +39,8 @@ models:
         tests: [not_null]
     tests:
       - dbt_utils.unique_combination_of_columns:
-          combination_of_columns: [date_month, area_code]
+          arguments:
+            combination_of_columns: [date_month, area_code]
 
   - name: stg_pipr_local_rents
     columns:
@@ -49,7 +52,8 @@ models:
         tests: [not_null]
     tests:
       - dbt_utils.unique_combination_of_columns:
-          combination_of_columns: [date_month, area_code]
+          arguments:
+            combination_of_columns: [date_month, area_code]
 
   - name: stg_ashe_earnings
     columns:
@@ -61,4 +65,5 @@ models:
         tests: [not_null]
     tests:
       - dbt_utils.unique_combination_of_columns:
-          combination_of_columns: [reference_year, area_code]
+          arguments:
+            combination_of_columns: [reference_year, area_code]

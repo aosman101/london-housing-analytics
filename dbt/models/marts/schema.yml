@@ -13,7 +13,8 @@ models:
         tests: [not_null]
     tests:
       - dbt_utils.unique_combination_of_columns:
-          combination_of_columns: [date_month, area_code]
+          arguments:
+            combination_of_columns: [date_month, area_code]
 
   - name: mart_london_property_type_latest
     columns:
@@ -33,7 +34,8 @@ models:
         tests: [not_null]
     tests:
       - dbt_utils.unique_combination_of_columns:
-          combination_of_columns: [area_code, property_type]
+          arguments:
+            combination_of_columns: [area_code, property_type]
 
   - name: mart_london_borough_snapshot_latest
     columns:
@@ -47,4 +49,5 @@ models:
         tests: [not_null]
     tests:
       - dbt_utils.unique_combination_of_columns:
-          combination_of_columns: [area_code]
+          arguments:
+            combination_of_columns: [area_code]

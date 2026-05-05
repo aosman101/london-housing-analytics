@@ -18,9 +18,9 @@ Current repo progress:
 - PostgreSQL raw-table loading via `src/load/load_to_postgres.py` (fails loudly on missing inputs).
 - dbt staging and mart models for affordability, latest borough snapshot, and property-type analysis.
 - Staging and mart tests (uniqueness, not-null, accepted-values) plus source-freshness thresholds.
-- `Makefile` orchestrates the full pipeline (`make all`) and serves dbt docs on:8080.
-- GitHub Actions CI runs ruff and `dbt parse` on every push.
-- Tableau work has not started yet.
+- `Makefile` orchestrates tests plus the full pipeline (`make all`) and serves dbt docs on:8080.
+- GitHub Actions CI runs ruff, Python unit tests, and `dbt parse` on every push.
+- Tableau-ready mart CSVs are exported to `data/exports`; the workbook itself has not been committed yet.
 
 ## Why London
 
@@ -97,6 +97,7 @@ The HPI pages and ONS geography pages are published under OGL-style terms and at
 | KPI | Definition |
 | --- | --- |
 | `average_price` | Average residential sale price from HPI |
+| `average_price_sa` | Seasonally adjusted average residential sale price from HPI |
 | `avg_monthly_rent` | Average monthly private rent from PIPR |
 | `sales_volume` | Monthly sales count from HPI |
 | `median_gross_annual_pay` | Median gross annual pay from ASHE |
@@ -153,10 +154,10 @@ housing_warehouse:
 4. Run the pipeline end-to-end.
 
 ```bash
-make all          # download + normalise + load + dbt deps + dbt run + dbt test + export
+make all          # test + download + normalise + load + dbt deps + dbt run + dbt test + export
 ```
 
-Or run individual steps: `make download`, `make normalise`, `make load`, `make dbt-run`, `make dbt-test`, `make dbt-docs` (serves the lineage graph on http://localhost:8080), `make export`.
+Or run individual steps: `make test`, `make download`, `make normalise`, `make load`, `make dbt-run`, `make dbt-test`, `make dbt-docs` (serves the lineage graph on http://localhost:8080), `make export`.
 
 `src/transform/inspect_sources.py` is an optional utility used during development to preview sheet structure; it is not required for the pipeline.
 

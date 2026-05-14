@@ -7,23 +7,26 @@ sources:
       - name: hpi_average_prices
         loaded_at_field: "cast(date_month as timestamp)"
         freshness:
-          warn_after: {count: 45, period: day}
-          error_after: {count: 90, period: day}
+          # date_month is the first day of the reference month; HPI is published with release lag.
+          warn_after: {count: 110, period: day}
+          error_after: {count: 150, period: day}
       - name: hpi_property_type_prices
         loaded_at_field: "cast(date_month as timestamp)"
         freshness:
-          warn_after: {count: 45, period: day}
-          error_after: {count: 90, period: day}
+          # date_month is the first day of the reference month; HPI is published with release lag.
+          warn_after: {count: 110, period: day}
+          error_after: {count: 150, period: day}
       - name: hpi_sales
         loaded_at_field: "cast(date_month as timestamp)"
         freshness:
-          # HPI sales exclude the most recent two months, so allow a longer window.
-          warn_after: {count: 75, period: day}
-          error_after: {count: 120, period: day}
+          # HPI sales exclude the most recent months, so the max reference month lags prices.
+          warn_after: {count: 180, period: day}
+          error_after: {count: 240, period: day}
       - name: pipr_local_rents
         loaded_at_field: "cast(date_month as timestamp)"
         freshness:
-          warn_after: {count: 45, period: day}
-          error_after: {count: 90, period: day}
+          # date_month is the first day of the reference month; allow for monthly release lag.
+          warn_after: {count: 80, period: day}
+          error_after: {count: 120, period: day}
       - name: ashe_earnings
         # ASHE is annual and has no date_month column; skip freshness.

@@ -265,16 +265,30 @@ def extract_ashe_slice():
     if not match:
         raise ValueError(f"Could not extract year from {workbook.name}")
 
-    out = df[["description", "code", "median"]].copy()
-    out.columns = ["area name", "area code", "median gross annual pay"]
+    out = df[["description", "code", "median", "change"]].copy()
+    out.columns = [
+        "area name",
+        "area code",
+        "median gross annual pay",
+        "earnings yoy pct",
+    ]
     out["year"] = int(match.group(1))
-    out = out[["year", "area name", "area code", "median gross annual pay"]]
+    out = out[
+        [
+            "year",
+            "area name",
+            "area code",
+            "median gross annual pay",
+            "earnings yoy pct",
+        ]
+    ]
 
     out["area name"] = out["area name"].astype(str).str.strip()
     out["area code"] = out["area code"].astype(str).str.strip()
     out["median gross annual pay"] = pd.to_numeric(
         out["median gross annual pay"], errors="coerce"
     )
+    out["earnings yoy pct"] = pd.to_numeric(out["earnings yoy pct"], errors="coerce")
 
     out = out[out["area code"].str.match(LONDON_LAD_REGEX, na=False)]
     out.to_csv(ashe_slice_path(), index=False)
@@ -287,9 +301,27 @@ def normalise_ashe():
 
     df = pd.read_csv(slice_path)
     df.columns = [clean_col(c) for c in df.columns]
+    if "earnings yoy pct" not in df.columns:
+        extract_ashe_slice()
+        df = pd.read_csv(slice_path)
+        df.columns = [clean_col(c) for c in df.columns]
 
-    out = df[["year", "area name", "area code", "median gross annual pay"]].copy()
-    out.columns = ["reference_year", "area_name", "area_code", "median_gross_annual_pay"]
+    out = df[
+        [
+            "year",
+            "area name",
+            "area code",
+            "median gross annual pay",
+            "earnings yoy pct",
+        ]
+    ].copy()
+    out.columns = [
+        "reference_year",
+        "area_name",
+        "area_code",
+        "median_gross_annual_pay",
+        "earnings_yoy_pct",
+    ]
 
     out["reference_year"] = pd.to_numeric(out["reference_year"], errors="coerce").astype("Int64")
     out["area_name"] = out["area_name"].astype(str).str.strip()
@@ -297,22 +329,37 @@ def normalise_ashe():
     out["median_gross_annual_pay"] = pd.to_numeric(
         out["median_gross_annual_pay"], errors="coerce"
     )
+    out["earnings_yoy_pct"] = pd.to_numeric(out["earnings_yoy_pct"], errors="coerce")
 
     workbook = ensure_ashe_extracted()
     london_region = pd.read_excel(workbook, sheet_name="Full-Time", header=4)
     london_region.columns = [clean_col(c) for c in london_region.columns]
     london_region = london_region[
         london_region["code"].astype(str).str.strip().eq(LONDON_REGION_CODE)
-    ][["description", "code", "median"]].copy()
-    london_region.columns = ["area_name", "area_code", "median_gross_annual_pay"]
+    ][["description", "code", "median", "change"]].copy()
+    london_region.columns = [
+        "area_name",
+        "area_code",
+        "median_gross_annual_pay",
+        "earnings_yoy_pct",
+    ]
     london_region["reference_year"] = out["reference_year"].dropna().max()
     london_region = london_region[
-        ["reference_year", "area_name", "area_code", "median_gross_annual_pay"]
+        [
+            "reference_year",
+            "area_name",
+            "area_code",
+            "median_gross_annual_pay",
+            "earnings_yoy_pct",
+        ]
     ]
     london_region["area_name"] = london_region["area_name"].astype(str).str.strip()
     london_region["area_code"] = london_region["area_code"].astype(str).str.strip()
     london_region["median_gross_annual_pay"] = pd.to_numeric(
         london_region["median_gross_annual_pay"], errors="coerce"
+    )
+    london_region["earnings_yoy_pct"] = pd.to_numeric(
+        london_region["earnings_yoy_pct"], errors="coerce"
     )
 
     out = pd.concat([out, london_region], ignore_index=True)

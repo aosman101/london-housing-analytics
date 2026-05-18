@@ -103,7 +103,7 @@ The HPI pages and ONS geography pages are published under OGL-style terms and at
 | `median_gross_annual_pay` | Median gross annual pay from ASHE |
 | `house_price_yoy_pct` | Year-on-year house price change |
 | `rent_yoy_pct` | Year-on-year rent change |
-| `earnings_yoy_pct` | Year-on-year earnings change derived in dbt |
+| `earnings_yoy_pct` | Year-on-year median gross annual pay change from ASHE |
 | `price_to_earnings_ratio` | `average_price / median_gross_annual_pay` |
 | `annual_rent_to_earnings_ratio` | `(avg_monthly_rent * 12) / median_gross_annual_pay` |
 | `months_to_save_10pct_deposit` | `(average_price * 0.10) / (median_gross_annual_pay / 12)` |

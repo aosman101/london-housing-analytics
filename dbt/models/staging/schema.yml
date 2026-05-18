@@ -63,6 +63,8 @@ models:
         tests: [not_null]
       - name: median_gross_annual_pay
         tests: [not_null]
+      - name: earnings_yoy_pct
+        tests: [not_null]
     tests:
       - dbt_utils.unique_combination_of_columns:
           arguments:

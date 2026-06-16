@@ -1,88 +1,52 @@
-# London Housing Affordability & Rental Pressure Analytics
+# London Housing Affordability Analytics
 
 ![Python](https://img.shields.io/badge/python-3.12-blue)
 ![PostgreSQL](https://img.shields.io/badge/postgresql-16-336791)
 ![dbt](https://img.shields.io/badge/dbt-postgres-FC6D26)
 ![Docker](https://img.shields.io/badge/docker-compose-2496ED)
-![Tableau](https://img.shields.io/badge/tableau-desktop-E97627)
-![Tableau Public](https://img.shields.io/badge/tableau%20public-pending-lightgrey)
+![Tableau](https://img.shields.io/badge/tableau-ready-E97627)
 
-## Project overview
+This project builds a local analytics pipeline for London housing affordability and rental pressure. It downloads official public datasets, normalises them to London borough level, loads them into PostgreSQL, builds dbt marts, and exports Tableau-ready CSVs.
 
-This project creates a housing analytics pipeline for London that extracts data from official public datasets into PostgreSQL and dbt marts for subsequent Tableau reporting.
+## What It Answers
 
-Current repo progress:
+- Which London boroughs are least affordable relative to resident earnings?
+- Where are rents rising faster than local income?
+- How do sales volumes and house price growth move together over time?
+- Which property types have the largest affordability gaps by borough?
+- How many months of gross earnings would a 10% deposit represent?
 
-- Config-driven download for HM Land Registry HPI, ONS PIPR, and ONS ASHE (vintages live in `config/sources.yml`).
-- London-only normalised outputs in `data/normalised`; ASHE zip is extracted on demand and resolved by pattern.
-- PostgreSQL raw-table loading via `src/load/load_to_postgres.py` (fails loudly on missing inputs).
-- dbt staging and mart models for affordability, latest borough snapshot, and property-type analysis.
-- Staging and mart tests (uniqueness, not-null, accepted-values) plus source-freshness thresholds.
-- `Makefile` orchestrates tests plus the full pipeline (`make all`) and serves dbt docs on:8080.
-- GitHub Actions CI runs ruff, Python unit tests, and `dbt parse` on every push.
-- Tableau-ready mart CSVs are exported to `data/exports`; the workbook itself has not been committed yet.
-
-## Why London
-
-This project examines housing affordability and rental pressure across London boroughs using official datasets from HM Land Registry and the Office for National Statistics (ONS). It is specifically focused on London to provide a more detailed narrative at the borough level and to create clearer visualisations in Tableau. Additionally, the pipeline architecture is designed to be adaptable for potential coverage of other regions in England and Wales in the future.
-
-## Business questions
-
-- Which London boroughs are least affordable when comparing average house prices with resident earnings?
-- Where is rental pressure rising faster than local income growth?
-- How do borough-level sales volumes and price growth move together over time?
-- Which boroughs show the biggest affordability gap by property type?
-- How far does a typical 10% deposit sit from local annual earnings across boroughs?
-
-## Architecture diagram
+## Pipeline
 
 ```mermaid
 flowchart LR
-    subgraph A[Sources]
-        SRC[HPI • PIPR • ASHE]
-    end
-
-    subgraph B[Python pipeline]
-        EX[Download]
-        NORM[Normalise + ASHE extract]
-        LOAD[Load to Postgres]
-    end
-
-    subgraph C[Warehouse and modelling]
-        RAW[(raw schema)]
-        DBT[dbt staging + marts]
-    end
-
-    TAB[Tableau dashboards]
-    GEO[ONS geography geojson]
-
-    SRC -->|raw files| EX
-    EX -->|data/raw| NORM
-    NORM -->|clean CSVs| LOAD
-    LOAD -->|raw tables| RAW
-    RAW -->|models| DBT
-    DBT -->|dashboard dataset| TAB
-    GEO -.->|joined in Tableau| TAB
+    SRC[HPI, PIPR, ASHE] --> DL[Python download]
+    DL --> RAW[data/raw]
+    RAW --> NORM[Python normalise]
+    NORM --> CSV[data/normalised]
+    CSV --> PG[(PostgreSQL raw schema)]
+    PG --> DBT[dbt staging and marts]
+    DBT --> EXP[data/exports]
+    EXP --> TAB[Tableau]
+    GEO[ONS GeoJSON] -. joined in Tableau .-> TAB
 ```
 
-> The spatial GeoJSON is consumed directly in Tableau for borough mapping; it is not loaded into dbt yet.
+Spatial files are kept in `data/spatial` and joined directly in Tableau; they are not loaded into dbt yet.
 
-## Data sources
+## Data Sources
 
-- HM Land Registry UK House Price Index: average property prices.
-- HM Land Registry UK House Price Index: sales volumes.
-- HM Land Registry UK House Price Index: property type prices.
-- ONS Price Index of Private Rents: monthly price statistics.
-- ONS Annual Survey of Hours and Earnings: place-of-residence tables (Table 8.7a, "Annual Pay - Gross").
-- ONS local authority district boundary geography for Tableau mapping (`data/spatial/lad_2024_bgc.geojson`).
+Release vintages and download URLs live in [`config/sources.yml`](config/sources.yml).
 
-Vintages (release month/reference year) are configured in [`config/sources.yml`](config/sources.yml). Update that file when a new release lands — URLs and filenames are templated from it, so no code change is needed.
+| Source | Used for |
+| --- | --- |
+| HM Land Registry UK House Price Index | Average prices, sales volumes, property-type prices |
+| ONS Price Index of Private Rents | Monthly borough rent estimates |
+| ONS Annual Survey of Hours and Earnings, Table 8.7a | Median gross annual pay by residence |
+| ONS LAD boundary geography | Tableau borough mapping |
 
-Contains HM Land Registry data © Crown copyright and database right. Contains Office for National Statistics data licensed under the Open Government Licence v3.0 where applicable.
+Contains HM Land Registry data Crown copyright and database right. Contains Office for National Statistics data licensed under the Open Government Licence v3.0 where applicable.
 
-The HPI pages and ONS geography pages are published under OGL-style terms and attribution conventions.
-
-## Data model
+## Data Model
 
 | Layer | Objects |
 | --- | --- |
@@ -92,34 +56,26 @@ The HPI pages and ONS geography pages are published under OGL-style terms and at
 | dbt staging | `stg_hpi_average_prices`, `stg_hpi_property_type_prices`, `stg_hpi_sales`, `stg_pipr_local_rents`, `stg_ashe_earnings` |
 | dbt marts | `mart_london_affordability_monthly`, `mart_london_borough_snapshot_latest`, `mart_london_property_type_latest` |
 
-## KPI definitions
+## Key Metrics
 
-| KPI | Definition |
+| Metric | Definition |
 | --- | --- |
-| `average_price` | Average residential sale price from HPI |
-| `average_price_sa` | Seasonally adjusted average residential sale price from HPI |
-| `avg_monthly_rent` | Average monthly private rent from PIPR |
-| `sales_volume` | Monthly sales count from HPI |
-| `median_gross_annual_pay` | Median gross annual pay from ASHE |
-| `house_price_yoy_pct` | Year-on-year house price change |
-| `rent_yoy_pct` | Year-on-year rent change |
-| `earnings_yoy_pct` | Year-on-year median gross annual pay change from ASHE |
 | `price_to_earnings_ratio` | `average_price / median_gross_annual_pay` |
 | `annual_rent_to_earnings_ratio` | `(avg_monthly_rent * 12) / median_gross_annual_pay` |
 | `months_to_save_10pct_deposit` | `(average_price * 0.10) / (median_gross_annual_pay / 12)` |
 | `rent_growth_minus_income_growth_pct` | `rent_yoy_pct - earnings_yoy_pct` |
 | `house_price_growth_minus_income_growth_pct` | `house_price_yoy_pct - earnings_yoy_pct` |
-| `earnings_fallback_used` | `true` when the London regional earnings fallback is used |
+| `earnings_fallback_used` | `true` when the London regional earnings value is used |
 
-## Tableau dashboard screenshots
+## Run Locally
 
-## Tableau Public link
+Requirements:
 
-## How to run locally
+- Python 3.12
+- Docker with Docker Compose
+- GNU Make
 
-Requires Python 3.12, Docker, and dbt-postgres 1.8.
-
-1. Create the environment and install dependencies.
+Create a virtual environment and install dependencies:
 
 ```bash
 python3.12 -m venv .venv
@@ -127,14 +83,29 @@ source .venv/bin/activate
 make install
 ```
 
-2. Copy `.env.example` to `.env` and start PostgreSQL. Docker Compose reads the credentials from `.env`.
+PowerShell equivalent:
+
+```powershell
+py -3.12 -m venv .venv
+.\.venv\Scripts\Activate.ps1
+python -m pip install -r requirements.txt
+```
+
+Copy the environment template and start PostgreSQL:
 
 ```bash
 cp .env.example .env
 make up
 ```
 
-3. Create `~/.dbt/profiles.yml`.
+PowerShell equivalent:
+
+```powershell
+Copy-Item .env.example .env
+docker compose up -d --wait
+```
+
+Create `~/.dbt/profiles.yml`:
 
 ```yaml
 housing_warehouse:
@@ -151,26 +122,50 @@ housing_warehouse:
       threads: 4
 ```
 
-4. Run the pipeline end-to-end.
+Run the full pipeline:
 
 ```bash
-make all          # test + download + normalise + load + dbt deps + dbt run + dbt test + export
+make all
 ```
 
-Or run individual steps: `make test`, `make download`, `make normalise`, `make load`, `make dbt-run`, `make dbt-test`, `make dbt-docs` (serves the lineage graph on http://localhost:8080), `make export`.
+This runs unit tests, downloads sources, normalises CSVs, loads PostgreSQL, installs dbt packages, builds and tests dbt models, and exports mart CSVs to `data/exports`.
 
-`src/transform/inspect_sources.py` is an optional utility used during development to preview sheet structure; it is not required for the pipeline.
+Useful individual commands:
+
+| Command | Purpose |
+| --- | --- |
+| `make test` | Run Python unit tests |
+| `make download` | Download raw source files |
+| `make normalise` | Build London-only normalised CSVs |
+| `make load` | Replace raw PostgreSQL tables |
+| `make dbt-run` | Build staging and mart models |
+| `make dbt-test` | Run dbt data tests |
+| `make dbt-docs` | Serve dbt docs at `http://localhost:8080` |
+| `make export` | Export marts to CSV |
+
+## Repository Layout
+
+| Path | Purpose |
+| --- | --- |
+| `src/extract` | Source downloads |
+| `src/transform` | Source normalisation and ASHE extraction |
+| `src/load` | PostgreSQL load and mart exports |
+| `src/common` | Shared config and database helpers |
+| `dbt/models/staging` | Typed source views |
+| `dbt/models/marts` | Tableau-facing analytics tables |
+| `tests` | Lightweight Python unit tests |
+| `tableau` | Placeholder for workbook assets |
+
+## Current Status
+
+- GitHub Actions runs ruff, Python unit tests, and `dbt parse`.
+- Tableau-ready CSVs are exported, but the Tableau workbook is not committed yet.
+- The pipeline is London-focused; the config-driven structure can be extended later.
 
 ## Limitations
 
-- Local-level estimates of the UK House Price Index (HPI) below the regional level utilise a three-month moving average. Therefore, results for boroughs should be viewed as trend indicators rather than precise estimates for any single month.  
-- HPI sales volume figures omit the most recent two months, as the data during this period are insufficient for reliable reporting.  
-- The City of London tends to experience fluctuations since low transaction counts can lead to significant changes in local monthly figures.  
-- The Property Index for Price Reporting (PIPR) is an official statistic currently in development, and the data for the last two months are subject to revision.  
-
-## Future improvements
-
-- Publish the initial Tableau workbook, including screenshots and a link to Tableau Public.
-- Integrate the spatial boundary file into the reporting layer, as it is currently being consumed directly in Tableau.
-- Implement cross-source reconciliation tests, such as comparing borough coverage between HPI and PIPR.
-- Once the borough-level narrative and dashboard design are stable, extend the pipeline beyond London.
+- Borough-level HPI estimates use a three-month moving average and should be read as trend indicators.
+- HPI sales volumes omit the most recent two months.
+- City of London values can be volatile because transaction counts are low.
+- PIPR is an official statistic in development, and recent months can be revised.
+- Only the configured ASHE vintage is loaded, so historic affordability uses the available earnings vintage rather than a full earnings time series.

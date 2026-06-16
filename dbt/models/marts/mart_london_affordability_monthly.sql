@@ -38,6 +38,9 @@ left join rents r
     on p.area_code = r.area_code
    and p.date_month = r.date_month
 join lateral (
+    -- No reference_year <= price_year guard here: with a single ASHE vintage loaded,
+    -- that constraint would drop all months before the ASHE year. The property-type
+    -- snapshot mart can afford it because it only ever reads the latest price month.
     select
         area_code,
         reference_year,

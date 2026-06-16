@@ -1,0 +1,15 @@
+# Normalise all text files to LF in the repo and on checkout.
+# Prevents false "modified" noise when working across Windows and WSL2.
+* text=auto eol=lf
+
+# Explicitly binary — never touch line endings
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.zip binary
+*.gz binary
+*.xlsx binary
+*.pdf binary
+*.geojson text eol=lf

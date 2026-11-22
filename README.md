@@ -12,6 +12,12 @@ borough-level affordability metrics for all 33 London local authorities. Python 
 download and normalisation, PostgreSQL stores the data, dbt builds and tests the models, and
 the marts are exported for BI tools such as Tableau.
 
+## Interactive dashboard
+
+A Power BI-style dashboard with 8 report pages, slicers and borough drill-down, plus 20 ready-to-post visuals, lives in [`housing-analytics/`](housing-analytics). Rebuild it with `make dashboard`.
+
+![Full dashboard](housing-analytics/images/00_full_dashboard.png)
+
 ## Key findings (February 2026)
 
 ![Price-to-earnings ratio by London borough](docs/images/price_to_earnings_by_borough.png)

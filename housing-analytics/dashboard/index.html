@@ -407,14 +407,15 @@ V.rentvsprice = {
         label: { show: b.area_code === S.borough || rvpLabels.has(b.area_code),
                  formatter: () => short(b.area_name), position: 'right', color: C.ink, fontSize: fs() - 1 } })),
     }));
-    const lo = -15, hi = 75;
+    const px = rows.map(b => b.price_growth_since_2015_pct), rx = rows.map(b => b.rent_growth_since_2015_pct);
+    const lo = Math.floor((Math.min(...px, 0) - 5) / 10) * 10, hi = Math.ceil((Math.max(...px, ...rx) + 5) / 10) * 10;
     series.push({ type: 'line', data: [[lo, lo], [hi, hi]], showSymbol: false, silent: true, lineStyle: { color: C.ink3, type: 'dashed', width: 1 }, tooltip: { show: false } });
     return {
       textStyle: baseText(), animation: ANIM, legend: legend({ data: Object.keys(GROUP_C) }),
       grid: { left: 8, right: 24, top: 30, bottom: 30, containLabel: true },
       tooltip: tooltip({ trigger: 'item', formatter: p => p.data.code ? `<b>${byCode[p.data.code].area_name}</b><br>Rent ${F.spct(p.value[1], 0)} · Price ${F.spct(p.value[0], 0)}` : '' }),
       xAxis: valueAxis({ min: lo, max: hi, name: 'House price growth since Jan 2015', nameLocation: 'middle', nameGap: 26, axisLabel: { formatter: v => v + '%', color: C.ink2, fontSize: fs() } }),
-      yAxis: valueAxis({ min: 0, max: 80, name: 'Rent growth since Jan 2015', nameLocation: 'middle', nameGap: 40, axisLabel: { formatter: v => v + '%', color: C.ink2, fontSize: fs() } }),
+      yAxis: valueAxis({ min: 0, max: hi, name: 'Rent growth since Jan 2015', nameLocation: 'middle', nameGap: 40, axisLabel: { formatter: v => v + '%', color: C.ink2, fontSize: fs() } }),
       series,
     };
   },

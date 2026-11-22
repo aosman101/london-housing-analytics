@@ -14,3 +14,10 @@ models:
       +materialized: view
     marts:
       +materialized: table
+
+vars:
+  # ONS code for the London region; used as the earnings fallback when a borough estimate is suppressed.
+  london_region_code: "E12000007"
+  # Earnings are only attached to months within this many years of the ASHE reference year,
+  # so historical months are never divided by present-day pay.
+  earnings_max_lag_years: 1

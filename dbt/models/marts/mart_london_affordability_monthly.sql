@@ -1,3 +1,6 @@
+-- One row per London borough per month. Earnings-based ratios are only populated for months
+-- close to an ASHE reference year (see var earnings_max_lag_years); older months keep prices,
+-- rents and sales but leave the affordability ratios null rather than mixing eras.
 with prices as (
     select * from {{ ref('stg_hpi_average_prices') }}
 ),
@@ -6,9 +9,6 @@ rents as (
 ),
 sales as (
     select * from {{ ref('stg_hpi_sales') }}
-),
-earnings as (
-    select * from {{ ref('stg_ashe_earnings') }}
 )
 
 select
@@ -24,6 +24,7 @@ select
     e.reference_year as earnings_year,
     e.median_gross_annual_pay,
     e.earnings_yoy_pct,
+    e.earnings_quality,
     (e.area_code <> p.area_code) as earnings_fallback_used,
     round(p.average_price / nullif(e.median_gross_annual_pay, 0), 2) as price_to_earnings_ratio,
     round((r.avg_monthly_rent * 12) / nullif(e.median_gross_annual_pay, 0), 2) as annual_rent_to_earnings_ratio,
@@ -37,20 +38,4 @@ left join sales s
 left join rents r
     on p.area_code = r.area_code
    and p.date_month = r.date_month
-join lateral (
-    -- No reference_year <= price_year guard here: with a single ASHE vintage loaded,
-    -- that constraint would drop all months before the ASHE year. The property-type
-    -- snapshot mart can afford it because it only ever reads the latest price month.
-    select
-        area_code,
-        reference_year,
-        median_gross_annual_pay,
-        earnings_yoy_pct
-    from earnings e
-    where e.area_code in (p.area_code, 'E12000007')
-      and e.median_gross_annual_pay is not null
-    order by
-        case when e.area_code = p.area_code then 0 else 1 end,
-        e.reference_year desc
-    limit 1
-) e on true
+left join lateral ({{ earnings_lookup('p') }}) e on true

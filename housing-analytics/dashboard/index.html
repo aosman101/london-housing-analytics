@@ -604,6 +604,7 @@ V.volatility = {
 V.salesdrop = {
   title: () => 'Every borough is trading far less than in 2021',
   desc: () => 'Change in annual sales, 2025 vs the 2021 stamp-duty-holiday year.',
+  foot: () => '2025 counts will rise slightly as late registrations are added.',
   option: () => rankedBar({ metric: 'sales_2025_vs_2021_pct', fmt: v => F.spct(v, 0), top: 'min' }),
 };
 

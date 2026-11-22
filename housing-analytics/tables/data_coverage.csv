@@ -1,0 +1,6 @@
+dataset,rows,boroughs,first_period,last_period,null_cells_pct
+HPI average prices,12342,33,1995-01,2026-02,14.78
+HPI sales volumes,12276,33,1995-01,2025-12,0.00
+PIPR private rents,4320,32,2015-01,2026-03,1.78
+HPI prices by property type,49368,33,1995-01,2026-02,1.45
+ASHE earnings (+ London row),33,32,2025,2025,0.00

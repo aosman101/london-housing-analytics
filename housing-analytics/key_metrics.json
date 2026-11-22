@@ -1,0 +1,44 @@
+{
+  "latest_month": "February 2026",
+  "latest_month_iso": "2026-02",
+  "ashe_year": 2025,
+  "london_pay": 46414.0,
+  "london_pay_growth": 3.6,
+  "median_price": 539716.0,
+  "median_rent": 1934.5,
+  "median_pe": 11.88,
+  "pe_max": [
+    "Kensington and Chelsea",
+    23.31
+  ],
+  "pe_min": [
+    "Tower Hamlets",
+    8.76
+  ],
+  "median_deposit_months": 14.26,
+  "median_rent_share": 0.52,
+  "boroughs_above_30pct_rent": 32,
+  "boroughs_with_rent": 32,
+  "rent_outpacing_pay": 18,
+  "median_rent_yoy": 2.88,
+  "median_price_yoy": -1.9,
+  "rent_outgrew_price_since_2015": 32,
+  "median_rent_growth_since_2015": 47.54,
+  "median_price_growth_since_2015": 31.67,
+  "sales_2025": 77988,
+  "sales_peak": [
+    2002,
+    173993
+  ],
+  "sales_corr_same_year": 0.17,
+  "sales_corr_lead_1y": 0.53,
+  "boroughs_5pct_below_peak": 17,
+  "ptype_median_pe": {
+    "Detached": 26.66,
+    "Flat/Maisonette": 8.39,
+    "Semi-detached": 17.25,
+    "Terraced": 13.31
+  },
+  "yield_price_corr": -0.44,
+  "built": "2026-11-22"
+}

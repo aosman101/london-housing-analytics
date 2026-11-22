@@ -1,0 +1,133 @@
+date_month,area_code,area_name,group,property_type,average_price,pct_change_12m,median_gross_annual_pay,earnings_fallback_used,price_to_earnings_ratio
+2026-02-01,E09000010,Enfield,Outer London,Detached,1236517.00,0.60,43888.00,False,28.17
+2026-02-01,E09000011,Greenwich,Outer London,Detached,1031169.00,3.90,45274.00,False,22.78
+2026-02-01,E09000012,Hackney,Inner London,Detached,1319898.00,-3.30,49482.00,False,26.67
+2026-02-01,E09000013,Hammersmith and Fulham,Inner London,Detached,1709338.00,-4.30,47192.00,False,36.22
+2026-02-01,E09000014,Haringey,Inner London,Detached,2391614.00,3.50,43995.00,False,54.36
+2026-02-01,E09000015,Harrow,Outer London,Detached,1231798.00,0.80,45232.00,False,27.23
+2026-02-01,E09000016,Havering,Outer London,Detached,840377.00,2.60,46045.00,False,18.25
+2026-02-01,E09000017,Hillingdon,Outer London,Detached,955162.00,1.10,42250.00,False,22.61
+2026-02-01,E09000018,Hounslow,Outer London,Detached,1019714.00,-0.30,40870.00,False,24.95
+2026-02-01,E09000019,Islington,Inner London,Detached,1699540.00,3.70,50692.00,False,33.53
+2026-02-01,E09000008,Croydon,Outer London,Detached,832467.00,-3.40,44326.00,False,18.78
+2026-02-01,E09000009,Ealing,Outer London,Detached,1368905.00,1.10,40889.00,False,33.48
+2026-02-01,E09000020,Kensington and Chelsea,Inner London,Detached,4392451.00,-8.20,52576.00,False,83.54
+2026-02-01,E09000021,Kingston upon Thames,Outer London,Detached,1249073.00,0.90,46871.00,False,26.65
+2026-02-01,E09000022,Lambeth,Inner London,Detached,1184044.00,-1.70,49034.00,False,24.15
+2026-02-01,E09000023,Lewisham,Inner London,Detached,1126141.00,1.80,45702.00,False,24.64
+2026-02-01,E09000024,Merton,Outer London,Detached,2167156.00,-3.40,50844.00,False,42.62
+2026-02-01,E09000025,Newham,Inner London,Detached,711467.00,-7.20,42595.00,False,16.70
+2026-02-01,E09000026,Redbridge,Outer London,Detached,1152797.00,3.50,44851.00,False,25.70
+2026-02-01,E09000027,Richmond upon Thames,Outer London,Detached,1751295.00,-2.30,57233.00,False,30.60
+2026-02-01,E09000028,Southwark,Inner London,Detached,1709813.00,-0.50,48681.00,False,35.12
+2026-02-01,E09000029,Sutton,Outer London,Detached,1048215.00,1.90,44393.00,False,23.61
+2026-02-01,E09000030,Tower Hamlets,Inner London,Detached,920161.00,-8.60,52000.00,False,17.70
+2026-02-01,E09000031,Waltham Forest,Outer London,Detached,1041473.00,3.50,45350.00,False,22.97
+2026-02-01,E09000032,Wandsworth,Inner London,Detached,2361779.00,-4.70,54584.00,False,43.27
+2026-02-01,E09000033,City of Westminster,Inner London,Detached,3711194.00,-9.40,52610.00,False,70.54
+2026-02-01,E09000001,City of London,Inner London,Detached,,,46414.00,True,
+2026-02-01,E09000002,Barking and Dagenham,Outer London,Detached,648850.00,1.80,38467.00,False,16.87
+2026-02-01,E09000003,Barnet,Outer London,Detached,1546726.00,-2.60,47141.00,False,32.81
+2026-02-01,E09000004,Bexley,Outer London,Detached,722815.00,-0.20,43969.00,False,16.44
+2026-02-01,E09000005,Brent,Outer London,Detached,1294753.00,-3.10,39944.00,False,32.41
+2026-02-01,E09000006,Bromley,Outer London,Detached,1067993.00,0.80,51225.00,False,20.85
+2026-02-01,E09000007,Camden,Inner London,Detached,3257793.00,-7.30,53133.00,False,61.31
+2026-02-01,E09000010,Enfield,Outer London,Semi-detached,719225.00,2.30,43888.00,False,16.39
+2026-02-01,E09000011,Greenwich,Outer London,Semi-detached,726673.00,4.60,45274.00,False,16.05
+2026-02-01,E09000012,Hackney,Inner London,Semi-detached,1159033.00,-0.70,49482.00,False,23.42
+2026-02-01,E09000013,Hammersmith and Fulham,Inner London,Semi-detached,1457831.00,-4.20,47192.00,False,30.89
+2026-02-01,E09000014,Haringey,Inner London,Semi-detached,1245796.00,4.30,43995.00,False,28.32
+2026-02-01,E09000015,Harrow,Outer London,Semi-detached,681323.00,3.10,45232.00,False,15.06
+2026-02-01,E09000016,Havering,Outer London,Semi-detached,541834.00,4.00,46045.00,False,11.77
+2026-02-01,E09000017,Hillingdon,Outer London,Semi-detached,591097.00,3.10,42250.00,False,13.99
+2026-02-01,E09000018,Hounslow,Outer London,Semi-detached,689631.00,0.10,40870.00,False,16.87
+2026-02-01,E09000019,Islington,Inner London,Semi-detached,1423766.00,4.10,50692.00,False,28.09
+2026-02-01,E09000008,Croydon,Outer London,Semi-detached,533109.00,-1.20,44326.00,False,12.03
+2026-02-01,E09000009,Ealing,Outer London,Semi-detached,866227.00,2.90,40889.00,False,21.18
+2026-02-01,E09000020,Kensington and Chelsea,Inner London,Semi-detached,2959767.00,-8.20,52576.00,False,56.30
+2026-02-01,E09000021,Kingston upon Thames,Outer London,Semi-detached,781430.00,2.20,46871.00,False,16.67
+2026-02-01,E09000022,Lambeth,Inner London,Semi-detached,1044798.00,-0.20,49034.00,False,21.31
+2026-02-01,E09000023,Lewisham,Inner London,Semi-detached,772874.00,2.70,45702.00,False,16.91
+2026-02-01,E09000024,Merton,Outer London,Semi-detached,924214.00,-2.20,50844.00,False,18.18
+2026-02-01,E09000025,Newham,Inner London,Semi-detached,494531.00,-6.50,42595.00,False,11.61
+2026-02-01,E09000026,Redbridge,Outer London,Semi-detached,715792.00,4.90,44851.00,False,15.96
+2026-02-01,E09000027,Richmond upon Thames,Outer London,Semi-detached,1172742.00,-0.10,57233.00,False,20.49
+2026-02-01,E09000028,Southwark,Inner London,Semi-detached,1207228.00,0.60,48681.00,False,24.80
+2026-02-01,E09000029,Sutton,Outer London,Semi-detached,662182.00,3.60,44393.00,False,14.92
+2026-02-01,E09000030,Tower Hamlets,Inner London,Semi-detached,681156.00,-7.30,52000.00,False,13.10
+2026-02-01,E09000031,Waltham Forest,Outer London,Semi-detached,798156.00,4.70,45350.00,False,17.60
+2026-02-01,E09000032,Wandsworth,Inner London,Semi-detached,1302814.00,-3.50,54584.00,False,23.87
+2026-02-01,E09000033,City of Westminster,Inner London,Semi-detached,2629083.00,-8.70,52610.00,False,49.97
+2026-02-01,E09000001,City of London,Inner London,Semi-detached,,,46414.00,True,
+2026-02-01,E09000002,Barking and Dagenham,Outer London,Semi-detached,477858.00,2.70,38467.00,False,12.42
+2026-02-01,E09000003,Barnet,Outer London,Semi-detached,829417.00,-0.90,47141.00,False,17.59
+2026-02-01,E09000004,Bexley,Outer London,Semi-detached,524296.00,1.50,43969.00,False,11.92
+2026-02-01,E09000005,Brent,Outer London,Semi-detached,814572.00,-1.80,39944.00,False,20.39
+2026-02-01,E09000006,Bromley,Outer London,Semi-detached,656733.00,3.10,51225.00,False,12.82
+2026-02-01,E09000007,Camden,Inner London,Semi-detached,1964491.00,-5.70,53133.00,False,36.97
+2026-02-01,E09000010,Enfield,Outer London,Terraced,501853.00,2.00,43888.00,False,11.43
+2026-02-01,E09000011,Greenwich,Outer London,Terraced,557389.00,4.70,45274.00,False,12.31
+2026-02-01,E09000012,Hackney,Inner London,Terraced,935927.00,-1.00,49482.00,False,18.91
+2026-02-01,E09000013,Hammersmith and Fulham,Inner London,Terraced,1112928.00,-5.20,47192.00,False,23.58
+2026-02-01,E09000014,Haringey,Inner London,Terraced,810145.00,3.50,43995.00,False,18.41
+2026-02-01,E09000015,Harrow,Outer London,Terraced,550121.00,2.60,45232.00,False,12.16
+2026-02-01,E09000016,Havering,Outer London,Terraced,436315.00,3.30,46045.00,False,9.48
+2026-02-01,E09000017,Hillingdon,Outer London,Terraced,463409.00,2.30,42250.00,False,10.97
+2026-02-01,E09000018,Hounslow,Outer London,Terraced,591841.00,-0.50,40870.00,False,14.48
+2026-02-01,E09000019,Islington,Inner London,Terraced,1154476.00,2.90,50692.00,False,22.77
+2026-02-01,E09000008,Croydon,Outer London,Terraced,396585.00,-1.30,44326.00,False,8.95
+2026-02-01,E09000009,Ealing,Outer London,Terraced,697384.00,2.80,40889.00,False,17.06
+2026-02-01,E09000020,Kensington and Chelsea,Inner London,Terraced,2330129.00,-9.00,52576.00,False,44.32
+2026-02-01,E09000021,Kingston upon Thames,Outer London,Terraced,568246.00,1.00,46871.00,False,12.12
+2026-02-01,E09000022,Lambeth,Inner London,Terraced,812714.00,-0.50,49034.00,False,16.57
+2026-02-01,E09000023,Lewisham,Inner London,Terraced,602865.00,2.40,45702.00,False,13.19
+2026-02-01,E09000024,Merton,Outer London,Terraced,674525.00,-2.20,50844.00,False,13.27
+2026-02-01,E09000025,Newham,Inner London,Terraced,449866.00,-6.80,42595.00,False,10.56
+2026-02-01,E09000026,Redbridge,Outer London,Terraced,561874.00,4.60,44851.00,False,12.53
+2026-02-01,E09000027,Richmond upon Thames,Outer London,Terraced,908287.00,-0.60,57233.00,False,15.87
+2026-02-01,E09000028,Southwark,Inner London,Terraced,825563.00,0.30,48681.00,False,16.96
+2026-02-01,E09000029,Sutton,Outer London,Terraced,468960.00,3.00,44393.00,False,10.56
+2026-02-01,E09000030,Tower Hamlets,Inner London,Terraced,694897.00,-8.10,52000.00,False,13.36
+2026-02-01,E09000031,Waltham Forest,Outer London,Terraced,619059.00,4.40,45350.00,False,13.65
+2026-02-01,E09000032,Wandsworth,Inner London,Terraced,955389.00,-3.70,54584.00,False,17.50
+2026-02-01,E09000033,City of Westminster,Inner London,Terraced,1572924.00,-10.00,52610.00,False,29.90
+2026-02-01,E09000001,City of London,Inner London,Terraced,,,46414.00,True,
+2026-02-01,E09000002,Barking and Dagenham,Outer London,Terraced,397162.00,2.30,38467.00,False,10.32
+2026-02-01,E09000003,Barnet,Outer London,Terraced,619591.00,-1.40,47141.00,False,13.14
+2026-02-01,E09000004,Bexley,Outer London,Terraced,408717.00,0.80,43969.00,False,9.30
+2026-02-01,E09000005,Brent,Outer London,Terraced,684089.00,-2.50,39944.00,False,17.13
+2026-02-01,E09000006,Bromley,Outer London,Terraced,485821.00,2.20,51225.00,False,9.48
+2026-02-01,E09000007,Camden,Inner London,Terraced,1455694.00,-6.70,53133.00,False,27.40
+2026-02-01,E09000010,Enfield,Outer London,Flat/Maisonette,301996.00,-2.20,43888.00,False,6.88
+2026-02-01,E09000011,Greenwich,Outer London,Flat/Maisonette,361452.00,0.70,45274.00,False,7.98
+2026-02-01,E09000012,Hackney,Inner London,Flat/Maisonette,517221.00,-4.40,49482.00,False,10.45
+2026-02-01,E09000013,Hammersmith and Fulham,Inner London,Flat/Maisonette,562479.00,-8.60,47192.00,False,11.92
+2026-02-01,E09000014,Haringey,Inner London,Flat/Maisonette,482047.00,-0.20,43995.00,False,10.96
+2026-02-01,E09000015,Harrow,Outer London,Flat/Maisonette,325813.00,-2.10,45232.00,False,7.20
+2026-02-01,E09000016,Havering,Outer London,Flat/Maisonette,252901.00,-0.10,46045.00,False,5.49
+2026-02-01,E09000017,Hillingdon,Outer London,Flat/Maisonette,289551.00,-1.60,42250.00,False,6.85
+2026-02-01,E09000018,Hounslow,Outer London,Flat/Maisonette,342998.00,-4.00,40870.00,False,8.39
+2026-02-01,E09000019,Islington,Inner London,Flat/Maisonette,568921.00,-0.20,50692.00,False,11.22
+2026-02-01,E09000008,Croydon,Outer London,Flat/Maisonette,254132.00,-5.20,44326.00,False,5.73
+2026-02-01,E09000009,Ealing,Outer London,Flat/Maisonette,401551.00,-1.30,40889.00,False,9.82
+2026-02-01,E09000020,Kensington and Chelsea,Inner London,Flat/Maisonette,973965.00,-11.80,52576.00,False,18.52
+2026-02-01,E09000021,Kingston upon Thames,Outer London,Flat/Maisonette,353130.00,-2.60,46871.00,False,7.53
+2026-02-01,E09000022,Lambeth,Inner London,Flat/Maisonette,453622.00,-3.90,49034.00,False,9.25
+2026-02-01,E09000023,Lewisham,Inner London,Flat/Maisonette,379539.00,-1.60,45702.00,False,8.30
+2026-02-01,E09000024,Merton,Outer London,Flat/Maisonette,400144.00,-6.00,50844.00,False,7.87
+2026-02-01,E09000025,Newham,Inner London,Flat/Maisonette,318749.00,-11.00,42595.00,False,7.48
+2026-02-01,E09000026,Redbridge,Outer London,Flat/Maisonette,319008.00,0.50,44851.00,False,7.11
+2026-02-01,E09000027,Richmond upon Thames,Outer London,Flat/Maisonette,487420.00,-4.00,57233.00,False,8.52
+2026-02-01,E09000028,Southwark,Inner London,Flat/Maisonette,466228.00,-3.50,48681.00,False,9.58
+2026-02-01,E09000029,Sutton,Outer London,Flat/Maisonette,287913.00,-0.90,44393.00,False,6.49
+2026-02-01,E09000030,Tower Hamlets,Inner London,Flat/Maisonette,437710.00,-11.90,52000.00,False,8.42
+2026-02-01,E09000031,Waltham Forest,Outer London,Flat/Maisonette,387430.00,0.10,45350.00,False,8.54
+2026-02-01,E09000032,Wandsworth,Inner London,Flat/Maisonette,522376.00,-7.10,54584.00,False,9.57
+2026-02-01,E09000033,City of Westminster,Inner London,Flat/Maisonette,774596.00,-13.20,52610.00,False,14.72
+2026-02-01,E09000001,City of London,Inner London,Flat/Maisonette,697779.00,-11.20,46414.00,True,15.03
+2026-02-01,E09000002,Barking and Dagenham,Outer London,Flat/Maisonette,243470.00,-1.80,38467.00,False,6.33
+2026-02-01,E09000003,Barnet,Outer London,Flat/Maisonette,364873.00,-5.60,47141.00,False,7.74
+2026-02-01,E09000004,Bexley,Outer London,Flat/Maisonette,241844.00,-2.30,43969.00,False,5.50
+2026-02-01,E09000005,Brent,Outer London,Flat/Maisonette,374735.00,-6.10,39944.00,False,9.38
+2026-02-01,E09000006,Bromley,Outer London,Flat/Maisonette,306364.00,-1.00,51225.00,False,5.98
+2026-02-01,E09000007,Camden,Inner London,Flat/Maisonette,644623.00,-9.60,53133.00,False,12.13

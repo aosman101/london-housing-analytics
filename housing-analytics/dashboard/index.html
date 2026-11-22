@@ -254,7 +254,7 @@ function rankedBar({ metric, fmt, colour = 'group', top = 'max', mark, decalIf, 
     tooltip: tooltip({ trigger: 'item', formatter: p => p.seriesIndex > 0 && p.data == null ? '' :
       `<b>${byCode[p.data.code].area_name}</b><br>${fmt(p.value)}<br><span style="color:${C.ink3}">${byCode[p.data.code].group}</span>` }),
     xAxis: valueAxis({ name: xName, nameLocation: 'middle', nameGap: 24,
-      min: e => e.min < 0 ? e.min - (Math.max(e.max, 0) - e.min) * 0.16 : 0,
+      min: e => e.min < 0 ? e.min - (Math.max(e.max, 0) - e.min) * 0.3 : 0,
       max: e => e.max > 0 ? e.max + (e.max - Math.min(e.min, 0)) * 0.08 : 0,
       axisLabel: { color: C.ink2, fontSize: fs(), showMinLabel: false, showMaxLabel: false, formatter: v => fmt(v).replace(/\.0(?=\D|$)/, '') } }),
     yAxis: catAxis({ data: rows.map(b => short(b.area_name)), axisLabel: { color: C.ink, fontSize: fs(), interval: 0,
@@ -281,7 +281,7 @@ const V = {};
 V.map = {
   title: () => 'Where is London least affordable?',
   desc: () => `${MAP_METRICS[S.mapMetric].label} by borough, ${K.latest_month}. Click a borough to highlight it everywhere.`,
-  foot: () => 'Labels: three highest and three lowest boroughs. ' + (S.mapMetric.includes('rent') || S.mapMetric.includes('yield') || S.mapMetric === 'stress_index'
+  foot: () => (S.mapMetric.includes('rent') || S.mapMetric.includes('yield') || S.mapMetric === 'stress_index'
     ? 'City of London has no published rent series (grey).' : 'City of London pay is suppressed by ONS; London-wide pay is used.'),
   tools: () => `<select id="mapMetric" aria-label="Map metric">${Object.entries(MAP_METRICS).map(([k, m]) =>
       `<option value="${k}" ${k === S.mapMetric ? 'selected' : ''}>${m.label}</option>`).join('')}</select>`,
@@ -292,28 +292,37 @@ V.map = {
     if (m.scale === 'div') { const a = Math.max(Math.abs(min), Math.abs(max)); min = -a; max = a; colors = C.div; }
     if (m.scale === 'seqRev') colors = [...C.seq].reverse();
     const ranked = D.boroughs.filter(b => inScope(b) && b[S.mapMetric] != null).sort((a, b) => a[S.mapMetric] - b[S.mapMetric]);
-    const extremes = new Set([...ranked.slice(0, 3), ...ranked.slice(-3)].map(b => b.area_code));
+    const listFs = fs();
+    const lines = (title, rows, y) => [
+      { type: 'text', right: 0, top: y, style: { text: title, fill: C.ink2, font: `600 ${listFs - 1}px ${FONT}` } },
+      ...rows.map((b, i) => ({ type: 'text', right: 0, top: y + (i + 1) * (listFs + 7),
+        style: { text: `${short(b.area_name)}  ${m.fmt(b[S.mapMetric])}`, fill: C.ink, font: `${listFs}px ${FONT}`, align: 'right' } })),
+    ];
+    const graphic = ranked.length < 6 ? [] : [
+      ...lines('HIGHEST', [...ranked].reverse().slice(0, 3), 0),
+      ...lines('LOWEST', ranked.slice(0, 3), 4 * (listFs + 7) + 10),
+    ];
     return {
       textStyle: baseText(), animation: ANIM,
       tooltip: tooltip({ trigger: 'item', formatter: p => { const b = byCode[p.name]; if (!b) return '';
         return `<b>${b.area_name}</b> <span style="color:${C.ink3}">${b.group}</span><br>${m.label}: <b>${m.fmt(b[S.mapMetric])}</b>
           <br>Avg price ${F.gbp(b.average_price)} · Rent ${F.gbp(b.avg_monthly_rent)}/mo<br>Median pay ${F.gbp(b.median_gross_annual_pay)}`; } }),
+      graphic,
       visualMap: { min, max, calculable: !EXPORT, orient: 'vertical', left: 0, bottom: 10, itemHeight: EXPORT === 'full' ? 140 : 180,
         inRange: { color: colors }, text: [m.fmt(max), m.fmt(min)], textStyle: { color: C.ink2, fontSize: fs() }, formatter: v => m.fmt(v) },
       series: [{
-        type: 'map', map: 'london', aspectScale: 0.62, roam: false, layoutCenter: ['55%', '50%'], layoutSize: '98%',
+        type: 'map', map: 'london', aspectScale: 0.62, roam: false, layoutCenter: ['47%', '52%'], layoutSize: '92%',
         selectedMode: false,
         itemStyle: { borderColor: '#fff', borderWidth: 1, areaColor: C.faint },
         emphasis: { label: { show: true, color: C.ink, fontWeight: 600, fontSize: fs(), formatter: p => short(byCode[p.name].area_name) },
                     itemStyle: { areaColor: null, borderColor: C.ink, borderWidth: 1.5 } },
         label: { show: false },
         data: D.boroughs.map(b => {
-          const sel = b.area_code === S.borough, out = !inScope(b), ext = !out && extremes.has(b.area_code);
+          const sel = b.area_code === S.borough, out = !inScope(b);
           return { name: b.area_code, value: out ? null : b[S.mapMetric],
             itemStyle: out ? { areaColor: C.faint, borderColor: '#fff' } : sel ? { borderColor: C.ink, borderWidth: 2.5 } : {},
-            label: sel || ext ? { show: true, color: C.ink, fontWeight: sel ? 700 : 600, fontSize: fs() - 1, backgroundColor: 'rgba(255,255,255,.88)',
-                           padding: [2, 5], borderRadius: 3, lineHeight: fs() + 2,
-                           formatter: () => `${short(b.area_name)}\n${m.fmt(b[S.mapMetric])}` } : undefined };
+            label: sel ? { show: true, color: C.ink, fontWeight: 700, fontSize: fs(), backgroundColor: 'rgba(255,255,255,.9)',
+                           padding: [2, 5], borderRadius: 3, formatter: () => short(b.area_name) } : undefined };
         }),
       }],
     };
@@ -386,13 +395,16 @@ V.rentvsprice = {
   desc: () => `Cumulative change, January 2015 to the latest month. Points above the dashed line: rents grew faster than prices (${K.rent_outgrew_price_since_2015} of ${K.boroughs_with_rent} boroughs).`,
   option: () => {
     const rows = scoped().filter(b => b.rent_growth_since_2015_pct != null);
+    const byRent = [...rows].sort((a, b) => b.rent_growth_since_2015_pct - a.rent_growth_since_2015_pct);
+    const byPrice = [...rows].sort((a, b) => b.price_growth_since_2015_pct - a.price_growth_since_2015_pct);
+    const rvpLabels = new Set([byRent[0], byRent[1], byRent.at(-1), byPrice.at(-1)].filter(Boolean).map(b => b.area_code));
     const series = Object.entries(GROUP_C).filter(([g]) => S.group === 'All' || S.group === g).map(([g, col]) => ({
       name: g, type: 'scatter', symbolSize: 12, color: col, labelLayout: { hideOverlap: true, moveOverlap: 'shiftY' },
       itemStyle: { borderColor: '#fff', borderWidth: 1.5 },
       data: rows.filter(b => b.group === g).map(b => ({ value: [b.price_growth_since_2015_pct, b.rent_growth_since_2015_pct], code: b.area_code,
         symbolSize: b.area_code === S.borough ? 20 : 12,
         itemStyle: b.area_code === S.borough ? { borderColor: C.ink, borderWidth: 2.5 } : {},
-        label: { show: b.area_code === S.borough || b.rent_growth_since_2015_pct > 58 || b.rent_growth_since_2015_pct < 36 || b.price_growth_since_2015_pct > 48 || b.price_growth_since_2015_pct < 5,
+        label: { show: b.area_code === S.borough || rvpLabels.has(b.area_code),
                  formatter: () => short(b.area_name), position: 'right', color: C.ink, fontSize: fs() - 1 } })),
     }));
     const lo = -15, hi = 75;
@@ -560,12 +572,15 @@ V.yieldscatter = {
   desc: () => `Gross rental yield vs average price (r = ${K.yield_price_corr.toFixed(2)}).`,
   option: () => {
     const rows = scoped().filter(b => b.gross_rental_yield_pct != null);
+    const byYield = [...rows].sort((a, b) => b.gross_rental_yield_pct - a.gross_rental_yield_pct);
+    const byPx = [...rows].sort((a, b) => b.average_price - a.average_price);
+    const yLabels = new Set([byYield[0], byYield[1], byYield.at(-1), byPx[0], byPx[1]].filter(Boolean).map(b => b.area_code));
     const series = Object.entries(GROUP_C).filter(([g]) => S.group === 'All' || S.group === g).map(([g, col]) => ({
       name: g, type: 'scatter', color: col, itemStyle: { borderColor: '#fff', borderWidth: 1.5 }, labelLayout: { hideOverlap: true, moveOverlap: 'shiftY' },
       data: rows.filter(b => b.group === g).map(b => ({ value: [b.average_price, b.gross_rental_yield_pct], code: b.area_code,
         symbolSize: b.area_code === S.borough ? 20 : 12, itemStyle: b.area_code === S.borough ? { borderColor: C.ink, borderWidth: 2.5 } : {},
-        label: { show: b.area_code === S.borough || b.gross_rental_yield_pct > 5.4 || b.gross_rental_yield_pct < 3.6 || b.average_price > 850000,
-                 formatter: () => short(b.area_name), position: b.average_price > 900000 ? 'left' : 'right', color: C.ink, fontSize: fs() - 1 } })),
+        label: { show: b.area_code === S.borough || yLabels.has(b.area_code),
+                 formatter: () => short(b.area_name), position: b.average_price > 900000 ? 'top' : 'right', color: C.ink, fontSize: fs() - 1 } })),
     }));
     return { textStyle: baseText(), animation: ANIM, legend: legend(), grid: { left: 24, right: 30, top: 30, bottom: 30, containLabel: true },
       tooltip: tooltip({ trigger: 'item', formatter: p => `<b>${byCode[p.data.code].area_name}</b><br>Price ${F.gbp(p.value[0])} · Yield ${F.pct(p.value[1])}` }),

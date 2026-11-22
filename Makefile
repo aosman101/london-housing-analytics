@@ -1,4 +1,4 @@
-.PHONY: help install up down download normalise load pipeline dbt-deps dbt-run dbt-test dbt-build dbt-docs export lint test all clean
+.PHONY: help install up down download normalise load pipeline dbt-deps dbt-run dbt-test dbt-build dbt-docs export charts lint test all clean
 
 # Prefer the project venv when it exists so `make all` works without activating it.
 VENV_BIN := $(wildcard .venv/bin)
@@ -25,9 +25,10 @@ help:
 	@echo "  dbt-build  — run + test dbt models in DAG order"
 	@echo "  dbt-docs   — generate and serve dbt docs on :8080"
 	@echo "  export     — export marts to data/exports as CSV"
+	@echo "  charts     — render README charts from exported marts into docs/images"
 	@echo "  lint       — ruff check"
 	@echo "  test       — run Python unit tests"
-	@echo "  all        — lint + test + pipeline + dbt-deps + dbt-build + export"
+	@echo "  all        — lint + test + pipeline + dbt-deps + dbt-build + export + charts"
 	@echo "  clean      — remove data/ and dbt/target build outputs"
 
 install:
@@ -68,13 +69,16 @@ dbt-docs:
 export:
 	$(PYTHON) src/load/export_marts.py
 
+charts:
+	$(PYTHON) src/report/make_charts.py
+
 lint:
 	$(RUFF) check src tests
 
 test:
 	$(PYTHON) -m unittest discover -s tests
 
-all: lint test pipeline dbt-deps dbt-build export
+all: lint test pipeline dbt-deps dbt-build export charts
 
 clean:
 	rm -rf data/raw/* data/normalised/* data/exports/* dbt/target dbt/logs

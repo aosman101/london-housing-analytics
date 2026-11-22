@@ -209,7 +209,7 @@ const inScope = b => S.group === 'All' || b.group === S.group;
 const scoped = () => D.boroughs.filter(inScope);
 const median = arr => { const a = arr.filter(v => v != null).sort((x, y) => x - y); if (!a.length) return null;
   const m = Math.floor(a.length / 2); return a.length % 2 ? a[m] : (a[m - 1] + a[m]) / 2; };
-const scopeLabel = () => S.group === 'All' ? 'All 33 London boroughs' : S.group + ' boroughs';
+const scopeLabel = () => S.group === 'All' ? 'all 33 London boroughs' : S.group + ' boroughs';
 
 /* ---------------- shared chart pieces ---------------- */
 const baseText = () => ({ fontFamily: FONT, color: C.ink2 });
@@ -309,7 +309,7 @@ V.map = {
           <br>Avg price ${F.gbp(b.average_price)} · Rent ${F.gbp(b.avg_monthly_rent)}/mo<br>Median pay ${F.gbp(b.median_gross_annual_pay)}`; } }),
       graphic,
       visualMap: { min, max, calculable: !EXPORT, orient: 'vertical', left: 0, bottom: 10, itemHeight: EXPORT === 'full' ? 140 : 180,
-        inRange: { color: colors }, text: [m.fmt(max), m.fmt(min)], textStyle: { color: C.ink2, fontSize: fs() }, formatter: v => m.fmt(v) },
+        inRange: { color: colors }, text: EXPORT ? [m.fmt(max), m.fmt(min)] : null, textStyle: { color: C.ink2, fontSize: fs() }, formatter: v => m.fmt(v) },
       series: [{
         type: 'map', map: 'london', aspectScale: 0.62, roam: false, layoutCenter: ['47%', '52%'], layoutSize: '92%',
         selectedMode: false,
@@ -404,8 +404,8 @@ V.rentvsprice = {
       data: rows.filter(b => b.group === g).map(b => ({ value: [b.price_growth_since_2015_pct, b.rent_growth_since_2015_pct], code: b.area_code,
         symbolSize: b.area_code === S.borough ? 20 : 12,
         itemStyle: b.area_code === S.borough ? { borderColor: C.ink, borderWidth: 2.5 } : {},
-        label: { show: b.area_code === S.borough || rvpLabels.has(b.area_code),
-                 formatter: () => short(b.area_name), position: 'right', color: C.ink, fontSize: fs() - 1 } })),
+        label: { show: b.area_code === S.borough || rvpLabels.has(b.area_code), fontWeight: b.area_code === S.borough ? 700 : 400,
+                 formatter: () => short(b.area_name), position: b.area_code === S.borough ? 'top' : 'right', color: C.ink, fontSize: fs() - 1 } })),
     }));
     const px = rows.map(b => b.price_growth_since_2015_pct), rx = rows.map(b => b.rent_growth_since_2015_pct);
     const lo = Math.floor((Math.min(...px, 0) - 5) / 10) * 10, hi = Math.ceil((Math.max(...px, ...rx) + 5) / 10) * 10;
@@ -442,7 +442,7 @@ V.pricetrend = {
 
 V.sales = {
   title: () => 'Transactions are less than half their 2000s peak',
-  desc: () => `Residential sales recorded by HM Land Registry per year, ${scopeLabel().toLowerCase()}, 1995–2025.`,
+  desc: () => `Residential sales recorded by HM Land Registry per year, ${scopeLabel()}, 1995–2025.`,
   foot: () => 'Darker bars: 2023 onward. The latest months are revised upward as late registrations arrive.',
   option: () => {
     const yearly = {};
@@ -707,7 +707,7 @@ function profileCards() {
 
 /* ---------------- pages ---------------- */
 const PAGES = [
-  { id: 'overview', name: 'Overview', desc: () => `Headline affordability across ${scopeLabel().toLowerCase()}, ${K.latest_month}. Use the slicers above to filter Inner/Outer London or highlight a borough.`,
+  { id: 'overview', name: 'Overview', desc: () => `Headline affordability across ${scopeLabel()}, ${K.latest_month}. Use the slicers above to filter Inner/Outer London or highlight a borough.`,
     kpis: kpiCards, cards: [['map', 's7 h-tall'], ['stress', 's5 h-tall'], ['sales', 's6 h-mid'], ['renttrend', 's6 h-mid']] },
   { id: 'afford', name: 'Affordability', desc: () => 'Q1 & Q5: which boroughs are least affordable, and how far is a deposit from local pay?',
     cards: [['pe', 's4 h-tall'], ['deposit', 's4 h-tall'], ['rentshare', 's4 h-tall']] },

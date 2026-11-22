@@ -25,7 +25,7 @@ jobs:
           pip install ruff==0.6.9
 
       - name: Lint Python with ruff
-        run: ruff check src tests
+        run: ruff check src tests housing-analytics
 
       - name: Run Python unit tests
         run: python -m unittest discover -s tests -v

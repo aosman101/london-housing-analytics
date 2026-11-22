@@ -15,6 +15,9 @@ NORM.mkdir(parents=True, exist_ok=True)
 # ASHE Table 8.7a is "Annual pay - Gross". Glob by pattern so next year's file works.
 ASHE_EXTRACT_DIR = RAW / "ashe_extracted"
 ASHE_WORKBOOK_PATTERN = "*Table 8.7a*Annual pay*Gross*.xlsx"
+ASHE_CV_WORKBOOK_PATTERN = "*Table 8.7b*Annual pay*Gross*CV.xlsx"
+# Full-time employees, by place of residence.
+ASHE_SHEET = "Full-Time"
 
 LONDON_LAD_REGEX = r"^E09"
 LONDON_REGION_CODE = "E12000007"
@@ -32,37 +35,46 @@ PROPERTY_TYPE_LABELS = {
 }
 
 
-def ashe_slice_path() -> Path:
-    release = config.load()["ashe_release"]
-    return RAW / f"ashe_table8_median_gross_annual_pay_{config.ashe_year()}_{release}.csv"
+def _extract_ashe_zip() -> None:
+    zip_path = config.raw_path("ashe_table8")
+    if not zip_path.exists():
+        raise FileNotFoundError(f"ASHE zip not found at {zip_path}. Run download_sources.py first.")
+    ASHE_EXTRACT_DIR.mkdir(parents=True, exist_ok=True)
+    with zipfile.ZipFile(zip_path, "r") as z:
+        for member in z.namelist():
+            if member.lower().endswith((".csv", ".xlsx")):
+                z.extract(member, path=ASHE_EXTRACT_DIR)
+
+
+def _find_ashe_workbook(pattern: str) -> Path:
+    """Return the single extracted ASHE workbook matching ``pattern``, extracting the zip if needed."""
+    matches = list(ASHE_EXTRACT_DIR.rglob(pattern)) if ASHE_EXTRACT_DIR.exists() else []
+    if not matches:
+        _extract_ashe_zip()
+        matches = list(ASHE_EXTRACT_DIR.rglob(pattern))
+    if not matches:
+        raise FileNotFoundError(f"No ASHE workbook matched {pattern} in {ASHE_EXTRACT_DIR}.")
+    if len(matches) > 1:
+        raise RuntimeError(f"Multiple ASHE workbooks matched {pattern}: {matches}")
+    return matches[0]
 
 
 def ensure_ashe_extracted() -> Path:
     """Extract the ASHE zip on first use and return the 8.7a workbook path."""
-    zip_path = config.raw_path("ashe_table8")
-    if not zip_path.exists():
-        raise FileNotFoundError(
-            f"ASHE zip not found at {zip_path}. Run download_sources.py first."
-        )
+    return _find_ashe_workbook(ASHE_WORKBOOK_PATTERN)
 
-    ASHE_EXTRACT_DIR.mkdir(parents=True, exist_ok=True)
-    matches = list(ASHE_EXTRACT_DIR.rglob(ASHE_WORKBOOK_PATTERN))
-    if not matches:
-        with zipfile.ZipFile(zip_path, "r") as z:
-            for m in z.namelist():
-                if m.lower().endswith((".csv", ".xlsx")):
-                    z.extract(m, path=ASHE_EXTRACT_DIR)
-        matches = list(ASHE_EXTRACT_DIR.rglob(ASHE_WORKBOOK_PATTERN))
 
-    if not matches:
-        raise FileNotFoundError(
-            f"No ASHE workbook matched {ASHE_WORKBOOK_PATTERN} after extracting {zip_path.name}."
-        )
-    if len(matches) > 1:
-        raise RuntimeError(
-            f"Multiple ASHE workbooks matched {ASHE_WORKBOOK_PATTERN}: {matches}"
-        )
-    return matches[0]
+def ashe_quality_band(cv: float | None) -> str | None:
+    """Map an ASHE coefficient of variation (%) to the ONS precision bands."""
+    if cv is None or pd.isna(cv):
+        return None
+    if cv <= 5:
+        return "Precise"
+    if cv <= 10:
+        return "Reasonably precise"
+    if cv <= 20:
+        return "Acceptable"
+    return "Unreliable"
 
 
 def clean_col(x: str) -> str:
@@ -250,133 +262,52 @@ def normalise_pipr():
     out["area_name"] = out["area_name"].astype(str).str.strip()
     out["area_code"] = out["area_code"].astype(str).str.strip()
     out = to_numeric(out, ["avg_monthly_rent", "rent_yoy_pct"])
+    out["rent_yoy_pct"] = out["rent_yoy_pct"].round(2)
 
     out = out[out["area_code"].str.match(LONDON_LAD_REGEX, na=False)]
     out = out.dropna(subset=["date_month", "area_code"])
     out.to_csv(NORM / "pipr_local_rents.csv", index=False)
 
 
-def extract_ashe_slice():
-    workbook = ensure_ashe_extracted()
-    df = pd.read_excel(workbook, sheet_name="Full-Time", header=4)
+def _read_ashe_full_time(workbook: Path) -> pd.DataFrame:
+    df = pd.read_excel(workbook, sheet_name=ASHE_SHEET, header=4)
     df.columns = [clean_col(c) for c in df.columns]
+    df["code"] = df["code"].astype(str).str.strip()
+    df["description"] = df["description"].astype(str).str.strip()
+    return df
 
+
+def normalise_ashe():
+    """London borough + London region median full-time gross annual pay, with ONS CV quality."""
+    workbook = ensure_ashe_extracted()
     match = re.search(r"(20\d{2})", workbook.name)
     if not match:
         raise ValueError(f"Could not extract year from {workbook.name}")
 
-    out = df[["description", "code", "median", "change"]].copy()
-    out.columns = [
-        "area name",
-        "area code",
-        "median gross annual pay",
-        "earnings yoy pct",
-    ]
-    out["year"] = int(match.group(1))
+    pay = _read_ashe_full_time(workbook)
+    out = pay[["description", "code", "median", "change"]].copy()
+    out.columns = ["area_name", "area_code", "median_gross_annual_pay", "earnings_yoy_pct"]
+
+    cv = _read_ashe_full_time(_find_ashe_workbook(ASHE_CV_WORKBOOK_PATTERN))
+    cv = cv[["code", "median"]].rename(columns={"code": "area_code", "median": "median_pay_cv"})
+    out = out.merge(cv, on="area_code", how="left")
+
     out = out[
-        [
-            "year",
-            "area name",
-            "area code",
-            "median gross annual pay",
-            "earnings yoy pct",
-        ]
+        out["area_code"].str.match(LONDON_LAD_REGEX, na=False) | out["area_code"].eq(LONDON_REGION_CODE)
     ]
+    out = to_numeric(out, ["median_gross_annual_pay", "earnings_yoy_pct", "median_pay_cv"])
+    out.insert(0, "reference_year", int(match.group(1)))
+    out["earnings_quality"] = out["median_pay_cv"].map(ashe_quality_band)
 
-    out["area name"] = out["area name"].astype(str).str.strip()
-    out["area code"] = out["area code"].astype(str).str.strip()
-    out["median gross annual pay"] = pd.to_numeric(
-        out["median gross annual pay"], errors="coerce"
-    )
-    out["earnings yoy pct"] = pd.to_numeric(out["earnings yoy pct"], errors="coerce")
-
-    out = out[out["area code"].str.match(LONDON_LAD_REGEX, na=False)]
-    out.to_csv(ashe_slice_path(), index=False)
-
-
-def normalise_ashe():
-    slice_path = ashe_slice_path()
-    if not slice_path.exists():
-        extract_ashe_slice()
-
-    df = pd.read_csv(slice_path)
-    df.columns = [clean_col(c) for c in df.columns]
-    if "earnings yoy pct" not in df.columns:
-        extract_ashe_slice()
-        df = pd.read_csv(slice_path)
-        df.columns = [clean_col(c) for c in df.columns]
-
-    out = df[
-        [
-            "year",
-            "area name",
-            "area code",
-            "median gross annual pay",
-            "earnings yoy pct",
-        ]
-    ].copy()
-    out.columns = [
-        "reference_year",
-        "area_name",
-        "area_code",
-        "median_gross_annual_pay",
-        "earnings_yoy_pct",
-    ]
-
-    out["reference_year"] = pd.to_numeric(out["reference_year"], errors="coerce").astype("Int64")
-    out["area_name"] = out["area_name"].astype(str).str.strip()
-    out["area_code"] = out["area_code"].astype(str).str.strip()
-    out["median_gross_annual_pay"] = pd.to_numeric(
-        out["median_gross_annual_pay"], errors="coerce"
-    )
-    out["earnings_yoy_pct"] = pd.to_numeric(out["earnings_yoy_pct"], errors="coerce")
-
-    workbook = ensure_ashe_extracted()
-    london_region = pd.read_excel(workbook, sheet_name="Full-Time", header=4)
-    london_region.columns = [clean_col(c) for c in london_region.columns]
-    london_region = london_region[
-        london_region["code"].astype(str).str.strip().eq(LONDON_REGION_CODE)
-    ][["description", "code", "median", "change"]].copy()
-    london_region.columns = [
-        "area_name",
-        "area_code",
-        "median_gross_annual_pay",
-        "earnings_yoy_pct",
-    ]
-    london_region["reference_year"] = out["reference_year"].dropna().max()
-    london_region = london_region[
-        [
-            "reference_year",
-            "area_name",
-            "area_code",
-            "median_gross_annual_pay",
-            "earnings_yoy_pct",
-        ]
-    ]
-    london_region["area_name"] = london_region["area_name"].astype(str).str.strip()
-    london_region["area_code"] = london_region["area_code"].astype(str).str.strip()
-    london_region["median_gross_annual_pay"] = pd.to_numeric(
-        london_region["median_gross_annual_pay"], errors="coerce"
-    )
-    london_region["earnings_yoy_pct"] = pd.to_numeric(
-        london_region["earnings_yoy_pct"], errors="coerce"
-    )
-
-    out = pd.concat([out, london_region], ignore_index=True)
-    out = out[
-        out["area_code"].str.match(LONDON_LAD_REGEX, na=False)
-        | out["area_code"].eq(LONDON_REGION_CODE)
-    ]
-    out = out.dropna(subset=["reference_year", "area_code", "median_gross_annual_pay"])
+    # ONS suppresses unreliable estimates (e.g. City of London) with "x"; those rows fall back to London.
+    out = out.dropna(subset=["median_gross_annual_pay"])
     out.to_csv(NORM / "ashe_earnings.csv", index=False)
 
 
 if __name__ == "__main__":
-    ensure_ashe_extracted()
     normalise_hpi_average()
     normalise_hpi_sales()
     normalise_hpi_property_type()
     normalise_pipr()
-    extract_ashe_slice()
     normalise_ashe()
     print("[done] normalised London files written to data/normalised")

@@ -155,9 +155,9 @@ make all                  # lint + tests + download + normalise + load + dbt bui
 dbt reads its connection from [`dbt/profiles.yml`](dbt/profiles.yml) using the same `PG*`
 environment variables, so no `~/.dbt` setup is needed. Individual steps: `make download`,
 `make normalise`, `make load`, `make dbt-build`, `make dbt-docs` (lineage on
-http://localhost:8080), `make export`, `make charts`. Run `make help` for the full list.
+<http://localhost:8080>), `make export`, `make charts`. Run `make help` for the full list.
 
-```
+```text
 config/            source vintages and URL templates
 src/extract/       downloads
 src/transform/     London-only normalisation (HPI, PIPR, ASHE + CVs)

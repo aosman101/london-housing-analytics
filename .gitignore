@@ -30,7 +30,6 @@ data/exports/
 !dbt/models/marts/.gitkeep
 
 # Local tooling
-.claude/
 AGENTS.md
 .pytest_cache/
 .ruff_cache/

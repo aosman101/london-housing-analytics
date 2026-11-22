@@ -492,16 +492,16 @@ V.salesprice = {
 V.drawdown = {
   title: () => 'Prime London is still far below its peak',
   desc: () => `Nominal change from each borough's all-time-high average price to ${K.latest_month}.`,
-  option: () => rankedBar({ metric: 'pct_below_peak', fmt: v => F.spct(v), top: 'min' }),
+  option: () => rankedBar({ metric: 'pct_below_peak', fmt: v => v > -0.05 ? 'at peak' : F.spct(v), top: 'min' }),
 };
 
 V.heatmap = {
   title: () => 'Affordability by property type',
   desc: () => `Price-to-earnings ratio by borough and property type, ${K.latest_month}. Sorted by flats.`,
-  foot: () => 'City of London: HPI publishes only a flat/maisonette series (too few houses sold).',
+  foot: () => `City of London: only a flat/maisonette price is published for ${K.latest_month} (too few house sales).`,
   option: () => {
     const types = ['Flat/Maisonette', 'Terraced', 'Semi-detached', 'Detached'];
-    const pt = D.propertyTypes.filter(r => inScope(byCode[r.area_code]));
+    const pt = D.propertyTypes.filter(r => inScope(byCode[r.area_code]) && r.price_to_earnings_ratio != null);
     const flat = Object.fromEntries(pt.filter(r => r.property_type === types[0]).map(r => [r.area_code, r.price_to_earnings_ratio]));
     const codes = [...new Set(pt.map(r => r.area_code))].sort((a, b) => flat[a] - flat[b]);
     const vals = pt.map(r => r.price_to_earnings_ratio);

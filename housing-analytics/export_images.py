@@ -66,7 +66,13 @@ def export(chrome: str, name: str, visual: str, width: int, height: int) -> None
             f"--window-size={width},{height}", "--virtual-time-budget=15000",
             "--run-all-compositor-stages-before-draw", f"--screenshot={out}", url,
         ]
-        subprocess.run(cmd, check=True, capture_output=True, timeout=120)
+        # Headless Chrome occasionally exits non-zero on macOS display-link errors; retry.
+        for attempt in range(1, 4):
+            result = subprocess.run(cmd, capture_output=True, timeout=180)
+            if result.returncode == 0 and out.exists():
+                break
+            if attempt == 3:
+                raise RuntimeError(f"Chrome failed to export {visual}: {result.stderr.decode()[-500:]}")
     print(f"[image] {out.relative_to(HERE)}  ({width * SCALE}x{height * SCALE})")
 
 

@@ -196,12 +196,15 @@ const short = n => n.replace(' and ', ' & ').replace('City of Westminster', 'Wes
 /* ---------------- state ---------------- */
 const byCode = Object.fromEntries(D.boroughs.map(b => [b.area_code, b]));
 const defaultBorough = [...D.boroughs].filter(b => b.stress_index != null).sort((a, b) => b.stress_index - a.stress_index)[0].area_code;
+// URL state is untrusted input: only accept known values (prevents DOM XSS via crafted links).
+const pick = (value, allowed, fallback) => (value != null && allowed.includes(value) ? value : fallback);
 const S = {
-  group: params.get('group') || 'All',
-  borough: params.get('borough') || '',
-  page: params.get('page') || 'overview',
-  mapMetric: params.get('metric') || 'price_to_earnings_ratio',
+  group: pick(params.get('group'), ['All', 'Inner London', 'Outer London'], 'All'),
+  borough: pick(params.get('borough'), Object.keys(byCode), ''),
+  page: params.get('page') || 'overview',          // validated against PAGES before use
+  mapMetric: params.get('metric') || 'price_to_earnings_ratio',  // validated against MAP_METRICS below
 };
+const esc = v => String(v).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 const inScope = b => S.group === 'All' || b.group === S.group;
 const scoped = () => D.boroughs.filter(inScope);
 const median = arr => { const a = arr.filter(v => v != null).sort((x, y) => x - y); if (!a.length) return null;
@@ -272,6 +275,7 @@ const MAP_METRICS = {
   pct_below_peak: { label: 'Price change from all-time peak', fmt: v => F.spct(v), scale: 'seqRev' },
 };
 
+if (!Object.prototype.hasOwnProperty.call(MAP_METRICS, S.mapMetric)) S.mapMetric = 'price_to_earnings_ratio';
 const V = {};
 
 V.map = {
@@ -727,10 +731,10 @@ let charts = [];
 function card(id, cls, extra = '') {
   const v = V[id];
   return `<section class="card ${cls}" data-visual="${id}">
-    <h3>${v.title()}</h3><div class="desc">${v.desc()}</div>
+    <h3>${esc(v.title())}</h3><div class="desc">${esc(v.desc())}</div>
     ${v.tools ? `<div class="tools">${v.tools()}</div>` : ''}
     <div class="chart" id="chart-${id}-${extra}"></div>
-    ${v.foot ? `<div class="foot">${v.foot()}</div>` : ''}
+    ${v.foot ? `<div class="foot">${esc(v.foot())}</div>` : ''}
     <div class="brandline"><span>${SOURCE}</span><span>${REPO}</span></div>
   </section>`;
 }
@@ -747,12 +751,13 @@ function mount(root) {
 function render() {
   charts.forEach(c => c.dispose()); charts = [];
   const page = PAGES.find(p => p.id === S.page) || PAGES[0];
+  S.page = page.id;
   document.querySelectorAll('#pageNav button').forEach(b => b.setAttribute('aria-current', b.dataset.page === page.id ? 'page' : 'false'));
   document.getElementById('pageSel').value = page.id;
   const html = page.custom ? page.custom() :
     (page.kpis ? page.kpis() : '') + `<div class="grid">${page.cards.map(([id, cls], i) => card(id, cls, i)).join('')}</div>`;
   const pageEl = document.getElementById('page');
-  pageEl.innerHTML = `<h2 class="page-title">${page.name}</h2><p class="page-desc">${page.desc()}</p>${html}`;
+  pageEl.innerHTML = `<h2 class="page-title">${esc(page.name)}</h2><p class="page-desc">${esc(page.desc())}</p>${html}`;
   mount(pageEl);
   const mm = document.getElementById('mapMetric');
   if (mm) mm.onchange = e => { S.mapMetric = e.target.value; render(); };
@@ -811,7 +816,7 @@ function renderPoster() {
 function start() {
   echarts.registerMap('london', D.geo);
   if (EXPORT === 'full') renderPoster();
-  else if (EXPORT && V[EXPORT]) renderSingle(EXPORT);
+  else if (EXPORT && Object.prototype.hasOwnProperty.call(V, EXPORT)) renderSingle(EXPORT);
   else { initShell(); render(); }
   // Signal for the PNG exporter that rendering is done.
   setTimeout(() => document.body.setAttribute('data-ready', '1'), 50);

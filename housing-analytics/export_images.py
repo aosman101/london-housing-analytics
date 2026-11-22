@@ -16,7 +16,7 @@ DASHBOARD = HERE / "dashboard" / "index.html"
 IMAGES = HERE / "images"
 SCALE = 2  # device pixel ratio -> crisp images for LinkedIn
 
-# file name, visual id, CSS width, CSS height
+# file name, visual id (or a full query string for app-page screenshots), CSS width, CSS height
 VISUALS = [
     ("00_full_dashboard", "full", 1920, 2560),
     ("01_map_price_to_earnings", "map", 1200, 1000),
@@ -38,6 +38,9 @@ VISUALS = [
     ("17_gross_rental_yield", "yield", 1000, 1150),
     ("18_yield_vs_price", "yieldscatter", 1200, 850),
     ("19_price_volatility", "volatility", 1000, 1150),
+    ("20_app_overview_page", "page=overview", 1600, 1300),
+    ("21_app_borough_profile_page", "page=profile&borough=E09000020", 1600, 1150),
+    ("22_app_rental_pressure_page", "page=rent&group=Outer%20London&borough=E09000004", 1600, 1250),
 ]
 
 
@@ -58,7 +61,8 @@ def find_chrome() -> str:
 
 def export(chrome: str, name: str, visual: str, width: int, height: int) -> None:
     out = IMAGES / f"{name}.png"
-    url = f"{DASHBOARD.as_uri()}?export={visual}"
+    query = visual if "=" in visual else f"export={visual}"
+    url = f"{DASHBOARD.as_uri()}?{query}"
     with tempfile.TemporaryDirectory() as profile:
         cmd = [
             chrome, "--headless=new", "--disable-gpu", "--hide-scrollbars", "--no-first-run",

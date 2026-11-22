@@ -7,7 +7,7 @@ on:
     branches: [main]
 
 jobs:
-  lint-and-parse:
+  lint-and-test:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -25,36 +25,55 @@ jobs:
           pip install ruff==0.6.9
 
       - name: Lint Python with ruff
-        run: ruff check src
-
-      - name: Byte-compile Python (syntax check)
-        run: python -m compileall -q src
+        run: ruff check src tests
 
       - name: Run Python unit tests
-        run: python -m unittest discover -s tests
+        run: python -m unittest discover -s tests -v
 
-      - name: Render dbt profile for parse-only check
-        run: |
-          mkdir -p ~/.dbt
-          cat > ~/.dbt/profiles.yml <<'EOF'
-          housing_warehouse:
-            target: ci
-            outputs:
-              ci:
-                type: postgres
-                host: localhost
-                port: 5432
-                user: analytics
-                password: analytics
-                dbname: housing_warehouse
-                schema: analytics
-                threads: 1
-          EOF
+  dbt-build:
+    # Loads small fixture extracts into a throwaway Postgres and runs every dbt model and test,
+    # so SQL changes are verified end-to-end without downloading the source data.
+    runs-on: ubuntu-latest
+    needs: lint-and-test
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: analytics
+          POSTGRES_PASSWORD: analytics
+          POSTGRES_DB: housing_warehouse
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U analytics -d housing_warehouse"
+          --health-interval 5s --health-timeout 5s --health-retries 10
+    env:
+      PGHOST: localhost
+      PGPORT: "5432"
+      PGUSER: analytics
+      PGPASSWORD: analytics
+      PGDATABASE: housing_warehouse
+      DBT_PROFILES_DIR: ${{ github.workspace }}/dbt
+      LHA_NORMALISED_DIR: ${{ github.workspace }}/tests/fixtures/normalised
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: "pip"
+
+      - name: Install Python dependencies
+        run: pip install -r requirements.txt
+
+      - name: Load fixture data into raw schema
+        run: python src/load/load_to_postgres.py
 
       - name: dbt deps
         working-directory: dbt
         run: dbt deps
 
-      - name: dbt parse
+      - name: dbt build (models + tests)
         working-directory: dbt
-        run: dbt parse
+        run: dbt build

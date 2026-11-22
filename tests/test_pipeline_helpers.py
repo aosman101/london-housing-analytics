@@ -6,7 +6,13 @@ from unittest.mock import patch
 
 from src.common import db
 from src.load import load_to_postgres
-from src.transform.normalise_sources import clean_col, normalise_property_type_label
+from src.transform.normalise_sources import (
+    ashe_quality_band,
+    clean_col,
+    normalise_property_type_label,
+)
+
+FIXTURES = Path(__file__).parent / "fixtures" / "normalised"
 
 
 class PipelineHelperTests(unittest.TestCase):
@@ -40,6 +46,19 @@ class PipelineHelperTests(unittest.TestCase):
 
     def test_clean_col_normalises_spreadsheet_headers(self) -> None:
         self.assertEqual(clean_col(" Rental Price\r\n "), "rental price")
+
+    def test_ashe_quality_band_follows_ons_cv_thresholds(self) -> None:
+        self.assertEqual(ashe_quality_band(4.8), "Precise")
+        self.assertEqual(ashe_quality_band(5.0), "Precise")
+        self.assertEqual(ashe_quality_band(9.4), "Reasonably precise")
+        self.assertEqual(ashe_quality_band(15), "Acceptable")
+        self.assertEqual(ashe_quality_band(25), "Unreliable")
+        self.assertIsNone(ashe_quality_band(float("nan")))
+        self.assertIsNone(ashe_quality_band(None))
+
+    def test_ci_fixtures_cover_every_raw_table(self) -> None:
+        with patch.object(load_to_postgres, "NORM", FIXTURES):
+            load_to_postgres.ensure_inputs_exist()
 
 
 if __name__ == "__main__":

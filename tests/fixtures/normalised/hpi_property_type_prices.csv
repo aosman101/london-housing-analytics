@@ -1,0 +1,397 @@
+date_month,area_name,area_code,average_price,hpi_index,pct_change_1m,pct_change_12m,property_type
+2023-06-01,City of Westminster,E09000033,4969417.0,97.9,0.7,6.8,Detached
+2023-06-01,City of London,E09000001,,,,,Detached
+2023-06-01,Camden,E09000007,3575058.0,99.8,1.6,4.5,Detached
+2023-07-01,City of Westminster,E09000033,4861379.0,95.8,-2.2,5.8,Detached
+2023-07-01,City of London,E09000001,,,,,Detached
+2023-07-01,Camden,E09000007,3447490.0,96.3,-3.6,-0.9,Detached
+2023-08-01,City of London,E09000001,,,,,Detached
+2023-08-01,City of Westminster,E09000033,4708482.0,92.8,-3.1,0.5,Detached
+2023-08-01,Camden,E09000007,3602697.0,100.6,4.5,1.1,Detached
+2023-09-01,Camden,E09000007,3497297.0,97.7,-2.9,-2.4,Detached
+2023-09-01,City of London,E09000001,,,,,Detached
+2023-09-01,City of Westminster,E09000033,4472646.0,88.1,-5.0,-5.4,Detached
+2023-10-01,City of Westminster,E09000033,4415684.0,87.0,-1.3,-5.1,Detached
+2023-10-01,Camden,E09000007,3507119.0,97.9,0.3,-0.5,Detached
+2023-10-01,City of London,E09000001,,,,,Detached
+2023-11-01,City of London,E09000001,,,,,Detached
+2023-11-01,Camden,E09000007,3428430.0,95.7,-2.2,-1.7,Detached
+2023-11-01,City of Westminster,E09000033,4358702.0,85.9,-1.3,-10.5,Detached
+2023-12-01,City of London,E09000001,,,,,Detached
+2023-12-01,Camden,E09000007,3439918.0,96.1,0.3,-3.6,Detached
+2023-12-01,City of Westminster,E09000033,4517660.0,89.0,3.6,-8.1,Detached
+2024-01-01,Camden,E09000007,3422756.0,95.6,-0.5,-4.4,Detached
+2024-01-01,City of London,E09000001,,,,,Detached
+2024-01-01,City of Westminster,E09000033,4657138.0,91.8,3.1,-8.2,Detached
+2024-02-01,Camden,E09000007,3375346.0,94.3,-1.4,-5.3,Detached
+2024-02-01,City of London,E09000001,,,,,Detached
+2024-02-01,City of Westminster,E09000033,4689979.0,92.4,0.7,-5.2,Detached
+2024-03-01,City of Westminster,E09000033,4615716.0,91.0,-1.6,-5.8,Detached
+2024-03-01,City of London,E09000001,,,,,Detached
+2024-03-01,Camden,E09000007,3362095.0,93.9,-0.4,-4.1,Detached
+2024-04-01,City of Westminster,E09000033,4576515.0,90.2,-0.8,-5.9,Detached
+2024-04-01,Camden,E09000007,3313778.0,92.5,-1.4,-8.3,Detached
+2024-04-01,City of London,E09000001,,,,,Detached
+2024-05-01,City of London,E09000001,,,,,Detached
+2024-05-01,City of Westminster,E09000033,4371676.0,86.1,-4.5,-11.4,Detached
+2024-05-01,Camden,E09000007,3437705.0,96.0,3.7,-2.3,Detached
+2024-06-01,City of Westminster,E09000033,4349135.0,85.7,-0.5,-12.5,Detached
+2024-06-01,City of London,E09000001,,,,,Detached
+2024-06-01,Camden,E09000007,3426275.0,95.7,-0.3,-4.2,Detached
+2024-07-01,Camden,E09000007,3547195.0,99.1,3.5,2.9,Detached
+2024-07-01,City of Westminster,E09000033,4174115.0,82.3,-4.0,-14.1,Detached
+2024-07-01,City of London,E09000001,,,,,Detached
+2024-08-01,City of Westminster,E09000033,4426779.0,87.2,6.1,-6.0,Detached
+2024-08-01,City of London,E09000001,,,,,Detached
+2024-08-01,Camden,E09000007,3487101.0,97.4,-1.7,-3.2,Detached
+2024-09-01,City of Westminster,E09000033,4346056.0,85.6,-1.8,-2.8,Detached
+2024-09-01,City of London,E09000001,,,,,Detached
+2024-09-01,Camden,E09000007,3501674.0,97.8,0.4,0.1,Detached
+2024-10-01,City of Westminster,E09000033,4365231.0,86.0,0.4,-1.1,Detached
+2024-10-01,City of London,E09000001,,,,,Detached
+2024-10-01,Camden,E09000007,3520894.0,98.3,0.5,0.4,Detached
+2024-11-01,City of Westminster,E09000033,4222794.0,83.2,-3.3,-3.1,Detached
+2024-11-01,Camden,E09000007,3594911.0,100.4,2.1,4.9,Detached
+2024-11-01,City of London,E09000001,,,,,Detached
+2024-12-01,City of London,E09000001,,,,,Detached
+2024-12-01,City of Westminster,E09000033,4233999.0,83.4,0.3,-6.3,Detached
+2024-12-01,Camden,E09000007,3636188.0,101.5,1.1,5.7,Detached
+2025-01-01,City of Westminster,E09000033,4198352.0,82.7,-0.8,-9.9,Detached
+2025-01-01,City of London,E09000001,,,,,Detached
+2025-01-01,Camden,E09000007,3641975.0,101.7,0.2,6.4,Detached
+2025-02-01,City of Westminster,E09000033,4095705.0,80.7,-2.4,-12.7,Detached
+2025-02-01,City of London,E09000001,,,,,Detached
+2025-02-01,Camden,E09000007,3513647.0,98.1,-3.5,4.1,Detached
+2025-03-01,City of Westminster,E09000033,3849148.0,75.8,-6.0,-16.6,Detached
+2025-03-01,City of London,E09000001,,,,,Detached
+2025-03-01,Camden,E09000007,3350467.0,93.6,-4.6,-0.3,Detached
+2025-04-01,Camden,E09000007,3331668.0,93.0,-0.6,0.5,Detached
+2025-04-01,City of Westminster,E09000033,4176215.0,82.3,8.5,-8.7,Detached
+2025-04-01,City of London,E09000001,,,,,Detached
+2025-05-01,City of Westminster,E09000033,4465896.0,88.0,6.9,2.2,Detached
+2025-05-01,City of London,E09000001,,,,,Detached
+2025-05-01,Camden,E09000007,3506607.0,97.9,5.3,2.0,Detached
+2025-06-01,Camden,E09000007,3808747.0,106.4,8.6,11.2,Detached
+2025-06-01,City of London,E09000001,,,,,Detached
+2025-06-01,City of Westminster,E09000033,4747612.0,93.6,6.3,9.2,Detached
+2025-07-01,City of Westminster,E09000033,4511448.0,88.9,-5.0,8.1,Detached
+2025-07-01,Camden,E09000007,3848931.0,107.5,1.1,8.5,Detached
+2025-07-01,City of London,E09000001,,,,,Detached
+2025-08-01,City of Westminster,E09000033,4155123.0,81.9,-7.9,-6.1,Detached
+2025-08-01,Camden,E09000007,3825892.0,106.8,-0.6,9.7,Detached
+2025-08-01,City of London,E09000001,,,,,Detached
+2025-09-01,City of Westminster,E09000033,4107481.0,80.9,-1.1,-5.5,Detached
+2025-09-01,City of London,E09000001,,,,,Detached
+2025-09-01,Camden,E09000007,3693223.0,103.1,-3.5,5.5,Detached
+2025-10-01,Camden,E09000007,3581255.0,100.0,-3.0,1.7,Detached
+2025-10-01,City of London,E09000001,,,,,Detached
+2025-10-01,City of Westminster,E09000033,3833832.0,75.5,-6.7,-12.2,Detached
+2025-11-01,City of Westminster,E09000033,3749970.0,73.9,-2.2,-11.2,Detached
+2025-11-01,City of London,E09000001,,,,,Detached
+2025-11-01,Camden,E09000007,3375535.0,94.3,-5.7,-6.1,Detached
+2025-12-01,City of Westminster,E09000033,3569678.0,70.3,-4.8,-15.7,Detached
+2025-12-01,City of London,E09000001,,,,,Detached
+2025-12-01,Camden,E09000007,3283510.0,91.7,-2.7,-9.7,Detached
+2026-01-01,City of London,E09000001,,,,,Detached
+2026-01-01,City of Westminster,E09000033,3752034.0,73.9,5.1,-10.6,Detached
+2026-01-01,Camden,E09000007,3336450.0,93.2,1.6,-8.4,Detached
+2026-02-01,City of Westminster,E09000033,3711194.0,73.1,-1.1,-9.4,Detached
+2026-02-01,City of London,E09000001,,,,,Detached
+2026-02-01,Camden,E09000007,3257793.0,91.0,-2.4,-7.3,Detached
+2023-06-01,City of Westminster,E09000033,3500438.0,98.7,0.5,5.8,Semi-detached
+2023-06-01,City of London,E09000001,,,,,Semi-detached
+2023-06-01,Camden,E09000007,2100073.0,100.6,1.7,5.0,Semi-detached
+2023-07-01,City of Westminster,E09000033,3417493.0,96.3,-2.4,4.4,Semi-detached
+2023-07-01,City of London,E09000001,,,,,Semi-detached
+2023-07-01,Camden,E09000007,2034090.0,97.5,-3.1,-0.7,Semi-detached
+2023-08-01,City of London,E09000001,,,,,Semi-detached
+2023-08-01,City of Westminster,E09000033,3278153.0,92.4,-4.1,-1.4,Semi-detached
+2023-08-01,Camden,E09000007,2115455.0,101.4,4.0,0.7,Semi-detached
+2023-09-01,Camden,E09000007,2062360.0,98.8,-2.5,-1.6,Semi-detached
+2023-09-01,City of London,E09000001,,,,,Semi-detached
+2023-09-01,City of Westminster,E09000033,3121493.0,88.0,-4.8,-5.7,Semi-detached
+2023-10-01,City of Westminster,E09000033,3091854.0,87.2,-0.9,-4.8,Semi-detached
+2023-10-01,Camden,E09000007,2073676.0,99.4,0.5,1.0,Semi-detached
+2023-10-01,City of London,E09000001,,,,,Semi-detached
+2023-11-01,City of London,E09000001,,,,,Semi-detached
+2023-11-01,Camden,E09000007,2029195.0,97.2,-2.1,0.4,Semi-detached
+2023-11-01,City of Westminster,E09000033,3052218.0,86.0,-1.3,-10.0,Semi-detached
+2023-12-01,City of London,E09000001,,,,,Semi-detached
+2023-12-01,Camden,E09000007,2038355.0,97.7,0.5,-1.8,Semi-detached
+2023-12-01,City of Westminster,E09000033,3163802.0,89.2,3.7,-7.8,Semi-detached
+2024-01-01,Camden,E09000007,2027961.0,97.2,-0.5,-2.8,Semi-detached
+2024-01-01,City of London,E09000001,,,,,Semi-detached
+2024-01-01,City of Westminster,E09000033,3271117.0,92.2,3.4,-7.8,Semi-detached
+2024-02-01,Camden,E09000007,2009539.0,96.3,-0.9,-4.1,Semi-detached
+2024-02-01,City of London,E09000001,,,,,Semi-detached
+2024-02-01,City of Westminster,E09000033,3296577.0,92.9,0.8,-4.9,Semi-detached
+2024-03-01,City of Westminster,E09000033,3212485.0,90.6,-2.6,-6.5,Semi-detached
+2024-03-01,City of London,E09000001,,,,,Semi-detached
+2024-03-01,Camden,E09000007,1995855.0,95.6,-0.7,-3.0,Semi-detached
+2024-04-01,City of Westminster,E09000033,3196071.0,90.1,-0.5,-6.0,Semi-detached
+2024-04-01,Camden,E09000007,1967006.0,94.2,-1.4,-7.0,Semi-detached
+2024-04-01,City of London,E09000001,,,,,Semi-detached
+2024-05-01,City of London,E09000001,,,,,Semi-detached
+2024-05-01,City of Westminster,E09000033,3063011.0,86.3,-4.2,-12.0,Semi-detached
+2024-05-01,Camden,E09000007,2043447.0,97.9,3.9,-1.0,Semi-detached
+2024-06-01,City of Westminster,E09000033,3087918.0,87.1,0.8,-11.8,Semi-detached
+2024-06-01,City of London,E09000001,,,,,Semi-detached
+2024-06-01,Camden,E09000007,2044088.0,97.9,0.0,-2.7,Semi-detached
+2024-07-01,Camden,E09000007,2116390.0,101.4,3.5,4.0,Semi-detached
+2024-07-01,City of Westminster,E09000033,2938945.0,82.9,-4.8,-14.0,Semi-detached
+2024-07-01,City of London,E09000001,,,,,Semi-detached
+2024-08-01,City of Westminster,E09000033,3093357.0,87.2,5.3,-5.6,Semi-detached
+2024-08-01,City of London,E09000001,,,,,Semi-detached
+2024-08-01,Camden,E09000007,2079202.0,99.6,-1.8,-1.7,Semi-detached
+2024-09-01,City of Westminster,E09000033,3026310.0,85.3,-2.2,-3.0,Semi-detached
+2024-09-01,City of London,E09000001,,,,,Semi-detached
+2024-09-01,Camden,E09000007,2083754.0,99.8,0.2,1.0,Semi-detached
+2024-10-01,City of Westminster,E09000033,3067566.0,86.5,1.4,-0.8,Semi-detached
+2024-10-01,City of London,E09000001,,,,,Semi-detached
+2024-10-01,Camden,E09000007,2086686.0,100.0,0.1,0.6,Semi-detached
+2024-11-01,City of Westminster,E09000033,2982792.0,84.1,-2.8,-2.3,Semi-detached
+2024-11-01,Camden,E09000007,2127753.0,102.0,2.0,4.9,Semi-detached
+2024-11-01,City of London,E09000001,,,,,Semi-detached
+2024-12-01,City of London,E09000001,,,,,Semi-detached
+2024-12-01,City of Westminster,E09000033,2965733.0,83.6,-0.6,-6.3,Semi-detached
+2024-12-01,Camden,E09000007,2145973.0,102.8,0.9,5.3,Semi-detached
+2025-01-01,City of Westminster,E09000033,2934359.0,82.7,-1.1,-10.3,Semi-detached
+2025-01-01,City of London,E09000001,,,,,Semi-detached
+2025-01-01,Camden,E09000007,2158628.0,103.4,0.6,6.4,Semi-detached
+2025-02-01,City of Westminster,E09000033,2879076.0,81.2,-1.9,-12.7,Semi-detached
+2025-02-01,City of London,E09000001,,,,,Semi-detached
+2025-02-01,Camden,E09000007,2083836.0,99.8,-3.5,3.7,Semi-detached
+2025-03-01,City of Westminster,E09000033,2757779.0,77.7,-4.2,-14.2,Semi-detached
+2025-03-01,City of London,E09000001,,,,,Semi-detached
+2025-03-01,Camden,E09000007,2006856.0,96.2,-3.7,0.6,Semi-detached
+2025-04-01,Camden,E09000007,1994287.0,95.6,-0.6,1.4,Semi-detached
+2025-04-01,City of Westminster,E09000033,3002776.0,84.7,8.9,-6.0,Semi-detached
+2025-04-01,City of London,E09000001,,,,,Semi-detached
+2025-05-01,City of Westminster,E09000033,3208853.0,90.5,6.9,4.8,Semi-detached
+2025-05-01,City of London,E09000001,,,,,Semi-detached
+2025-05-01,Camden,E09000007,2100152.0,100.6,5.3,2.8,Semi-detached
+2025-06-01,Camden,E09000007,2270885.0,108.8,8.1,11.1,Semi-detached
+2025-06-01,City of London,E09000001,,,,,Semi-detached
+2025-06-01,City of Westminster,E09000033,3403190.0,95.9,6.1,10.2,Semi-detached
+2025-07-01,City of Westminster,E09000033,3241141.0,91.4,-4.8,10.3,Semi-detached
+2025-07-01,Camden,E09000007,2305486.0,110.5,1.5,9.0,Semi-detached
+2025-07-01,City of London,E09000001,,,,,Semi-detached
+2025-08-01,City of Westminster,E09000033,2992629.0,84.4,-7.7,-3.3,Semi-detached
+2025-08-01,Camden,E09000007,2308646.0,110.6,0.1,11.0,Semi-detached
+2025-08-01,City of London,E09000001,,,,,Semi-detached
+2025-09-01,City of Westminster,E09000033,2955373.0,83.3,-1.2,-2.3,Semi-detached
+2025-09-01,City of London,E09000001,,,,,Semi-detached
+2025-09-01,Camden,E09000007,2236390.0,107.2,-3.1,7.3,Semi-detached
+2025-10-01,Camden,E09000007,2161885.0,103.6,-3.3,3.6,Semi-detached
+2025-10-01,City of London,E09000001,,,,,Semi-detached
+2025-10-01,City of Westminster,E09000033,2746833.0,77.4,-7.1,-10.5,Semi-detached
+2025-11-01,City of Westminster,E09000033,2687936.0,75.8,-2.1,-9.9,Semi-detached
+2025-11-01,City of London,E09000001,,,,,Semi-detached
+2025-11-01,Camden,E09000007,2028456.0,97.2,-6.2,-4.7,Semi-detached
+2025-12-01,City of Westminster,E09000033,2555543.0,72.0,-4.9,-13.8,Semi-detached
+2025-12-01,City of London,E09000001,,,,,Semi-detached
+2025-12-01,Camden,E09000007,1971098.0,94.4,-2.8,-8.1,Semi-detached
+2026-01-01,City of London,E09000001,,,,,Semi-detached
+2026-01-01,City of Westminster,E09000033,2704288.0,76.2,5.8,-7.8,Semi-detached
+2026-01-01,Camden,E09000007,1995830.0,95.6,1.3,-7.5,Semi-detached
+2026-02-01,City of Westminster,E09000033,2629083.0,74.1,-2.8,-8.7,Semi-detached
+2026-02-01,City of London,E09000001,,,,,Semi-detached
+2026-02-01,Camden,E09000007,1964491.0,94.1,-1.6,-5.7,Semi-detached
+2023-06-01,City of Westminster,E09000033,2076431.0,97.6,0.9,5.8,Terraced
+2023-06-01,City of London,E09000001,3752367.0,110.5,8.6,12.5,Terraced
+2023-06-01,Camden,E09000007,1546973.0,100.2,2.0,4.4,Terraced
+2023-07-01,City of Westminster,E09000033,2035922.0,95.7,-2.0,5.0,Terraced
+2023-07-01,City of London,E09000001,3864714.0,113.8,3.0,16.5,Terraced
+2023-07-01,Camden,E09000007,1500325.0,97.2,-3.0,-1.1,Terraced
+2023-08-01,City of London,E09000001,3735985.0,110.0,-3.3,7.4,Terraced
+2023-08-01,City of Westminster,E09000033,1959983.0,92.1,-3.7,-1.0,Terraced
+2023-08-01,Camden,E09000007,1557712.0,100.9,3.8,-0.2,Terraced
+2023-09-01,Camden,E09000007,1522728.0,98.6,-2.2,-2.0,Terraced
+2023-09-01,City of London,E09000001,3499993.0,103.1,-6.3,0.4,Terraced
+2023-09-01,City of Westminster,E09000033,1873188.0,88.0,-4.4,-5.2,Terraced
+2023-10-01,City of Westminster,E09000033,1857674.0,87.3,-0.8,-4.6,Terraced
+2023-10-01,Camden,E09000007,1534130.0,99.4,0.7,0.7,Terraced
+2023-10-01,City of London,E09000001,3350117.0,98.7,-4.3,-5.1,Terraced
+2023-11-01,City of London,E09000001,3247970.0,95.6,-3.0,-9.2,Terraced
+2023-11-01,Camden,E09000007,1497266.0,97.0,-2.4,-0.1,Terraced
+2023-11-01,City of Westminster,E09000033,1833058.0,86.1,-1.3,-10.1,Terraced
+2023-12-01,City of London,E09000001,2980266.0,87.8,-8.2,-13.3,Terraced
+2023-12-01,Camden,E09000007,1506667.0,97.6,0.6,-2.3,Terraced
+2023-12-01,City of Westminster,E09000033,1912898.0,89.9,4.4,-7.5,Terraced
+2024-01-01,Camden,E09000007,1503115.0,97.4,-0.2,-2.6,Terraced
+2024-01-01,City of London,E09000001,3112940.0,91.7,4.5,-8.3,Terraced
+2024-01-01,City of Westminster,E09000033,1978111.0,92.9,3.4,-7.1,Terraced
+2024-02-01,Camden,E09000007,1494430.0,96.8,-0.6,-3.6,Terraced
+2024-02-01,City of London,E09000001,3213660.0,94.6,3.2,4.4,Terraced
+2024-02-01,City of Westminster,E09000033,2002160.0,94.1,1.2,-3.7,Terraced
+2024-03-01,City of Westminster,E09000033,1951446.0,91.7,-2.5,-4.4,Terraced
+2024-03-01,City of London,E09000001,3388428.0,99.8,5.4,2.2,Terraced
+2024-03-01,Camden,E09000007,1479547.0,95.8,-1.0,-2.1,Terraced
+2024-04-01,City of Westminster,E09000033,1931154.0,90.7,-1.0,-4.3,Terraced
+2024-04-01,Camden,E09000007,1453388.0,94.1,-1.8,-6.4,Terraced
+2024-04-01,City of London,E09000001,3389391.0,99.8,0.0,6.8,Terraced
+2024-05-01,City of London,E09000001,3416920.0,100.6,0.8,-1.1,Terraced
+2024-05-01,City of Westminster,E09000033,1843785.0,86.6,-4.5,-10.4,Terraced
+2024-05-01,Camden,E09000007,1510564.0,97.9,3.9,-0.4,Terraced
+2024-06-01,City of Westminster,E09000033,1852820.0,87.1,0.5,-10.8,Terraced
+2024-06-01,City of London,E09000001,3208783.0,94.5,-6.1,-14.5,Terraced
+2024-06-01,Camden,E09000007,1518360.0,98.4,0.5,-1.8,Terraced
+2024-07-01,Camden,E09000007,1576641.0,102.1,3.8,5.1,Terraced
+2024-07-01,City of Westminster,E09000033,1782620.0,83.8,-3.8,-12.4,Terraced
+2024-07-01,City of London,E09000001,3034494.0,89.4,-5.4,-21.5,Terraced
+2024-08-01,City of Westminster,E09000033,1896526.0,89.1,6.4,-3.2,Terraced
+2024-08-01,City of London,E09000001,2966144.0,87.3,-2.3,-20.6,Terraced
+2024-08-01,Camden,E09000007,1555311.0,100.7,-1.4,-0.2,Terraced
+2024-09-01,City of Westminster,E09000033,1850146.0,86.9,-2.4,-1.2,Terraced
+2024-09-01,City of London,E09000001,2984350.0,87.9,0.6,-14.7,Terraced
+2024-09-01,Camden,E09000007,1552378.0,100.6,-0.2,1.9,Terraced
+2024-10-01,City of Westminster,E09000033,1860725.0,87.4,0.6,0.2,Terraced
+2024-10-01,City of London,E09000001,2860808.0,84.2,-4.1,-14.6,Terraced
+2024-10-01,Camden,E09000007,1556417.0,100.8,0.3,1.5,Terraced
+2024-11-01,City of Westminster,E09000033,1796625.0,84.4,-3.4,-2.0,Terraced
+2024-11-01,Camden,E09000007,1583614.0,102.6,1.7,5.8,Terraced
+2024-11-01,City of London,E09000001,2866257.0,84.4,0.2,-11.8,Terraced
+2024-12-01,City of London,E09000001,3060620.0,90.1,6.8,2.7,Terraced
+2024-12-01,City of Westminster,E09000033,1802972.0,84.7,0.4,-5.7,Terraced
+2024-12-01,Camden,E09000007,1602526.0,103.8,1.2,6.4,Terraced
+2025-01-01,City of Westminster,E09000033,1786344.0,83.9,-0.9,-9.7,Terraced
+2025-01-01,City of London,E09000001,,,,,Terraced
+2025-01-01,Camden,E09000007,1611410.0,104.4,0.6,7.2,Terraced
+2025-02-01,City of Westminster,E09000033,1747382.0,82.1,-2.2,-12.7,Terraced
+2025-02-01,City of London,E09000001,,,,,Terraced
+2025-02-01,Camden,E09000007,1559423.0,101.0,-3.2,4.3,Terraced
+2025-03-01,City of Westminster,E09000033,1664781.0,78.2,-4.7,-14.7,Terraced
+2025-03-01,City of London,E09000001,,,,,Terraced
+2025-03-01,Camden,E09000007,1509484.0,97.8,-3.2,2.0,Terraced
+2025-04-01,Camden,E09000007,1488255.0,96.4,-1.4,2.4,Terraced
+2025-04-01,City of Westminster,E09000033,1782836.0,83.8,7.1,-7.7,Terraced
+2025-04-01,City of London,E09000001,,,,,Terraced
+2025-05-01,City of Westminster,E09000033,1904129.0,89.5,6.8,3.3,Terraced
+2025-05-01,City of London,E09000001,,,,,Terraced
+2025-05-01,Camden,E09000007,1565892.0,101.4,5.2,3.7,Terraced
+2025-06-01,Camden,E09000007,1679163.0,108.8,7.2,10.6,Terraced
+2025-06-01,City of London,E09000001,,,,,Terraced
+2025-06-01,City of Westminster,E09000033,2000676.0,94.0,5.1,8.0,Terraced
+2025-07-01,City of Westminster,E09000033,1928828.0,90.6,-3.6,8.2,Terraced
+2025-07-01,Camden,E09000007,1717663.0,111.3,2.3,9.0,Terraced
+2025-07-01,City of London,E09000001,,,,,Terraced
+2025-08-01,City of Westminster,E09000033,1795213.0,84.3,-6.9,-5.3,Terraced
+2025-08-01,Camden,E09000007,1723240.0,111.6,0.3,10.8,Terraced
+2025-08-01,City of London,E09000001,,,,,Terraced
+2025-09-01,City of Westminster,E09000033,1788934.0,84.1,-0.3,-3.3,Terraced
+2025-09-01,City of London,E09000001,,,,,Terraced
+2025-09-01,Camden,E09000007,1677102.0,108.6,-2.7,8.0,Terraced
+2025-10-01,Camden,E09000007,1617687.0,104.8,-3.5,3.9,Terraced
+2025-10-01,City of London,E09000001,,,,,Terraced
+2025-10-01,City of Westminster,E09000033,1664258.0,78.2,-7.0,-10.6,Terraced
+2025-11-01,City of Westminster,E09000033,1625354.0,76.4,-2.3,-9.5,Terraced
+2025-11-01,City of London,E09000001,,,,,Terraced
+2025-11-01,Camden,E09000007,1519143.0,98.4,-6.1,-4.1,Terraced
+2025-12-01,City of Westminster,E09000033,1549512.0,72.8,-4.7,-14.1,Terraced
+2025-12-01,City of London,E09000001,,,,,Terraced
+2025-12-01,Camden,E09000007,1476321.0,95.6,-2.8,-7.9,Terraced
+2026-01-01,City of London,E09000001,,,,,Terraced
+2026-01-01,City of Westminster,E09000033,1614313.0,75.8,4.2,-9.6,Terraced
+2026-01-01,Camden,E09000007,1487911.0,96.4,0.8,-7.7,Terraced
+2026-02-01,City of Westminster,E09000033,1572924.0,73.9,-2.6,-10.0,Terraced
+2026-02-01,City of London,E09000001,,,,,Terraced
+2026-02-01,Camden,E09000007,1455694.0,94.3,-2.2,-6.7,Terraced
+2023-06-01,City of Westminster,E09000033,1070751.0,97.9,0.2,5.3,Flat/Maisonette
+2023-06-01,City of London,E09000001,970431.0,111.1,7.6,10.9,Flat/Maisonette
+2023-06-01,Camden,E09000007,715407.0,99.5,0.9,2.7,Flat/Maisonette
+2023-07-01,City of Westminster,E09000033,1045786.0,95.6,-2.3,4.3,Flat/Maisonette
+2023-07-01,City of London,E09000001,999355.0,114.4,3.0,15.0,Flat/Maisonette
+2023-07-01,Camden,E09000007,688216.0,95.7,-3.8,-2.9,Flat/Maisonette
+2023-08-01,City of London,E09000001,950691.0,108.8,-4.9,4.5,Flat/Maisonette
+2023-08-01,City of Westminster,E09000033,998296.0,91.3,-4.5,-2.3,Flat/Maisonette
+2023-08-01,Camden,E09000007,706653.0,98.3,2.7,-2.5,Flat/Maisonette
+2023-09-01,Camden,E09000007,690988.0,96.1,-2.2,-3.2,Flat/Maisonette
+2023-09-01,City of London,E09000001,896564.0,102.7,-5.7,-0.3,Flat/Maisonette
+2023-09-01,City of Westminster,E09000033,954365.0,87.3,-4.4,-6.0,Flat/Maisonette
+2023-10-01,City of Westminster,E09000033,952258.0,87.1,-0.2,-4.6,Flat/Maisonette
+2023-10-01,Camden,E09000007,700736.0,97.5,1.4,-0.3,Flat/Maisonette
+2023-10-01,City of London,E09000001,866356.0,99.2,-3.4,-4.7,Flat/Maisonette
+2023-11-01,City of London,E09000001,852593.0,97.6,-1.6,-7.0,Flat/Maisonette
+2023-11-01,Camden,E09000007,689907.0,96.0,-1.5,-0.5,Flat/Maisonette
+2023-11-01,City of Westminster,E09000033,947023.0,86.6,-0.5,-9.2,Flat/Maisonette
+2023-12-01,City of London,E09000001,796466.0,91.2,-6.6,-10.2,Flat/Maisonette
+2023-12-01,Camden,E09000007,699811.0,97.4,1.4,-2.7,Flat/Maisonette
+2023-12-01,City of Westminster,E09000033,999246.0,91.4,5.5,-5.9,Flat/Maisonette
+2024-01-01,Camden,E09000007,696829.0,96.9,-0.4,-3.1,Flat/Maisonette
+2024-01-01,City of London,E09000001,826426.0,94.6,3.8,-5.4,Flat/Maisonette
+2024-01-01,City of Westminster,E09000033,1029633.0,94.1,3.0,-5.9,Flat/Maisonette
+2024-02-01,Camden,E09000007,690557.0,96.1,-0.9,-4.3,Flat/Maisonette
+2024-02-01,City of London,E09000001,856273.0,98.0,3.6,6.6,Flat/Maisonette
+2024-02-01,City of Westminster,E09000033,1040661.0,95.1,1.1,-3.1,Flat/Maisonette
+2024-03-01,City of Westminster,E09000033,1011610.0,92.5,-2.8,-4.3,Flat/Maisonette
+2024-03-01,City of London,E09000001,905628.0,103.7,5.8,4.9,Flat/Maisonette
+2024-03-01,Camden,E09000007,682131.0,94.9,-1.2,-3.3,Flat/Maisonette
+2024-04-01,City of Westminster,E09000033,999799.0,91.4,-1.2,-4.7,Flat/Maisonette
+2024-04-01,Camden,E09000007,670228.0,93.2,-1.7,-7.4,Flat/Maisonette
+2024-04-01,City of London,E09000001,901223.0,103.2,-0.5,8.7,Flat/Maisonette
+2024-05-01,City of London,E09000001,909141.0,104.1,0.9,0.8,Flat/Maisonette
+2024-05-01,City of Westminster,E09000033,955664.0,87.4,-4.4,-10.6,Flat/Maisonette
+2024-05-01,Camden,E09000007,698346.0,97.2,4.2,-1.5,Flat/Maisonette
+2024-06-01,City of Westminster,E09000033,956889.0,87.5,0.1,-10.6,Flat/Maisonette
+2024-06-01,City of London,E09000001,842114.0,96.4,-7.4,-13.2,Flat/Maisonette
+2024-06-01,Camden,E09000007,701758.0,97.6,0.5,-1.9,Flat/Maisonette
+2024-07-01,Camden,E09000007,724401.0,100.8,3.2,5.3,Flat/Maisonette
+2024-07-01,City of Westminster,E09000033,916101.0,83.8,-4.3,-12.4,Flat/Maisonette
+2024-07-01,City of London,E09000001,797667.0,91.3,-5.3,-20.2,Flat/Maisonette
+2024-08-01,City of Westminster,E09000033,969481.0,88.6,5.8,-2.9,Flat/Maisonette
+2024-08-01,City of London,E09000001,780296.0,89.3,-2.2,-17.9,Flat/Maisonette
+2024-08-01,Camden,E09000007,710218.0,98.8,-2.0,0.5,Flat/Maisonette
+2024-09-01,City of Westminster,E09000033,938181.0,85.8,-3.2,-1.7,Flat/Maisonette
+2024-09-01,City of London,E09000001,779431.0,89.2,-0.1,-13.1,Flat/Maisonette
+2024-09-01,Camden,E09000007,702826.0,97.8,-1.0,1.7,Flat/Maisonette
+2024-10-01,City of Westminster,E09000033,946487.0,86.5,0.9,-0.6,Flat/Maisonette
+2024-10-01,City of London,E09000001,741442.0,84.9,-4.9,-14.4,Flat/Maisonette
+2024-10-01,Camden,E09000007,709269.0,98.7,0.9,1.2,Flat/Maisonette
+2024-11-01,City of Westminster,E09000033,914807.0,83.6,-3.3,-3.4,Flat/Maisonette
+2024-11-01,Camden,E09000007,722602.0,100.5,1.9,4.7,Flat/Maisonette
+2024-11-01,City of London,E09000001,735666.0,84.2,-0.8,-13.7,Flat/Maisonette
+2024-12-01,City of London,E09000001,797315.0,91.3,8.4,0.1,Flat/Maisonette
+2024-12-01,City of Westminster,E09000033,923213.0,84.4,0.9,-7.6,Flat/Maisonette
+2024-12-01,Camden,E09000007,734159.0,102.1,1.6,4.9,Flat/Maisonette
+2025-01-01,City of Westminster,E09000033,913551.0,83.5,-1.0,-11.3,Flat/Maisonette
+2025-01-01,City of London,E09000001,815767.0,93.4,2.3,-1.3,Flat/Maisonette
+2025-01-01,Camden,E09000007,735850.0,102.4,0.2,5.6,Flat/Maisonette
+2025-02-01,City of Westminster,E09000033,892126.0,81.6,-2.3,-14.3,Flat/Maisonette
+2025-02-01,City of London,E09000001,785599.0,89.9,-3.7,-8.3,Flat/Maisonette
+2025-02-01,Camden,E09000007,712738.0,99.2,-3.1,3.2,Flat/Maisonette
+2025-03-01,City of Westminster,E09000033,853024.0,78.0,-4.4,-15.7,Flat/Maisonette
+2025-03-01,City of London,E09000001,747143.0,85.5,-4.9,-17.5,Flat/Maisonette
+2025-03-01,Camden,E09000007,696367.0,96.9,-2.3,2.1,Flat/Maisonette
+2025-04-01,Camden,E09000007,679689.0,94.6,-2.4,1.4,Flat/Maisonette
+2025-04-01,City of Westminster,E09000033,905101.0,82.8,6.1,-9.5,Flat/Maisonette
+2025-04-01,City of London,E09000001,852618.0,97.6,14.1,-5.4,Flat/Maisonette
+2025-05-01,City of Westminster,E09000033,961815.0,87.9,6.3,0.7,Flat/Maisonette
+2025-05-01,City of London,E09000001,904683.0,103.6,6.1,-0.5,Flat/Maisonette
+2025-05-01,Camden,E09000007,709548.0,98.7,4.4,1.6,Flat/Maisonette
+2025-06-01,Camden,E09000007,746467.0,103.8,5.2,6.4,Flat/Maisonette
+2025-06-01,City of London,E09000001,906602.0,103.8,0.2,7.7,Flat/Maisonette
+2025-06-01,City of Westminster,E09000033,996574.0,91.1,3.6,4.2,Flat/Maisonette
+2025-07-01,City of Westminster,E09000033,959471.0,87.7,-3.7,4.7,Flat/Maisonette
+2025-07-01,Camden,E09000007,763511.0,106.2,2.3,5.4,Flat/Maisonette
+2025-07-01,City of London,E09000001,836565.0,95.8,-7.7,4.9,Flat/Maisonette
+2025-08-01,City of Westminster,E09000033,889999.0,81.4,-7.2,-8.2,Flat/Maisonette
+2025-08-01,Camden,E09000007,761604.0,106.0,-0.2,7.2,Flat/Maisonette
+2025-08-01,City of London,E09000001,801359.0,91.8,-4.2,2.7,Flat/Maisonette
+2025-09-01,City of Westminster,E09000033,884929.0,80.9,-0.6,-5.7,Flat/Maisonette
+2025-09-01,City of London,E09000001,737511.0,84.4,-8.0,-5.4,Flat/Maisonette
+2025-09-01,Camden,E09000007,737737.0,102.6,-3.1,5.0,Flat/Maisonette
+2025-10-01,Camden,E09000007,711558.0,99.0,-3.5,0.3,Flat/Maisonette
+2025-10-01,City of London,E09000001,686775.0,78.6,-6.9,-7.4,Flat/Maisonette
+2025-10-01,City of Westminster,E09000033,821938.0,75.1,-7.1,-13.2,Flat/Maisonette
+2025-11-01,City of Westminster,E09000033,802045.0,73.3,-2.4,-12.3,Flat/Maisonette
+2025-11-01,City of London,E09000001,695219.0,79.6,1.2,-5.5,Flat/Maisonette
+2025-11-01,Camden,E09000007,669653.0,93.2,-5.9,-7.3,Flat/Maisonette
+2025-12-01,City of Westminster,E09000033,768784.0,70.3,-4.1,-16.7,Flat/Maisonette
+2025-12-01,City of London,E09000001,751311.0,86.0,8.1,-5.8,Flat/Maisonette
+2025-12-01,Camden,E09000007,656009.0,91.3,-2.0,-10.6,Flat/Maisonette
+2026-01-01,City of London,E09000001,735907.0,84.3,-2.1,-9.8,Flat/Maisonette
+2026-01-01,City of Westminster,E09000033,792054.0,72.4,3.0,-13.3,Flat/Maisonette
+2026-01-01,Camden,E09000007,656070.0,91.3,0.0,-10.8,Flat/Maisonette
+2026-02-01,City of Westminster,E09000033,774596.0,70.8,-2.2,-13.2,Flat/Maisonette
+2026-02-01,City of London,E09000001,697779.0,79.9,-5.2,-11.2,Flat/Maisonette
+2026-02-01,Camden,E09000007,644623.0,89.7,-1.7,-9.6,Flat/Maisonette

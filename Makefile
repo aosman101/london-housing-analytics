@@ -1,10 +1,19 @@
-.PHONY: help install up down download normalise load pipeline dbt-deps dbt-run dbt-test dbt-docs export test all clean
+.PHONY: help install up down download normalise load pipeline dbt-deps dbt-run dbt-test dbt-build dbt-docs export lint test all clean
 
-PYTHON ?= python
+# Prefer the project venv when it exists so `make all` works without activating it.
+VENV_BIN := $(wildcard .venv/bin)
+PYTHON ?= $(if $(VENV_BIN),.venv/bin/python,python)
+DBT ?= $(if $(VENV_BIN),$(CURDIR)/.venv/bin/dbt,dbt)
+RUFF ?= $(if $(VENV_BIN),.venv/bin/ruff,ruff)
+
+# Share .env credentials with dbt (profiles.yml reads PG* env vars).
+-include .env
+export PGHOST PGPORT PGDATABASE PGUSER PGPASSWORD
+export DBT_PROFILES_DIR := $(CURDIR)/dbt
 
 help:
 	@echo "Targets:"
-	@echo "  install    — install Python requirements into the active venv"
+	@echo "  install    — install Python requirements"
 	@echo "  up/down    — start/stop the local Postgres container"
 	@echo "  download   — download raw HPI/PIPR/ASHE sources"
 	@echo "  normalise  — produce London-only normalised CSVs"
@@ -13,10 +22,12 @@ help:
 	@echo "  dbt-deps   — install dbt packages (dbt_utils)"
 	@echo "  dbt-run    — run dbt models"
 	@echo "  dbt-test   — run dbt tests"
+	@echo "  dbt-build  — run + test dbt models in DAG order"
 	@echo "  dbt-docs   — generate and serve dbt docs on :8080"
 	@echo "  export     — export marts to data/exports as CSV"
+	@echo "  lint       — ruff check"
 	@echo "  test       — run Python unit tests"
-	@echo "  all        — test + pipeline + dbt-deps + dbt-run + dbt-test + export"
+	@echo "  all        — lint + test + pipeline + dbt-deps + dbt-build + export"
 	@echo "  clean      — remove data/ and dbt/target build outputs"
 
 install:
@@ -40,24 +51,30 @@ load:
 pipeline: download normalise load
 
 dbt-deps:
-	cd dbt && dbt deps
+	cd dbt && $(DBT) deps
 
 dbt-run:
-	cd dbt && dbt run
+	cd dbt && $(DBT) run
 
 dbt-test:
-	cd dbt && dbt test
+	cd dbt && $(DBT) test
+
+dbt-build:
+	cd dbt && $(DBT) build
 
 dbt-docs:
-	cd dbt && dbt docs generate && dbt docs serve --port 8080
+	cd dbt && $(DBT) docs generate && $(DBT) docs serve --port 8080
 
 export:
 	$(PYTHON) src/load/export_marts.py
 
+lint:
+	$(RUFF) check src tests
+
 test:
 	$(PYTHON) -m unittest discover -s tests
 
-all: test pipeline dbt-deps dbt-run dbt-test export
+all: lint test pipeline dbt-deps dbt-build export
 
 clean:
 	rm -rf data/raw/* data/normalised/* data/exports/* dbt/target dbt/logs

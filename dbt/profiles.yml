@@ -1,0 +1,14 @@
+# Reads the same PG* variables as the Python pipeline (.env / CI env), so no ~/.dbt setup is needed.
+# The Makefile points DBT_PROFILES_DIR here.
+housing_warehouse:
+  target: dev
+  outputs:
+    dev:
+      type: postgres
+      host: "{{ env_var('PGHOST', 'localhost') }}"
+      port: "{{ env_var('PGPORT', '5432') | as_number }}"
+      user: "{{ env_var('PGUSER', 'analytics') }}"
+      password: "{{ env_var('PGPASSWORD', 'analytics') }}"
+      dbname: "{{ env_var('PGDATABASE', 'housing_warehouse') }}"
+      schema: analytics
+      threads: 4

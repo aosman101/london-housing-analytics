@@ -51,6 +51,9 @@ models:
           combination_of_columns: [date_month, area_code]
 
   - name: stg_ashe_earnings
+    description: >
+      ASHE Table 8 (place of residence) median gross annual pay for full-time employees,
+      for each London borough plus the London region fallback row.
     columns:
       - name: reference_year
         data_tests: [not_null]

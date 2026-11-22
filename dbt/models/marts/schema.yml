@@ -2,20 +2,60 @@ version: 2
 
 models:
   - name: mart_london_affordability_monthly
+    description: >
+      Borough x month affordability fact table. Prices, rents and sales are populated for every
+      month available; earnings-based ratios only for months within `earnings_max_lag_years` of
+      the ASHE reference year, so historical months are never divided by present-day pay.
     columns:
       - name: date_month
+        description: First day of the HPI reference month.
         data_tests: [not_null]
       - name: area_code
+        description: ONS local authority code (E09xxxxxx).
         data_tests: [not_null]
       - name: area_name
         data_tests: [not_null]
-      - name: price_to_earnings_ratio
+      - name: average_price
+        description: HPI average price (3-month moving average at borough level).
         data_tests: [not_null]
+      - name: sales_volume
+        description: HPI monthly sales count; the most recent ~2 months are not yet published.
+      - name: avg_monthly_rent
+        description: PIPR average monthly private rent. Not published for City of London.
+      - name: earnings_year
+        description: ASHE reference year of the earnings row used.
+      - name: median_gross_annual_pay
+        description: ASHE median gross annual pay, full-time employees, place of residence.
+      - name: earnings_quality
+        description: ONS precision band of the earnings estimate (from its CV).
+      - name: earnings_fallback_used
+        description: True when the borough estimate is suppressed and the London-wide figure is used.
+      - name: price_to_earnings_ratio
+        description: average_price / median_gross_annual_pay.
+        data_tests:
+          - not_null:
+              config:
+                where: "median_gross_annual_pay is not null"
+          - dbt_utils.accepted_range:
+              min_value: 0
+              inclusive: false
+      - name: annual_rent_to_earnings_ratio
+        description: (avg_monthly_rent * 12) / median_gross_annual_pay.
+      - name: months_to_save_10pct_deposit
+        description: Months of gross pay needed for a 10% deposit; (average_price * 0.10) / (pay / 12).
+      - name: rent_growth_minus_income_growth_pct
+        description: rent_yoy_pct - earnings_yoy_pct, in percentage points. Positive = rents outpacing pay.
+      - name: house_price_growth_minus_income_growth_pct
+        description: house_price_yoy_pct - earnings_yoy_pct, in percentage points.
     data_tests:
       - dbt_utils.unique_combination_of_columns:
           combination_of_columns: [date_month, area_code]
+      - dbt_utils.expression_is_true:
+          # Guards against reintroducing era-mixing: earnings must never be newer than the month.
+          expression: "earnings_year is null or earnings_year <= extract(year from date_month)"
 
   - name: mart_london_property_type_latest
+    description: Latest HPI month by borough and property type, with price-to-earnings ratios.
     columns:
       - name: date_month
         data_tests: [not_null]
@@ -35,15 +75,24 @@ models:
           combination_of_columns: [area_code, property_type]
 
   - name: mart_london_borough_snapshot_latest
+    description: >
+      One row per borough for the latest month with earnings coverage, plus the most recent
+      published sales volume and affordability / rental-pressure ranks. Main Tableau map source.
     columns:
       - name: date_month
         data_tests: [not_null]
       - name: area_code
-        data_tests: [not_null]
+        data_tests: [not_null, unique]
       - name: area_name
         data_tests: [not_null]
       - name: price_to_earnings_ratio
         data_tests: [not_null]
-    data_tests:
-      - dbt_utils.unique_combination_of_columns:
-          combination_of_columns: [area_code]
+      - name: latest_sales_month
+        description: Most recent month with a published HPI sales count for the borough.
+      - name: latest_sales_volume
+        description: Sales count for latest_sales_month.
+      - name: price_to_earnings_rank
+        description: 1 = least affordable borough by price-to-earnings ratio.
+        data_tests: [not_null]
+      - name: rental_pressure_rank
+        description: 1 = rents outpacing pay by the widest margin (nulls ranked last).

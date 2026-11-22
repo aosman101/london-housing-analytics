@@ -1,5 +1,6 @@
 """Shared access to config/sources.yml so pipeline steps agree on vintages."""
 
+import os
 from functools import lru_cache
 from pathlib import Path
 from typing import Any
@@ -9,7 +10,8 @@ import yaml
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
 CONFIG_PATH = PROJECT_ROOT / "config" / "sources.yml"
 RAW_DIR = PROJECT_ROOT / "data" / "raw"
-NORMALISED_DIR = PROJECT_ROOT / "data" / "normalised"
+# Overridable so CI can load small fixture files instead of the full normalised outputs.
+NORMALISED_DIR = Path(os.environ.get("LHA_NORMALISED_DIR", PROJECT_ROOT / "data" / "normalised"))
 
 
 @lru_cache(maxsize=1)

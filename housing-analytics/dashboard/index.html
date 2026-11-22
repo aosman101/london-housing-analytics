@@ -1,0 +1,815 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>London Housing Dashboard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/echarts/5.5.1/echarts.min.js"></script>
+<script src="data.js"></script>
+<style>
+  :root {
+    --canvas: #f3f2f1;
+    --card: #ffffff;
+    --ink: #1b1a19;
+    --ink-2: #52514e;
+    --ink-3: #7a7974;
+    --line: #e4e3df;
+    --header: #1f2a44;
+    --header-ink: #ffffff;
+    --accent: #2a78d6;
+    --shadow: 0 1px 2px rgba(0,0,0,.06), 0 2px 8px rgba(0,0,0,.05);
+    --font: "Segoe UI", Inter, -apple-system, "Helvetica Neue", Arial, sans-serif;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; background: var(--canvas); color: var(--ink); font-family: var(--font); }
+  body { min-height: 100vh; }
+
+  /* ---------- app shell ---------- */
+  header.top {
+    background: var(--header); color: var(--header-ink);
+    display: flex; align-items: center; gap: 16px; padding: 12px 20px; flex-wrap: wrap;
+  }
+  header.top .brand { display: flex; flex-direction: column; margin-right: auto; }
+  header.top h1 { font-size: 18px; margin: 0; font-weight: 600; letter-spacing: .2px; }
+  header.top .sub { font-size: 12px; opacity: .75; margin-top: 2px; }
+  .slicer { display: flex; flex-direction: column; gap: 3px; font-size: 11px; }
+  .slicer label { opacity: .8; text-transform: uppercase; letter-spacing: .6px; font-weight: 600; }
+  .slicer select, .seg button {
+    font: inherit; font-size: 13px; border-radius: 4px; border: 1px solid rgba(255,255,255,.25);
+    background: rgba(255,255,255,.08); color: var(--header-ink); padding: 6px 10px; min-height: 32px;
+  }
+  .slicer select option { color: #1b1a19; }
+  .seg { display: flex; }
+  .seg button { border-radius: 0; cursor: pointer; }
+  .seg button:first-child { border-radius: 4px 0 0 4px; }
+  .seg button:last-child { border-radius: 0 4px 4px 0; }
+  .seg button + button { border-left: none; }
+  .seg button[aria-pressed="true"] { background: #fff; color: var(--header); font-weight: 600; }
+  .reset { background: none; border: none; color: var(--header-ink); text-decoration: underline; cursor: pointer;
+           font: inherit; font-size: 12px; opacity: .8; align-self: flex-end; padding: 8px 0; }
+
+  .layout { display: flex; min-height: calc(100vh - 64px); }
+  nav.pages { width: 210px; flex: none; background: #fff; border-right: 1px solid var(--line); padding: 12px 0; }
+  nav.pages button {
+    display: block; width: 100%; text-align: left; font: inherit; font-size: 13.5px; color: var(--ink-2);
+    background: none; border: none; border-left: 3px solid transparent; padding: 10px 18px; cursor: pointer;
+  }
+  nav.pages button:hover { background: #f7f6f4; color: var(--ink); }
+  nav.pages button[aria-current="page"] { border-left-color: var(--accent); color: var(--ink); font-weight: 600; background: #f1f6fd; }
+  main { flex: 1; min-width: 0; padding: 18px 20px 28px; }
+  .page-title { font-size: 20px; font-weight: 600; margin: 2px 0 4px; }
+  .page-desc { font-size: 13px; color: var(--ink-2); margin: 0 0 16px; max-width: 900px; line-height: 1.5; }
+
+  /* ---------- cards ---------- */
+  .grid { display: grid; grid-template-columns: repeat(12, 1fr); gap: 14px; }
+  .card { background: var(--card); border-radius: 6px; box-shadow: var(--shadow); padding: 14px 16px 10px;
+          display: flex; flex-direction: column; min-width: 0; }
+  .card h3 { font-size: 14px; margin: 0; font-weight: 600; }
+  .card .desc { font-size: 12px; color: var(--ink-2); margin: 3px 0 6px; line-height: 1.4; }
+  .card .chart { flex: 1; min-height: 260px; }
+  .card .foot { font-size: 11px; color: var(--ink-3); margin-top: 4px; line-height: 1.4; }
+  .card .tools { display: flex; gap: 8px; align-items: center; margin: 4px 0 2px; flex-wrap: wrap; }
+  .card .tools select { font: inherit; font-size: 12px; padding: 4px 8px; border: 1px solid var(--line); border-radius: 4px; }
+  .s3 { grid-column: span 3; } .s4 { grid-column: span 4; } .s5 { grid-column: span 5; }
+  .s6 { grid-column: span 6; } .s7 { grid-column: span 7; } .s8 { grid-column: span 8; } .s12 { grid-column: span 12; }
+  .h-tall .chart { min-height: 680px; } .h-mid .chart { min-height: 440px; } .h-short .chart { min-height: 320px; }
+
+  .kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 14px; margin-bottom: 14px; }
+  .kpi { background: var(--card); border-radius: 6px; box-shadow: var(--shadow); padding: 12px 16px;
+         border-top: 3px solid var(--accent); }
+  .kpi .label { font-size: 11.5px; color: var(--ink-2); text-transform: uppercase; letter-spacing: .5px; font-weight: 600; }
+  .kpi .value { font-size: 28px; font-weight: 600; margin: 4px 0 2px; font-variant-numeric: tabular-nums; }
+  .kpi .note { font-size: 12px; color: var(--ink-2); }
+  .kpi.warn { border-top-color: #e34948; }
+
+  table.data { width: 100%; border-collapse: collapse; font-size: 12.5px; font-variant-numeric: tabular-nums; }
+  table.data th, table.data td { padding: 7px 10px; border-bottom: 1px solid var(--line); text-align: right; }
+  table.data th:first-child, table.data td:first-child { text-align: left; }
+  table.data th { color: var(--ink-2); font-weight: 600; background: #faf9f8; position: sticky; top: 0; }
+  .scroll { overflow: auto; max-height: 520px; }
+  .method { font-size: 13px; line-height: 1.6; color: var(--ink); }
+  .method li { margin-bottom: 6px; }
+  .method a { color: var(--accent); }
+
+  @media (max-width: 1100px) {
+    .s3, .s4, .s5, .s6, .s7, .s8 { grid-column: span 12; }
+    nav.pages { display: none; }
+    .mobile-nav { display: block !important; }
+  }
+  .mobile-nav { display: none; margin-bottom: 12px; }
+  .mobile-nav select { font: inherit; padding: 8px; width: 100%; border-radius: 4px; border: 1px solid var(--line); }
+
+  /* ---------- export modes (used for PNG generation) ---------- */
+  body.export header.top, body.export nav.pages, body.export .mobile-nav, body.export .page-title,
+  body.export .page-desc, body.export .tools { display: none !important; }
+  body.export .layout { display: block; min-height: 0; }
+  body.export main { padding: 0; }
+  body.export-single { background: var(--card); }
+  body.export-single .card { box-shadow: none; border-radius: 0; width: 100vw; height: 100vh; padding: 34px 40px 22px; }
+  body.export-single .card h3 { font-size: 26px; }
+  body.export-single .card .desc { font-size: 16px; margin: 6px 0 12px; }
+  body.export-single .card .foot { font-size: 13px; }
+  body.export-single .brandline { display: flex !important; }
+  .brandline { display: none; justify-content: space-between; font-size: 12.5px; color: var(--ink-3);
+               border-top: 1px solid var(--line); padding-top: 8px; margin-top: 8px; }
+  #poster { display: none; }
+  body.export-full #app { display: none; }
+  body.export-full #poster { display: block; padding: 0 0 18px; }
+  .poster-head { background: var(--header); color: #fff; padding: 26px 32px 22px; }
+  .poster-head h1 { margin: 0; font-size: 32px; font-weight: 600; }
+  .poster-head p { margin: 6px 0 0; font-size: 15px; opacity: .8; }
+  .poster-body { padding: 18px 24px 0; }
+  .poster-body .grid { gap: 16px; }
+  .poster-body .card .chart { min-height: 0; }
+  .poster-foot { display: flex; justify-content: space-between; padding: 14px 28px 0; font-size: 13px; color: var(--ink-3); }
+</style>
+</head>
+<body>
+<div id="app">
+  <header class="top">
+    <div class="brand">
+      <h1>London Housing Affordability &amp; Rental Pressure</h1>
+      <div class="sub" id="asof"></div>
+    </div>
+    <div class="slicer">
+      <label>Area</label>
+      <div class="seg" id="groupSeg" role="group" aria-label="Area filter">
+        <button data-group="All" aria-pressed="true">All London</button>
+        <button data-group="Inner London" aria-pressed="false">Inner</button>
+        <button data-group="Outer London" aria-pressed="false">Outer</button>
+      </div>
+    </div>
+    <div class="slicer">
+      <label for="boroughSel">Highlight borough</label>
+      <select id="boroughSel"></select>
+    </div>
+    <button class="reset" id="resetBtn">Reset filters</button>
+  </header>
+  <div class="layout">
+    <nav class="pages" id="pageNav" aria-label="Report pages"></nav>
+    <main>
+      <div class="mobile-nav"><select id="pageSel" aria-label="Report page"></select></div>
+      <div id="page"></div>
+    </main>
+  </div>
+</div>
+<div id="poster"></div>
+
+<script>
+(() => {
+const D = window.LHA_DATA;
+const K = D.kpis;
+const params = new URLSearchParams(location.search);
+const EXPORT = params.get('export');            // visual id, or "full"
+const ANIM = !EXPORT;
+
+/* ---------------- palette (validated dataviz reference palette) ---------------- */
+const C = {
+  inner: '#2a78d6', outer: '#eb6834', third: '#1baf7a', red: '#e34948', blue: '#2a78d6',
+  neutral: '#c9c8c2', faint: '#eeedea', ink: '#1b1a19', ink2: '#52514e', ink3: '#7a7974', grid: '#ebeae6',
+  seq: ['#cde2fb', '#9ec5f4', '#6da7ec', '#3987e5', '#256abf', '#184f95', '#0d366b'],
+  div: ['#256abf', '#6da7ec', '#cde2fb', '#f0efec', '#f6c3c2', '#ec8584', '#c43a39'],
+};
+const GROUP_C = { 'Inner London': C.inner, 'Outer London': C.outer };
+const FONT = getComputedStyle(document.documentElement).getPropertyValue('--font');
+const REPO = 'github.com/aosman101/london-housing-analytics';
+const SOURCE = 'Source: HM Land Registry UK HPI, ONS PIPR, ONS ASHE ' + K.ashe_year + ' (full-time, place of residence)';
+
+/* ---------------- formatting ---------------- */
+const nf0 = new Intl.NumberFormat('en-GB', { maximumFractionDigits: 0 });
+const F = {
+  gbp: v => v == null ? '–' : '£' + nf0.format(v),
+  gbpk: v => v == null ? '–' : '£' + nf0.format(v / 1000) + 'k',
+  x: v => v == null ? '–' : v.toFixed(1) + '×',
+  pct: (v, d = 1) => v == null ? '–' : v.toFixed(d) + '%',
+  spct: (v, d = 1) => v == null ? '–' : (v > 0 ? '+' : '') + v.toFixed(d) + '%',
+  pp: v => v == null ? '–' : (v > 0 ? '+' : '') + v.toFixed(1) + 'pp',
+  mo: v => v == null ? '–' : v.toFixed(0) + ' mo',
+  n: v => v == null ? '–' : nf0.format(v),
+  z: v => v == null ? '–' : (v > 0 ? '+' : '') + v.toFixed(2),
+};
+const short = n => n.replace(' and ', ' & ').replace('City of Westminster', 'Westminster').replace(' upon Thames', '');
+
+/* ---------------- state ---------------- */
+const byCode = Object.fromEntries(D.boroughs.map(b => [b.area_code, b]));
+const defaultBorough = [...D.boroughs].filter(b => b.stress_index != null).sort((a, b) => b.stress_index - a.stress_index)[0].area_code;
+const S = {
+  group: params.get('group') || 'All',
+  borough: params.get('borough') || '',
+  page: params.get('page') || 'overview',
+  mapMetric: params.get('metric') || 'price_to_earnings_ratio',
+};
+const inScope = b => S.group === 'All' || b.group === S.group;
+const scoped = () => D.boroughs.filter(inScope);
+const median = arr => { const a = arr.filter(v => v != null).sort((x, y) => x - y); if (!a.length) return null;
+  const m = Math.floor(a.length / 2); return a.length % 2 ? a[m] : (a[m - 1] + a[m]) / 2; };
+const scopeLabel = () => S.group === 'All' ? 'All 33 London boroughs' : S.group + ' boroughs';
+
+/* ---------------- shared chart pieces ---------------- */
+const baseText = () => ({ fontFamily: FONT, color: C.ink2 });
+const fs = () => EXPORT === 'full' ? 10.5 : EXPORT ? 13 : 11.5;
+const tooltip = (extra = {}) => ({ confine: true, backgroundColor: '#fff', borderColor: C.grid, borderWidth: 1,
+  textStyle: { color: C.ink, fontFamily: FONT, fontSize: 12 }, extraCssText: 'box-shadow:0 4px 14px rgba(0,0,0,.12);', ...extra });
+const valueAxis = (o = {}) => ({ type: 'value', axisLine: { show: false }, axisTick: { show: false },
+  splitLine: { lineStyle: { color: C.grid } }, axisLabel: { color: C.ink2, fontSize: fs() }, nameTextStyle: { color: C.ink2, fontSize: fs() }, ...o });
+const catAxis = (o = {}) => ({ type: 'category', axisLine: { lineStyle: { color: C.grid } }, axisTick: { show: false },
+  axisLabel: { color: C.ink2, fontSize: fs() }, ...o });
+const legend = (o = {}) => ({ top: 0, right: 0, icon: 'roundRect', itemWidth: 12, itemHeight: 12,
+  textStyle: { color: C.ink, fontSize: fs() }, ...o });
+const decal = { symbol: 'rect', dashArrayX: [1, 0], dashArrayY: [2, 3], rotation: -Math.PI / 4, color: 'rgba(255,255,255,.6)', symbolSize: 1 };
+
+function groupLegendSeries() {
+  // Dummy series so bar charts coloured by Inner/Outer get a legend.
+  if (S.group !== 'All') return [];
+  return Object.entries(GROUP_C).map(([name, color]) => ({ name, type: 'bar', data: [], itemStyle: { color }, barGap: '-100%' }));
+}
+
+/* Ranked horizontal bar: biggest at top. */
+function rankedBar({ metric, fmt, colour = 'group', top = 'max', mark, decalIf, labelEnds = 3, xName }) {
+  const rows = scoped().filter(b => b[metric] != null).sort((a, b) => top === 'max' ? a[metric] - b[metric] : b[metric] - a[metric]);
+  const n = rows.length;
+  const data = rows.map((b, i) => {
+    const v = b[metric];
+    const colr = colour === 'group' ? GROUP_C[b.group] : colour === 'sign' ? (v > 0 ? C.red : C.blue) : colour;
+    const sel = b.area_code === S.borough;
+    const showLabel = sel || i < labelEnds || i >= n - labelEnds;
+    return {
+      value: v, code: b.area_code,
+      itemStyle: { color: colr, borderRadius: v >= 0 ? [0, 3, 3, 0] : [3, 0, 0, 3], decal: decalIf && decalIf(b) ? decal : null,
+                   opacity: S.borough && !sel ? 0.55 : 1, borderColor: sel ? C.ink : null, borderWidth: sel ? 2 : 0 },
+      label: { show: showLabel, position: v >= 0 ? 'right' : 'left', formatter: () => fmt(v), color: C.ink,
+               fontSize: fs(), fontWeight: sel ? 700 : 500 },
+    };
+  });
+  return {
+    textStyle: baseText(), animation: ANIM,
+    grid: { left: 8, right: 56, top: S.group === 'All' && colour === 'group' ? 26 : 8, bottom: xName ? 30 : 8, containLabel: true },
+    legend: colour === 'group' && S.group === 'All' ? legend() : undefined,
+    tooltip: tooltip({ trigger: 'item', formatter: p => p.seriesIndex > 0 && p.data == null ? '' :
+      `<b>${byCode[p.data.code].area_name}</b><br>${fmt(p.value)}<br><span style="color:${C.ink3}">${byCode[p.data.code].group}</span>` }),
+    xAxis: valueAxis({ name: xName, nameLocation: 'middle', nameGap: 24, axisLabel: { color: C.ink2, fontSize: fs(), formatter: v => fmt(v).replace(/\.0(?=\D|$)/, '') } }),
+    yAxis: catAxis({ data: rows.map(b => short(b.area_name)), axisLabel: { color: C.ink, fontSize: fs(), interval: 0,
+      formatter: (v, i) => rows[i] && rows[i].area_code === S.borough ? `{b|${v}}` : v, rich: { b: { fontWeight: 700, color: C.ink, fontSize: fs() } } } }),
+    series: [{ type: 'bar', data, barWidth: '68%', markLine: mark }, ...(colour === 'group' ? groupLegendSeries() : [])],
+  };
+}
+
+/* ---------------- visuals ---------------- */
+const MAP_METRICS = {
+  price_to_earnings_ratio: { label: 'Price-to-earnings ratio', fmt: F.x, scale: 'seq' },
+  annual_rent_to_earnings_ratio: { label: 'Rent as % of pay', fmt: v => F.pct(v * 100, 0), scale: 'seq' },
+  months_to_save_10pct_deposit: { label: 'Months of pay for a 10% deposit', fmt: F.mo, scale: 'seq' },
+  rent_growth_minus_income_growth_pct: { label: 'Rent growth minus pay growth', fmt: F.pp, scale: 'div' },
+  stress_index: { label: 'Housing stress index', fmt: F.z, scale: 'div' },
+  gross_rental_yield_pct: { label: 'Gross rental yield', fmt: v => F.pct(v), scale: 'seq' },
+  rent_growth_5y_pct: { label: 'Rent growth, last 5 years', fmt: v => F.spct(v, 0), scale: 'seq' },
+  pct_below_peak: { label: 'Price change from all-time peak', fmt: v => F.spct(v), scale: 'seqRev' },
+};
+
+const V = {};
+
+V.map = {
+  title: () => 'Where is London least affordable?',
+  desc: () => `${MAP_METRICS[S.mapMetric].label} by borough, ${K.latest_month}. Click a borough to highlight it everywhere.`,
+  foot: () => S.mapMetric.includes('rent') ? 'City of London has no published rent series (grey).' : 'City of London pay is suppressed by ONS; London-wide pay is used.',
+  tools: () => `<select id="mapMetric" aria-label="Map metric">${Object.entries(MAP_METRICS).map(([k, m]) =>
+      `<option value="${k}" ${k === S.mapMetric ? 'selected' : ''}>${m.label}</option>`).join('')}</select>`,
+  option: () => {
+    const m = MAP_METRICS[S.mapMetric];
+    const vals = D.boroughs.map(b => b[S.mapMetric]).filter(v => v != null);
+    let min = Math.min(...vals), max = Math.max(...vals), colors = C.seq;
+    if (m.scale === 'div') { const a = Math.max(Math.abs(min), Math.abs(max)); min = -a; max = a; colors = C.div; }
+    if (m.scale === 'seqRev') colors = [...C.seq].reverse();
+    return {
+      textStyle: baseText(), animation: ANIM,
+      tooltip: tooltip({ trigger: 'item', formatter: p => { const b = byCode[p.name]; if (!b) return '';
+        return `<b>${b.area_name}</b> <span style="color:${C.ink3}">${b.group}</span><br>${m.label}: <b>${m.fmt(b[S.mapMetric])}</b>
+          <br>Avg price ${F.gbp(b.average_price)} · Rent ${F.gbp(b.avg_monthly_rent)}/mo<br>Median pay ${F.gbp(b.median_gross_annual_pay)}`; } }),
+      visualMap: { min, max, calculable: !EXPORT, orient: 'vertical', left: 0, bottom: 10, itemHeight: EXPORT === 'full' ? 140 : 180,
+        inRange: { color: colors }, text: [m.fmt(max), m.fmt(min)], textStyle: { color: C.ink2, fontSize: fs() }, formatter: v => m.fmt(v) },
+      series: [{
+        type: 'map', map: 'london', aspectScale: 0.62, roam: false, layoutCenter: ['55%', '50%'], layoutSize: '98%',
+        selectedMode: false,
+        itemStyle: { borderColor: '#fff', borderWidth: 1, areaColor: C.faint },
+        emphasis: { label: { show: true, color: C.ink, fontWeight: 600, fontSize: fs(), formatter: p => short(byCode[p.name].area_name) },
+                    itemStyle: { areaColor: null, borderColor: C.ink, borderWidth: 1.5 } },
+        label: { show: false },
+        data: D.boroughs.map(b => {
+          const sel = b.area_code === S.borough, out = !inScope(b);
+          return { name: b.area_code, value: out ? null : b[S.mapMetric],
+            itemStyle: out ? { areaColor: C.faint, borderColor: '#fff' } : sel ? { borderColor: C.ink, borderWidth: 2.5 } : {},
+            label: sel ? { show: true, color: C.ink, fontWeight: 700, backgroundColor: 'rgba(255,255,255,.85)', padding: [2, 4], borderRadius: 3,
+                           formatter: () => short(b.area_name) } : undefined };
+        }),
+      }],
+    };
+  },
+  click: p => p.name && byCode[p.name] && setBorough(p.name),
+};
+
+V.stress = {
+  title: () => 'Composite housing stress index',
+  desc: () => 'Equal-weighted z-scores of price-to-earnings, rent-to-earnings and 5-year rent growth. Red = more stressed than the average borough.',
+  foot: () => 'City of London excluded (no rent series).',
+  option: () => rankedBar({ metric: 'stress_index', fmt: F.z, colour: 'sign' }),
+};
+
+V.pe = {
+  title: () => 'How many years of pay does a home cost?',
+  desc: () => `Average house price ÷ median full-time resident pay, ${K.latest_month}.`,
+  foot: () => 'City of London uses London-wide pay (borough estimate suppressed by ONS).',
+  option: () => rankedBar({ metric: 'price_to_earnings_ratio', fmt: F.x, mark: medianMark('price_to_earnings_ratio', F.x) }),
+};
+
+V.deposit = {
+  title: () => 'Months of pay to save a 10% deposit',
+  desc: () => `Months of median full-time gross pay needed for a 10% deposit on the average home, ${K.latest_month}. At a realistic 15% saving rate, multiply by ~7.`,
+  option: () => rankedBar({ metric: 'months_to_save_10pct_deposit', fmt: F.mo, mark: medianMark('months_to_save_10pct_deposit', F.mo) }),
+};
+
+V.rentshare = {
+  title: () => 'Rent takes half of a typical salary',
+  desc: () => `Annual average private rent as a share of median full-time gross pay, ${K.latest_month}. The red line marks the common 30% affordability benchmark.`,
+  foot: () => 'City of London has no published rent series.',
+  option: () => {
+    const o = rankedBar({ metric: 'annual_rent_to_earnings_ratio', fmt: v => F.pct(v * 100, 0) });
+    o.series[0].markLine = { symbol: 'none', silent: true, lineStyle: { color: C.red, width: 1.5, type: 'solid' },
+      label: { formatter: '30% benchmark', color: C.ink, fontSize: fs(), position: 'end' }, data: [{ xAxis: 0.3 }] };
+    o.xAxis.axisLabel.formatter = v => Math.round(v * 100) + '%';
+    return o;
+  },
+};
+
+V.rentgap = {
+  title: () => 'Where are rents outpacing pay?',
+  desc: () => `Private rent growth (year to ${K.latest_month}) minus median pay growth (ASHE ${K.ashe_year}). Red = rents rising faster than pay.`,
+  foot: () => 'Hatched bars rest on a less precise borough pay estimate (CV > 5%); treat their size as indicative.',
+  option: () => rankedBar({ metric: 'rent_growth_minus_income_growth_pct', fmt: F.pp, colour: 'sign', decalIf: b => b.earnings_quality !== 'Precise' }),
+};
+
+V.renttrend = {
+  title: () => 'Rent inflation peaked in 2023–24 and is cooling',
+  desc: () => 'Median borough year-on-year change in average private rent. Dashed line: London median pay growth in ' + K.ashe_year + '.',
+  option: () => {
+    const months = D.months.filter(m => m >= '2016-01');
+    const series = [];
+    for (const g of Object.keys(GROUP_C)) {
+      if (S.group !== 'All' && S.group !== g) continue;
+      const rows = Object.fromEntries(D.groupTrends.filter(r => r.group === g).map(r => [r.date_month, r.median_rent_yoy_pct]));
+      series.push({ name: g, type: 'line', showSymbol: false, lineStyle: { width: 2.5 }, color: GROUP_C[g], data: months.map(m => rows[m] ?? null),
+        endLabel: { show: true, formatter: p => F.pct(p.value, 1), color: C.ink, fontSize: fs() } });
+    }
+    if (S.borough) series.push(boroughLine('rent_yoy', months, F.pct));
+    series[0].markLine = { symbol: 'none', silent: true, lineStyle: { color: C.ink2, type: 'dashed' },
+      label: { formatter: `London pay growth ${F.pct(K.london_pay_growth)}`, position: 'insideStartTop', color: C.ink2, fontSize: fs() },
+      data: [{ yAxis: K.london_pay_growth }] };
+    return lineOption(months, series, v => v + '%');
+  },
+};
+
+V.rentvsprice = {
+  title: () => 'Rents have outgrown house prices everywhere since 2015',
+  desc: () => `Cumulative change, January 2015 to the latest month. Points above the dashed line: rents grew faster than prices (${K.rent_outgrew_price_since_2015} of ${K.boroughs_with_rent} boroughs).`,
+  option: () => {
+    const rows = scoped().filter(b => b.rent_growth_since_2015_pct != null);
+    const series = Object.entries(GROUP_C).filter(([g]) => S.group === 'All' || S.group === g).map(([g, col]) => ({
+      name: g, type: 'scatter', symbolSize: b => 12, color: col,
+      itemStyle: { borderColor: '#fff', borderWidth: 1.5 },
+      data: rows.filter(b => b.group === g).map(b => ({ value: [b.price_growth_since_2015_pct, b.rent_growth_since_2015_pct], code: b.area_code,
+        symbolSize: b.area_code === S.borough ? 20 : 12,
+        itemStyle: b.area_code === S.borough ? { borderColor: C.ink, borderWidth: 2.5 } : {},
+        label: { show: b.area_code === S.borough || b.rent_growth_since_2015_pct > 58 || b.rent_growth_since_2015_pct < 36 || b.price_growth_since_2015_pct > 48 || b.price_growth_since_2015_pct < 5,
+                 formatter: () => short(b.area_name), position: 'right', color: C.ink, fontSize: fs() - 1 } })),
+    }));
+    const lo = -15, hi = 75;
+    series.push({ type: 'line', data: [[lo, lo], [hi, hi]], showSymbol: false, silent: true, lineStyle: { color: C.ink3, type: 'dashed', width: 1 }, tooltip: { show: false } });
+    return {
+      textStyle: baseText(), animation: ANIM, legend: legend({ data: Object.keys(GROUP_C) }),
+      grid: { left: 8, right: 24, top: 30, bottom: 30, containLabel: true },
+      tooltip: tooltip({ trigger: 'item', formatter: p => p.data.code ? `<b>${byCode[p.data.code].area_name}</b><br>Rent ${F.spct(p.value[1], 0)} · Price ${F.spct(p.value[0], 0)}` : '' }),
+      xAxis: valueAxis({ min: lo, max: hi, name: 'House price growth since Jan 2015', nameLocation: 'middle', nameGap: 26, axisLabel: { formatter: v => v + '%', color: C.ink2, fontSize: fs() } }),
+      yAxis: valueAxis({ min: 0, max: 80, name: 'Rent growth since Jan 2015', nameLocation: 'middle', nameGap: 40, axisLabel: { formatter: v => v + '%', color: C.ink2, fontSize: fs() } }),
+      series,
+    };
+  },
+  click: p => p.data && p.data.code && setBorough(p.data.code),
+};
+
+V.pricetrend = {
+  title: () => 'Three decades of London house prices',
+  desc: () => 'Median borough average price (nominal), Inner vs Outer London, January 1995 onward.' + (S.borough ? '' : ' Pick a borough to compare it.'),
+  option: () => {
+    const series = [];
+    for (const g of Object.keys(GROUP_C)) {
+      if (S.group !== 'All' && S.group !== g) continue;
+      const rows = Object.fromEntries(D.groupTrends.filter(r => r.group === g).map(r => [r.date_month, r.median_price]));
+      series.push({ name: g, type: 'line', showSymbol: false, lineStyle: { width: 2.5 }, color: GROUP_C[g], data: D.months.map(m => rows[m] ?? null),
+        endLabel: { show: true, formatter: p => F.gbpk(p.value), color: C.ink, fontSize: fs() } });
+    }
+    if (S.borough) series.push(boroughLine('price', D.months, F.gbpk));
+    const o = lineOption(D.months, series, v => '£' + (v / 1000) + 'k', F.gbp);
+    if (!EXPORT) { o.dataZoom = [{ type: 'slider', height: 18, bottom: 4, borderColor: C.grid, textStyle: { color: C.ink2 } }]; o.grid.bottom = 44; }
+    return o;
+  },
+};
+
+V.sales = {
+  title: () => 'Transactions are less than half their 2000s peak',
+  desc: () => `Residential sales recorded by HM Land Registry per year, ${scopeLabel().toLowerCase()}, 1995–2025.`,
+  foot: () => 'The latest months are revised upward as late registrations arrive.',
+  option: () => {
+    const yearly = {};
+    for (const r of D.groupTrends) {
+      if (S.group !== 'All' && r.group !== S.group) continue;
+      const y = +r.date_month.slice(0, 4); if (y > 2025) continue;
+      yearly[y] = (yearly[y] || 0) + (r.sales || 0);
+    }
+    const years = Object.keys(yearly).map(Number).sort();
+    const events = { 2002: 'Market peak', 2009: 'Financial crisis', 2016: '2nd-home stamp\nduty surcharge', 2021: 'Stamp duty\nholiday', 2023: 'Mortgage rate\nshock' };
+    return {
+      textStyle: baseText(), animation: ANIM, grid: { left: 8, right: 12, top: 46, bottom: 8, containLabel: true },
+      tooltip: tooltip({ trigger: 'axis', axisPointer: { type: 'shadow' }, valueFormatter: F.n }),
+      xAxis: catAxis({ data: years, axisLabel: { color: C.ink2, fontSize: fs(), interval: EXPORT === 'full' ? 4 : 2 } }),
+      yAxis: valueAxis({ axisLabel: { color: C.ink2, fontSize: fs(), formatter: v => (v / 1000) + 'k' } }),
+      series: [{ type: 'bar', name: 'Sales', barWidth: '70%', data: years.map(y => ({ value: yearly[y],
+        itemStyle: { color: y >= 2023 ? C.inner : '#9ec5f4', borderRadius: [3, 3, 0, 0] },
+        label: events[y] ? { show: true, position: 'top', formatter: events[y], color: C.ink, fontSize: fs() - 1, lineHeight: fs() + 2 } : undefined })) }],
+    };
+  },
+};
+
+V.salesprice = {
+  title: () => 'Sales volumes move first, prices follow',
+  desc: () => `London-wide annual change. Same-year correlation r = ${K.sales_corr_same_year.toFixed(2)}; sales change vs the next year's price change r = ${K.sales_corr_lead_1y.toFixed(2)}.`,
+  option: () => {
+    const a = D.annual.filter(r => r.sales_change_pct != null);
+    const years = a.map(r => r.year);
+    const bars = (k) => a.map(r => ({ value: r[k], itemStyle: { color: r[k] >= 0 ? C.blue : C.red } }));
+    return {
+      textStyle: baseText(), animation: ANIM,
+      grid: [{ left: 60, right: 12, top: 26, height: '36%' }, { left: 60, right: 12, top: '58%', height: '34%' }],
+      tooltip: tooltip({ trigger: 'axis', axisPointer: { type: 'shadow' }, valueFormatter: v => F.spct(v) }),
+      axisPointer: { link: [{ xAxisIndex: 'all' }] },
+      title: [{ text: 'Sales volume, % change', left: 60, top: 0, textStyle: { fontSize: fs(), color: C.ink, fontWeight: 600 } },
+              { text: 'Average price, % change', left: 60, top: '52%', textStyle: { fontSize: fs(), color: C.ink, fontWeight: 600 } }],
+      xAxis: [catAxis({ data: years, gridIndex: 0, axisLabel: { show: false } }), catAxis({ data: years, gridIndex: 1, axisLabel: { color: C.ink2, fontSize: fs(), interval: 4 } })],
+      yAxis: [valueAxis({ gridIndex: 0, axisLabel: { formatter: v => v + '%', color: C.ink2, fontSize: fs() } }),
+              valueAxis({ gridIndex: 1, axisLabel: { formatter: v => v + '%', color: C.ink2, fontSize: fs() } })],
+      series: [{ name: 'Sales', type: 'bar', data: bars('sales_change_pct'), xAxisIndex: 0, yAxisIndex: 0, barWidth: '65%' },
+               { name: 'Price', type: 'bar', data: bars('price_change_pct'), xAxisIndex: 1, yAxisIndex: 1, barWidth: '65%' }],
+    };
+  },
+};
+
+V.drawdown = {
+  title: () => 'Prime London is still far below its peak',
+  desc: () => `Nominal change from each borough's all-time-high average price to ${K.latest_month}.`,
+  option: () => rankedBar({ metric: 'pct_below_peak', fmt: v => F.spct(v), top: 'min' }),
+};
+
+V.heatmap = {
+  title: () => 'Affordability by property type',
+  desc: () => `Price-to-earnings ratio by borough and property type, ${K.latest_month}. Sorted by flats.`,
+  option: () => {
+    const types = ['Flat/Maisonette', 'Terraced', 'Semi-detached', 'Detached'];
+    const pt = D.propertyTypes.filter(r => inScope(byCode[r.area_code]));
+    const flat = Object.fromEntries(pt.filter(r => r.property_type === types[0]).map(r => [r.area_code, r.price_to_earnings_ratio]));
+    const codes = [...new Set(pt.map(r => r.area_code))].sort((a, b) => flat[a] - flat[b]);
+    const vals = pt.map(r => r.price_to_earnings_ratio);
+    return {
+      textStyle: baseText(), animation: ANIM, grid: { left: 8, right: 8, top: 26, bottom: 46, containLabel: true },
+      tooltip: tooltip({ formatter: p => `<b>${byCode[codes[p.value[1]]].area_name}</b><br>${types[p.value[0]]}: ${F.x(p.value[2])}` }),
+      xAxis: catAxis({ data: ['Flat', 'Terraced', 'Semi', 'Detached'], position: 'top', axisLine: { show: false }, axisLabel: { color: C.ink, fontSize: fs(), fontWeight: 600 } }),
+      yAxis: catAxis({ data: codes.map(c => short(byCode[c].area_name)), axisLine: { show: false }, axisLabel: { color: C.ink, fontSize: fs() - 0.5, interval: 0 } }),
+      visualMap: { min: Math.min(...vals), max: Math.max(...vals), orient: 'horizontal', left: 'center', bottom: 0, itemWidth: 12, itemHeight: 160,
+        inRange: { color: C.seq }, textStyle: { color: C.ink2, fontSize: fs() }, formatter: v => v.toFixed(0) + '×', calculable: !EXPORT },
+      series: [{ type: 'heatmap', itemStyle: { borderColor: '#fff', borderWidth: 1.5 },
+        label: { show: true, fontSize: fs() - 1.5, formatter: p => p.value[2].toFixed(1), color: C.ink },
+        data: pt.map(r => [types.indexOf(r.property_type), codes.indexOf(r.area_code), r.price_to_earnings_ratio]),
+        emphasis: { itemStyle: { borderColor: C.ink, borderWidth: 1.5 } } }],
+    };
+  },
+};
+
+V.dumbbell = {
+  title: () => 'A flat vs a detached house',
+  desc: () => 'Price-to-earnings ratio for a flat/maisonette vs a detached house in each borough, sorted by the gap.',
+  option: () => {
+    const pt = D.propertyTypes.filter(r => inScope(byCode[r.area_code]));
+    const get = t => Object.fromEntries(pt.filter(r => r.property_type === t).map(r => [r.area_code, r.price_to_earnings_ratio]));
+    const fl = get('Flat/Maisonette'), de = get('Detached');
+    const codes = Object.keys(fl).filter(c => de[c] != null).sort((a, b) => (de[a] - fl[a]) - (de[b] - fl[b]));
+    const names = codes.map(c => short(byCode[c].area_name));
+    return {
+      textStyle: baseText(), animation: ANIM, legend: legend({ data: ['Flat / maisonette', 'Detached'] }),
+      grid: { left: 8, right: 24, top: 28, bottom: 26, containLabel: true },
+      tooltip: tooltip({ trigger: 'axis', axisPointer: { type: 'shadow' },
+        formatter: ps => { const c = codes[ps[0].dataIndex]; return `<b>${byCode[c].area_name}</b><br>Flat ${F.x(fl[c])} · Detached ${F.x(de[c])}<br>Gap ${F.x(de[c] - fl[c])}`; } }),
+      xAxis: valueAxis({ name: 'Price-to-earnings ratio', nameLocation: 'middle', nameGap: 22, axisLabel: { formatter: v => v + '×', color: C.ink2, fontSize: fs() } }),
+      yAxis: catAxis({ data: names, axisLabel: { color: C.ink, fontSize: fs(), interval: 0 } }),
+      series: [
+        { type: 'bar', stack: 'g', data: codes.map(c => fl[c]), itemStyle: { color: 'transparent' }, silent: true, barWidth: 3 },
+        { type: 'bar', stack: 'g', data: codes.map(c => de[c] - fl[c]), itemStyle: { color: C.neutral }, silent: true, barWidth: 3 },
+        { name: 'Flat / maisonette', type: 'scatter', symbolSize: 11, color: C.inner, data: codes.map(c => fl[c]), z: 5 },
+        { name: 'Detached', type: 'scatter', symbolSize: 11, color: C.outer, data: codes.map(c => de[c]), z: 5 },
+      ],
+    };
+  },
+};
+
+V.ptypemed = {
+  title: () => 'Property type matters as much as postcode',
+  desc: () => 'Median price-to-earnings ratio across boroughs, by property type.',
+  option: () => {
+    const types = ['Flat/Maisonette', 'Terraced', 'Semi-detached', 'Detached'];
+    const series = Object.entries(GROUP_C).filter(([g]) => S.group === 'All' || S.group === g).map(([g, col]) => ({
+      name: g, type: 'bar', color: col, barGap: '15%', itemStyle: { borderRadius: [3, 3, 0, 0] },
+      label: { show: true, position: 'top', formatter: p => F.x(p.value), color: C.ink, fontSize: fs() },
+      data: types.map(t => median(D.propertyTypes.filter(r => r.property_type === t && byCode[r.area_code].group === g).map(r => r.price_to_earnings_ratio))),
+    }));
+    return { textStyle: baseText(), animation: ANIM, legend: legend(), grid: { left: 8, right: 8, top: 34, bottom: 8, containLabel: true },
+      tooltip: tooltip({ trigger: 'axis', axisPointer: { type: 'shadow' }, valueFormatter: F.x }),
+      xAxis: catAxis({ data: ['Flat', 'Terraced', 'Semi-detached', 'Detached'], axisLabel: { color: C.ink, fontSize: fs() } }),
+      yAxis: valueAxis({ axisLabel: { formatter: v => v + '×', color: C.ink2, fontSize: fs() } }), series };
+  },
+};
+
+V.yield = {
+  title: () => 'Gross rental yield by borough',
+  desc: () => `Annual average rent ÷ average price, ${K.latest_month}. Indicative: before costs, voids and tax.`,
+  option: () => rankedBar({ metric: 'gross_rental_yield_pct', fmt: v => F.pct(v), mark: medianMark('gross_rental_yield_pct', v => F.pct(v)) }),
+};
+
+V.yieldscatter = {
+  title: () => 'Cheaper boroughs pay higher yields',
+  desc: () => `Gross rental yield vs average price (r = ${K.yield_price_corr.toFixed(2)}).`,
+  option: () => {
+    const rows = scoped().filter(b => b.gross_rental_yield_pct != null);
+    const series = Object.entries(GROUP_C).filter(([g]) => S.group === 'All' || S.group === g).map(([g, col]) => ({
+      name: g, type: 'scatter', color: col, itemStyle: { borderColor: '#fff', borderWidth: 1.5 },
+      data: rows.filter(b => b.group === g).map(b => ({ value: [b.average_price, b.gross_rental_yield_pct], code: b.area_code,
+        symbolSize: b.area_code === S.borough ? 20 : 12, itemStyle: b.area_code === S.borough ? { borderColor: C.ink, borderWidth: 2.5 } : {},
+        label: { show: b.area_code === S.borough || b.gross_rental_yield_pct > 5.4 || b.gross_rental_yield_pct < 3.6 || b.average_price > 850000,
+                 formatter: () => short(b.area_name), position: 'right', color: C.ink, fontSize: fs() - 1 } })),
+    }));
+    return { textStyle: baseText(), animation: ANIM, legend: legend(), grid: { left: 8, right: 30, top: 30, bottom: 30, containLabel: true },
+      tooltip: tooltip({ trigger: 'item', formatter: p => `<b>${byCode[p.data.code].area_name}</b><br>Price ${F.gbp(p.value[0])} · Yield ${F.pct(p.value[1])}` }),
+      xAxis: valueAxis({ scale: true, name: 'Average price', nameLocation: 'middle', nameGap: 26, axisLabel: { formatter: v => '£' + v / 1000 + 'k', color: C.ink2, fontSize: fs() } }),
+      yAxis: valueAxis({ scale: true, name: 'Gross yield', nameLocation: 'middle', nameGap: 34, axisLabel: { formatter: v => v + '%', color: C.ink2, fontSize: fs() } }),
+      series };
+  },
+  click: p => p.data && p.data.code && setBorough(p.data.code),
+};
+
+V.volatility = {
+  title: () => 'Price volatility by borough',
+  desc: () => 'Standard deviation of month-to-month price change since January 2015. Few transactions make the City of London far noisier.',
+  option: () => rankedBar({ metric: 'price_volatility_sd', fmt: v => v.toFixed(2) + 'pp' }),
+};
+
+V.salesdrop = {
+  title: () => 'Every borough is trading far less than in 2021',
+  desc: () => 'Change in annual sales, 2025 vs the 2021 stamp-duty-holiday year.',
+  option: () => rankedBar({ metric: 'sales_2025_vs_2021_pct', fmt: v => F.spct(v, 0), top: 'min' }),
+};
+
+/* Borough profile visuals */
+const profileCode = () => S.borough || defaultBorough;
+V.profileprice = {
+  title: () => `${byCode[profileCode()].area_name}: house prices vs London`,
+  desc: () => 'Average price, compared with the median London borough.',
+  option: () => {
+    const code = profileCode(), months = D.months;
+    const med = months.map((_, i) => median(Object.values(D.series).map(s => s.price[i])));
+    return lineOption(months, [
+      { name: short(byCode[code].area_name), type: 'line', showSymbol: false, color: C.ink, lineStyle: { width: 2.5 }, data: D.series[code].price },
+      { name: 'London median borough', type: 'line', showSymbol: false, color: C.neutral, lineStyle: { width: 2 }, data: med },
+    ], v => '£' + v / 1000 + 'k', F.gbp);
+  },
+};
+V.profilerent = {
+  title: () => `${byCode[profileCode()].area_name}: rents vs London`,
+  desc: () => 'Average monthly private rent, compared with the median London borough.',
+  option: () => {
+    const code = profileCode(), months = D.months.filter(m => m >= '2015-01');
+    const off = D.months.indexOf('2015-01');
+    const med = months.map((_, i) => median(Object.values(D.series).map(s => s.rent[i + off])));
+    return lineOption(months, [
+      { name: short(byCode[code].area_name), type: 'line', showSymbol: false, color: C.ink, lineStyle: { width: 2.5 }, data: D.series[code].rent.slice(off) },
+      { name: 'London median borough', type: 'line', showSymbol: false, color: C.neutral, lineStyle: { width: 2 }, data: med },
+    ], v => '£' + nf0.format(v), F.gbp);
+  },
+};
+V.profiletype = {
+  title: () => `${byCode[profileCode()].area_name}: price by property type`,
+  desc: () => 'Average price by property type, compared with the median London borough.',
+  option: () => {
+    const code = profileCode(), types = ['Flat/Maisonette', 'Terraced', 'Semi-detached', 'Detached'];
+    const mine = types.map(t => (D.propertyTypes.find(r => r.area_code === code && r.property_type === t) || {}).average_price ?? null);
+    const med = types.map(t => median(D.propertyTypes.filter(r => r.property_type === t).map(r => r.average_price)));
+    return { textStyle: baseText(), animation: ANIM, legend: legend(), grid: { left: 8, right: 8, top: 32, bottom: 8, containLabel: true },
+      tooltip: tooltip({ trigger: 'axis', axisPointer: { type: 'shadow' }, valueFormatter: F.gbp }),
+      xAxis: catAxis({ data: ['Flat', 'Terraced', 'Semi', 'Detached'], axisLabel: { color: C.ink, fontSize: fs() } }),
+      yAxis: valueAxis({ axisLabel: { formatter: v => '£' + v / 1000 + 'k', color: C.ink2, fontSize: fs() } }),
+      series: [{ name: short(byCode[code].area_name), type: 'bar', color: C.ink, data: mine, itemStyle: { borderRadius: [3, 3, 0, 0] } },
+               { name: 'London median borough', type: 'bar', color: C.neutral, data: med, itemStyle: { borderRadius: [3, 3, 0, 0] } }] };
+  },
+};
+
+/* ---------------- helpers used above ---------------- */
+function medianMark(metric, fmt) {
+  const m = median(scoped().map(b => b[metric]));
+  return { symbol: 'none', silent: true, lineStyle: { color: C.ink2, type: 'dashed' },
+    label: { formatter: 'median ' + fmt(m), position: 'end', color: C.ink2, fontSize: fs() - 1 }, data: [{ xAxis: m }] };
+}
+function boroughLine(key, months, fmt) {
+  const off = D.months.indexOf(months[0]);
+  return { name: short(byCode[S.borough].area_name), type: 'line', showSymbol: false, color: C.ink, lineStyle: { width: 2, type: 'solid' },
+    data: D.series[S.borough][key].slice(off, off + months.length), endLabel: { show: true, formatter: p => fmt(p.value), color: C.ink, fontSize: fs() } };
+}
+function lineOption(months, series, axisFmt, valFmt) {
+  return { textStyle: baseText(), animation: ANIM, legend: legend(),
+    grid: { left: 8, right: 70, top: 34, bottom: 8, containLabel: true },
+    tooltip: tooltip({ trigger: 'axis', valueFormatter: v => v == null ? '–' : (valFmt ? valFmt(v) : F.pct(v)) }),
+    xAxis: catAxis({ data: months, boundaryGap: false, axisLabel: { color: C.ink2, fontSize: fs(), formatter: v => v.slice(0, 4),
+      interval: (i, v) => v.endsWith('-01') && (+v.slice(0, 4)) % (months.length > 200 ? 5 : 2) === 0 } }),
+    yAxis: valueAxis({ axisLabel: { formatter: axisFmt, color: C.ink2, fontSize: fs() } }), series };
+}
+
+/* ---------------- KPI cards ---------------- */
+function kpiCards() {
+  const rows = scoped();
+  const rent = rows.filter(b => b.annual_rent_to_earnings_ratio != null);
+  const yearly = {}; for (const r of D.groupTrends) { if (S.group !== 'All' && r.group !== S.group) continue;
+    const y = +r.date_month.slice(0, 4); yearly[y] = (yearly[y] || 0) + (r.sales || 0); }
+  const peakYear = Object.keys(yearly).filter(y => y <= 2025).reduce((a, b) => yearly[a] > yearly[b] ? a : b);
+  const cards = [
+    ['Median house price', F.gbp(median(rows.map(b => b.average_price))), `${F.spct(median(rows.map(b => b.house_price_yoy_pct)))} year on year`],
+    ['Median monthly rent', F.gbp(median(rows.map(b => b.avg_monthly_rent))), `${F.spct(median(rows.map(b => b.rent_yoy_pct)))} year on year`, 'warn'],
+    ['Price-to-earnings', F.x(median(rows.map(b => b.price_to_earnings_ratio))), `range ${F.x(Math.min(...rows.map(b => b.price_to_earnings_ratio)))} – ${F.x(Math.max(...rows.map(b => b.price_to_earnings_ratio)))}`],
+    ['Months to save a 10% deposit', F.mo(median(rows.map(b => b.months_to_save_10pct_deposit))), 'of total gross pay (median borough)'],
+    ['Rent as % of pay', F.pct(median(rent.map(b => b.annual_rent_to_earnings_ratio)) * 100, 0), `${rent.filter(b => b.annual_rent_to_earnings_ratio > .3).length} of ${rent.length} boroughs above 30%`, 'warn'],
+    ['Rents outpacing pay', `${rent.filter(b => b.rent_growth_minus_income_growth_pct > 0).length} / ${rent.length}`, 'boroughs, latest year', 'warn'],
+    ['Sales in 2025', F.n(yearly[2025]), `${F.spct((yearly[2025] / yearly[peakYear] - 1) * 100, 0)} vs ${peakYear} peak`],
+  ];
+  return `<div class="kpis">${cards.map(([l, v, n, cls]) => `<div class="kpi ${cls || ''}"><div class="label">${l}</div><div class="value">${v}</div><div class="note">${n}</div></div>`).join('')}</div>`;
+}
+
+function profileCards() {
+  const b = byCode[profileCode()], all = D.boroughs;
+  const rk = (k, v) => v == null ? 'n/a' : `#${v} of ${all.filter(x => x[k] != null).length}`;
+  const cards = [
+    ['Average price', F.gbp(b.average_price), `${F.spct(b.house_price_yoy_pct)} year on year`],
+    ['Monthly rent', F.gbp(b.avg_monthly_rent), `${F.spct(b.rent_yoy_pct)} year on year`],
+    ['Median full-time pay', F.gbp(b.median_gross_annual_pay), b.earnings_fallback_used ? 'London-wide (borough suppressed)' : `${F.spct(b.earnings_yoy_pct)} · ${b.earnings_quality}`],
+    ['Price-to-earnings', F.x(b.price_to_earnings_ratio), rk('price_to_earnings_ratio', b.price_to_earnings_ratio_rank) + ' least affordable'],
+    ['Rent as % of pay', b.annual_rent_to_earnings_ratio == null ? '–' : F.pct(b.annual_rent_to_earnings_ratio * 100, 0), rk('annual_rent_to_earnings_ratio', b.annual_rent_to_earnings_ratio_rank)],
+    ['Housing stress index', F.z(b.stress_index), rk('stress_index', b.stress_index_rank) + ' most stressed'],
+    ['vs all-time peak', F.spct(b.pct_below_peak), `peak ${F.gbp(b.peak_price)} in ${b.peak_month}`],
+  ];
+  return `<div class="kpis">${cards.map(([l, v, n]) => `<div class="kpi"><div class="label">${l}</div><div class="value">${v}</div><div class="note">${n}</div></div>`).join('')}</div>`;
+}
+
+/* ---------------- pages ---------------- */
+const PAGES = [
+  { id: 'overview', name: 'Overview', desc: () => `Headline affordability across ${scopeLabel().toLowerCase()}, ${K.latest_month}. Use the slicers above to filter Inner/Outer London or highlight a borough.`,
+    kpis: kpiCards, cards: [['map', 's7 h-tall'], ['stress', 's5 h-tall'], ['sales', 's6 h-mid'], ['renttrend', 's6 h-mid']] },
+  { id: 'afford', name: 'Affordability', desc: () => 'Q1 & Q5: which boroughs are least affordable, and how far is a deposit from local pay?',
+    cards: [['pe', 's4 h-tall'], ['deposit', 's4 h-tall'], ['rentshare', 's4 h-tall']] },
+  { id: 'rent', name: 'Rental pressure', desc: () => 'Q2: where is rental pressure rising faster than local income growth?',
+    cards: [['rentgap', 's5 h-tall'], ['rentvsprice', 's7 h-tall'], ['renttrend', 's12 h-mid']] },
+  { id: 'market', name: 'Sales & prices', desc: () => 'Q3: how do sales volumes and price growth move together over time?',
+    cards: [['pricetrend', 's12 h-mid'], ['sales', 's6 h-mid'], ['salesprice', 's6 h-mid'], ['drawdown', 's6 h-tall'], ['salesdrop', 's6 h-tall']] },
+  { id: 'ptype', name: 'Property types', desc: () => 'Q4: which boroughs show the biggest affordability gap by property type?',
+    cards: [['heatmap', 's5 h-tall'], ['dumbbell', 's7 h-tall'], ['ptypemed', 's12 h-short']] },
+  { id: 'invest', name: 'Yield & risk', desc: () => 'The investor lens: gross rental yields and price volatility.',
+    cards: [['yield', 's4 h-tall'], ['yieldscatter', 's8 h-tall'], ['volatility', 's6 h-tall'], ['drawdown', 's6 h-tall']] },
+  { id: 'profile', name: 'Borough profile', desc: () => 'Drill into one borough. Pick it from “Highlight borough” above, or click it on any chart.',
+    kpis: profileCards, cards: [['profileprice', 's6 h-mid'], ['profilerent', 's6 h-mid'], ['profiletype', 's6 h-mid'], ['map', 's6 h-mid']] },
+  { id: 'data', name: 'Data & method', desc: () => 'Coverage, definitions and caveats.', custom: dataPage },
+];
+
+function dataPage() {
+  const cov = D.coverage.map(r => `<tr><td>${r.dataset}</td><td>${F.n(r.rows)}</td><td>${r.boroughs}</td><td>${r.first_period}</td><td>${r.last_period}</td><td>${r.null_cells_pct}%</td></tr>`).join('');
+  const rows = [...D.boroughs].sort((a, b) => (b.stress_index ?? -9) - (a.stress_index ?? -9)).map(b => `<tr><td>${b.area_name}</td><td>${b.group.split(' ')[0]}</td>
+    <td>${F.gbp(b.average_price)}</td><td>${F.gbp(b.avg_monthly_rent)}</td><td>${F.gbp(b.median_gross_annual_pay)}</td><td>${F.x(b.price_to_earnings_ratio)}</td>
+    <td>${b.annual_rent_to_earnings_ratio == null ? '–' : F.pct(b.annual_rent_to_earnings_ratio * 100, 0)}</td><td>${F.pp(b.rent_growth_minus_income_growth_pct)}</td>
+    <td>${b.gross_rental_yield_pct == null ? '–' : F.pct(b.gross_rental_yield_pct)}</td><td>${F.z(b.stress_index)}</td></tr>`).join('');
+  return `<div class="grid">
+    <div class="card s12"><h3>Borough scorecard</h3><div class="desc">All headline metrics, sorted by housing stress index. Full tables are in <code>housing-analytics/tables/</code>.</div>
+      <div class="scroll"><table class="data"><thead><tr><th>Borough</th><th>Area</th><th>Avg price</th><th>Rent / mo</th><th>Median pay</th><th>P/E</th><th>Rent % pay</th><th>Rent − pay growth</th><th>Yield</th><th>Stress</th></tr></thead><tbody>${rows}</tbody></table></div></div>
+    <div class="card s6"><h3>Data coverage</h3><table class="data"><thead><tr><th>Dataset</th><th>Rows</th><th>Boroughs</th><th>From</th><th>To</th><th>Null cells</th></tr></thead><tbody>${cov}</tbody></table></div>
+    <div class="card s6 method"><h3>Method &amp; caveats</h3><ul>
+      <li><b>Earnings</b>: ASHE ${K.ashe_year} median gross annual pay, full-time employees, by place of residence. Only attached to ${K.ashe_year}–${K.ashe_year + 1} months, never to older ones.</li>
+      <li><b>City of London</b>: pay is suppressed by ONS, so London-wide pay is used. No PIPR rent series is published.</li>
+      <li><b>Borough pay growth</b> is a single-year survey estimate. Hatched bars flag CV &gt; 5%.</li>
+      <li><b>HPI</b> borough prices are 3-month moving averages; sales lag ~2 months and are revised upward.</li>
+      <li><b>Stress index</b> = mean z-score of price-to-earnings, rent-to-earnings and 5-year rent growth (equal weights).</li>
+      <li><b>Yields</b> compare average rent with average price across the whole stock, so they are indicative and before costs.</li>
+      <li>Contains HM Land Registry data © Crown copyright 2026. Contains ONS data, Open Government Licence v3.0.</li>
+      <li>Code: <a href="https://${REPO}">${REPO}</a></li></ul></div>
+  </div>`;
+}
+
+/* ---------------- rendering ---------------- */
+let charts = [];
+function card(id, cls, extra = '') {
+  const v = V[id];
+  return `<section class="card ${cls}" data-visual="${id}">
+    <h3>${v.title()}</h3><div class="desc">${v.desc()}</div>
+    ${v.tools ? `<div class="tools">${v.tools()}</div>` : ''}
+    <div class="chart" id="chart-${id}-${extra}"></div>
+    ${v.foot ? `<div class="foot">${v.foot()}</div>` : ''}
+    <div class="brandline"><span>${SOURCE}</span><span>${REPO}</span></div>
+  </section>`;
+}
+function mount(root) {
+  root.querySelectorAll('[data-visual]').forEach(el => {
+    const id = el.dataset.visual, v = V[id];
+    const c = echarts.init(el.querySelector('.chart'), null, { renderer: 'canvas' });
+    c.setOption(v.option(), true);
+    if (v.click) c.on('click', v.click);
+    else c.on('click', p => p.data && p.data.code && setBorough(p.data.code));
+    charts.push(c);
+  });
+}
+function render() {
+  charts.forEach(c => c.dispose()); charts = [];
+  const page = PAGES.find(p => p.id === S.page) || PAGES[0];
+  document.querySelectorAll('#pageNav button').forEach(b => b.setAttribute('aria-current', b.dataset.page === page.id ? 'page' : 'false'));
+  document.getElementById('pageSel').value = page.id;
+  const html = page.custom ? page.custom() :
+    (page.kpis ? page.kpis() : '') + `<div class="grid">${page.cards.map(([id, cls], i) => card(id, cls, i)).join('')}</div>`;
+  const pageEl = document.getElementById('page');
+  pageEl.innerHTML = `<h2 class="page-title">${page.name}</h2><p class="page-desc">${page.desc()}</p>${html}`;
+  mount(pageEl);
+  const mm = document.getElementById('mapMetric');
+  if (mm) mm.onchange = e => { S.mapMetric = e.target.value; render(); };
+  syncControls();
+}
+function syncControls() {
+  document.querySelectorAll('#groupSeg button').forEach(b => b.setAttribute('aria-pressed', b.dataset.group === S.group));
+  document.getElementById('boroughSel').value = S.borough;
+  const q = new URLSearchParams({ page: S.page, ...(S.group !== 'All' && { group: S.group }), ...(S.borough && { borough: S.borough }),
+    ...(S.mapMetric !== 'price_to_earnings_ratio' && { metric: S.mapMetric }) });
+  if (!EXPORT) history.replaceState(null, '', '?' + q);
+}
+function setBorough(code) { S.borough = S.borough === code && S.page !== 'profile' ? '' : code; render(); }
+
+function initShell() {
+  document.getElementById('asof').textContent = `Data to ${K.latest_month} · ASHE ${K.ashe_year} earnings · 33 boroughs`;
+  const nav = document.getElementById('pageNav'), sel = document.getElementById('pageSel');
+  nav.innerHTML = PAGES.map(p => `<button data-page="${p.id}">${p.name}</button>`).join('');
+  sel.innerHTML = PAGES.map(p => `<option value="${p.id}">${p.name}</option>`).join('');
+  nav.onclick = e => { const b = e.target.closest('button'); if (b) { S.page = b.dataset.page; render(); } };
+  sel.onchange = e => { S.page = e.target.value; render(); };
+  const bs = document.getElementById('boroughSel');
+  bs.innerHTML = '<option value="">None</option>' + [...D.boroughs].sort((a, b) => a.area_name.localeCompare(b.area_name))
+    .map(b => `<option value="${b.area_code}">${b.area_name}</option>`).join('');
+  bs.onchange = e => { S.borough = e.target.value; render(); };
+  document.getElementById('groupSeg').onclick = e => { const b = e.target.closest('button'); if (b) { S.group = b.dataset.group; render(); } };
+  document.getElementById('resetBtn').onclick = () => { Object.assign(S, { group: 'All', borough: '', mapMetric: 'price_to_earnings_ratio' }); render(); };
+  window.addEventListener('resize', () => charts.forEach(c => c.resize()));
+}
+
+/* ---------------- export modes ---------------- */
+function renderSingle(id) {
+  document.body.classList.add('export', 'export-single');
+  const page = document.getElementById('page');
+  page.innerHTML = card(id, '', 'x');
+  mount(page);
+}
+function renderPoster() {
+  document.body.classList.add('export', 'export-full');
+  const P = document.getElementById('poster');
+  const H = (id, cls, h) => card(id, cls, 'p').replace('<div class="chart"', `<div class="chart" style="height:${h}px"`);
+  P.innerHTML = `
+    <div class="poster-head"><h1>London Housing Affordability &amp; Rental Pressure</h1>
+      <p>All 33 London boroughs · prices &amp; rents to ${K.latest_month} · ASHE ${K.ashe_year} resident earnings · HM Land Registry &amp; ONS data</p></div>
+    <div class="poster-body">${kpiCards()}
+      <div class="grid">
+        ${H('map', 's6', 560)}${H('pe', 's3', 560)}${H('stress', 's3', 560)}
+        ${H('rentgap', 's3', 600)}${H('rentshare', 's3', 600)}${H('rentvsprice', 's6', 600)}
+        ${H('pricetrend', 's6', 340)}${H('renttrend', 's6', 340)}
+        ${H('sales', 's6', 340)}${H('ptypemed', 's3', 340)}${H('yieldscatter', 's3', 340)}
+      </div></div>
+    <div class="poster-foot"><span>${SOURCE}. Contains HM Land Registry data © Crown copyright 2026; ONS data under OGL v3.0.</span><span>${REPO}</span></div>`;
+  mount(P);
+}
+
+function start() {
+  echarts.registerMap('london', D.geo);
+  if (EXPORT === 'full') renderPoster();
+  else if (EXPORT && V[EXPORT]) renderSingle(EXPORT);
+  else { initShell(); render(); }
+  // Signal for the PNG exporter that rendering is done.
+  setTimeout(() => document.body.setAttribute('data-ready', '1'), 50);
+}
+(document.fonts && document.fonts.ready ? document.fonts.ready : Promise.resolve()).then(start);
+})();
+</script>
+</body>
+</html>

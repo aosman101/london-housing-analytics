@@ -123,7 +123,7 @@
   .poster-head p { margin: 6px 0 0; font-size: 15px; opacity: .8; }
   .poster-body { padding: 18px 24px 0; }
   .poster-body .grid { gap: 16px; }
-  .poster-body .card .chart { min-height: 0; }
+  .poster-body .card .chart { min-height: 0; flex: none; }
   .poster-foot { display: flex; justify-content: space-between; padding: 14px 28px 0; font-size: 13px; color: var(--ink-3); }
 </style>
 </head>
@@ -246,11 +246,14 @@ function rankedBar({ metric, fmt, colour = 'group', top = 'max', mark, decalIf, 
   });
   return {
     textStyle: baseText(), animation: ANIM,
-    grid: { left: 8, right: 56, top: S.group === 'All' && colour === 'group' ? 26 : 8, bottom: xName ? 30 : 8, containLabel: true },
-    legend: colour === 'group' && S.group === 'All' ? legend() : undefined,
+    grid: { left: 8, right: 64, top: mark ? 22 : 8, bottom: (xName ? 30 : 4) + (colour === 'group' && S.group === 'All' ? 26 : 0), containLabel: true },
+    legend: colour === 'group' && S.group === 'All' ? legend({ top: null, bottom: 0, right: 'center' }) : undefined,
     tooltip: tooltip({ trigger: 'item', formatter: p => p.seriesIndex > 0 && p.data == null ? '' :
       `<b>${byCode[p.data.code].area_name}</b><br>${fmt(p.value)}<br><span style="color:${C.ink3}">${byCode[p.data.code].group}</span>` }),
-    xAxis: valueAxis({ name: xName, nameLocation: 'middle', nameGap: 24, axisLabel: { color: C.ink2, fontSize: fs(), formatter: v => fmt(v).replace(/\.0(?=\D|$)/, '') } }),
+    xAxis: valueAxis({ name: xName, nameLocation: 'middle', nameGap: 24,
+      min: e => e.min < 0 ? e.min - (Math.max(e.max, 0) - e.min) * 0.16 : 0,
+      max: e => e.max > 0 ? e.max + (e.max - Math.min(e.min, 0)) * 0.08 : 0,
+      axisLabel: { color: C.ink2, fontSize: fs(), showMinLabel: false, showMaxLabel: false, formatter: v => fmt(v).replace(/\.0(?=\D|$)/, '') } }),
     yAxis: catAxis({ data: rows.map(b => short(b.area_name)), axisLabel: { color: C.ink, fontSize: fs(), interval: 0,
       formatter: (v, i) => rows[i] && rows[i].area_code === S.borough ? `{b|${v}}` : v, rich: { b: { fontWeight: 700, color: C.ink, fontSize: fs() } } } }),
     series: [{ type: 'bar', data, barWidth: '68%', markLine: mark }, ...(colour === 'group' ? groupLegendSeries() : [])],
@@ -274,7 +277,8 @@ const V = {};
 V.map = {
   title: () => 'Where is London least affordable?',
   desc: () => `${MAP_METRICS[S.mapMetric].label} by borough, ${K.latest_month}. Click a borough to highlight it everywhere.`,
-  foot: () => S.mapMetric.includes('rent') ? 'City of London has no published rent series (grey).' : 'City of London pay is suppressed by ONS; London-wide pay is used.',
+  foot: () => 'Labels: three highest and three lowest boroughs. ' + (S.mapMetric.includes('rent') || S.mapMetric.includes('yield') || S.mapMetric === 'stress_index'
+    ? 'City of London has no published rent series (grey).' : 'City of London pay is suppressed by ONS; London-wide pay is used.'),
   tools: () => `<select id="mapMetric" aria-label="Map metric">${Object.entries(MAP_METRICS).map(([k, m]) =>
       `<option value="${k}" ${k === S.mapMetric ? 'selected' : ''}>${m.label}</option>`).join('')}</select>`,
   option: () => {
@@ -283,6 +287,8 @@ V.map = {
     let min = Math.min(...vals), max = Math.max(...vals), colors = C.seq;
     if (m.scale === 'div') { const a = Math.max(Math.abs(min), Math.abs(max)); min = -a; max = a; colors = C.div; }
     if (m.scale === 'seqRev') colors = [...C.seq].reverse();
+    const ranked = D.boroughs.filter(b => inScope(b) && b[S.mapMetric] != null).sort((a, b) => a[S.mapMetric] - b[S.mapMetric]);
+    const extremes = new Set([...ranked.slice(0, 3), ...ranked.slice(-3)].map(b => b.area_code));
     return {
       textStyle: baseText(), animation: ANIM,
       tooltip: tooltip({ trigger: 'item', formatter: p => { const b = byCode[p.name]; if (!b) return '';
@@ -298,11 +304,12 @@ V.map = {
                     itemStyle: { areaColor: null, borderColor: C.ink, borderWidth: 1.5 } },
         label: { show: false },
         data: D.boroughs.map(b => {
-          const sel = b.area_code === S.borough, out = !inScope(b);
+          const sel = b.area_code === S.borough, out = !inScope(b), ext = !out && extremes.has(b.area_code);
           return { name: b.area_code, value: out ? null : b[S.mapMetric],
             itemStyle: out ? { areaColor: C.faint, borderColor: '#fff' } : sel ? { borderColor: C.ink, borderWidth: 2.5 } : {},
-            label: sel ? { show: true, color: C.ink, fontWeight: 700, backgroundColor: 'rgba(255,255,255,.85)', padding: [2, 4], borderRadius: 3,
-                           formatter: () => short(b.area_name) } : undefined };
+            label: sel || ext ? { show: true, color: C.ink, fontWeight: sel ? 700 : 600, fontSize: fs() - 1, backgroundColor: 'rgba(255,255,255,.88)',
+                           padding: [2, 5], borderRadius: 3, lineHeight: fs() + 2,
+                           formatter: () => `${short(b.area_name)}\n${m.fmt(b[S.mapMetric])}` } : undefined };
         }),
       }],
     };
@@ -335,9 +342,9 @@ V.rentshare = {
   desc: () => `Annual average private rent as a share of median full-time gross pay, ${K.latest_month}. The red line marks the common 30% affordability benchmark.`,
   foot: () => 'City of London has no published rent series.',
   option: () => {
-    const o = rankedBar({ metric: 'annual_rent_to_earnings_ratio', fmt: v => F.pct(v * 100, 0) });
-    o.series[0].markLine = { symbol: 'none', silent: true, lineStyle: { color: C.red, width: 1.5, type: 'solid' },
-      label: { formatter: '30% benchmark', color: C.ink, fontSize: fs(), position: 'end' }, data: [{ xAxis: 0.3 }] };
+    const o = rankedBar({ metric: 'annual_rent_to_earnings_ratio', fmt: v => F.pct(v * 100, 0),
+      mark: { symbol: 'none', silent: true, lineStyle: { color: C.red, width: 1.5, type: 'solid' },
+              label: { formatter: '30% benchmark', color: C.ink, fontSize: fs(), position: 'end' }, data: [{ xAxis: 0.3 }] } });
     o.xAxis.axisLabel.formatter = v => Math.round(v * 100) + '%';
     return o;
   },
@@ -352,7 +359,7 @@ V.rentgap = {
 
 V.renttrend = {
   title: () => 'Rent inflation peaked in 2023–24 and is cooling',
-  desc: () => 'Median borough year-on-year change in average private rent. Dashed line: London median pay growth in ' + K.ashe_year + '.',
+  desc: () => `Median borough year-on-year change in average private rent. Dashed line: London median pay growth in ${K.ashe_year} (${F.pct(K.london_pay_growth)}).`,
   option: () => {
     const months = D.months.filter(m => m >= '2016-01');
     const series = [];
@@ -364,7 +371,7 @@ V.renttrend = {
     }
     if (S.borough) series.push(boroughLine('rent_yoy', months, F.pct));
     series[0].markLine = { symbol: 'none', silent: true, lineStyle: { color: C.ink2, type: 'dashed' },
-      label: { formatter: `London pay growth ${F.pct(K.london_pay_growth)}`, position: 'insideStartTop', color: C.ink2, fontSize: fs() },
+      label: { show: false },
       data: [{ yAxis: K.london_pay_growth }] };
     return lineOption(months, series, v => v + '%');
   },
@@ -376,7 +383,7 @@ V.rentvsprice = {
   option: () => {
     const rows = scoped().filter(b => b.rent_growth_since_2015_pct != null);
     const series = Object.entries(GROUP_C).filter(([g]) => S.group === 'All' || S.group === g).map(([g, col]) => ({
-      name: g, type: 'scatter', symbolSize: b => 12, color: col,
+      name: g, type: 'scatter', symbolSize: 12, color: col, labelLayout: { hideOverlap: true, moveOverlap: 'shiftY' },
       itemStyle: { borderColor: '#fff', borderWidth: 1.5 },
       data: rows.filter(b => b.group === g).map(b => ({ value: [b.price_growth_since_2015_pct, b.rent_growth_since_2015_pct], code: b.area_code,
         symbolSize: b.area_code === S.borough ? 20 : 12,
@@ -419,7 +426,7 @@ V.pricetrend = {
 V.sales = {
   title: () => 'Transactions are less than half their 2000s peak',
   desc: () => `Residential sales recorded by HM Land Registry per year, ${scopeLabel().toLowerCase()}, 1995–2025.`,
-  foot: () => 'The latest months are revised upward as late registrations arrive.',
+  foot: () => 'Darker bars: 2023 onward. The latest months are revised upward as late registrations arrive.',
   option: () => {
     const yearly = {};
     for (const r of D.groupTrends) {
@@ -436,7 +443,8 @@ V.sales = {
       yAxis: valueAxis({ axisLabel: { color: C.ink2, fontSize: fs(), formatter: v => (v / 1000) + 'k' } }),
       series: [{ type: 'bar', name: 'Sales', barWidth: '70%', data: years.map(y => ({ value: yearly[y],
         itemStyle: { color: y >= 2023 ? C.inner : '#9ec5f4', borderRadius: [3, 3, 0, 0] },
-        label: events[y] ? { show: true, position: 'top', formatter: events[y], color: C.ink, fontSize: fs() - 1, lineHeight: fs() + 2 } : undefined })) }],
+        label: events[y] ? { show: true, position: 'top', formatter: events[y], color: C.ink, fontSize: fs() - 1, lineHeight: fs() + 2,
+          backgroundColor: 'rgba(255,255,255,.9)', padding: [2, 4], borderRadius: 3 } : undefined })) }],
     };
   },
 };
@@ -532,7 +540,7 @@ V.ptypemed = {
     }));
     return { textStyle: baseText(), animation: ANIM, legend: legend(), grid: { left: 8, right: 8, top: 34, bottom: 8, containLabel: true },
       tooltip: tooltip({ trigger: 'axis', axisPointer: { type: 'shadow' }, valueFormatter: F.x }),
-      xAxis: catAxis({ data: ['Flat', 'Terraced', 'Semi-detached', 'Detached'], axisLabel: { color: C.ink, fontSize: fs() } }),
+      xAxis: catAxis({ data: ['Flat', 'Terraced', 'Semi-detached', 'Detached'], axisLabel: { color: C.ink, fontSize: fs(), interval: 0 } }),
       yAxis: valueAxis({ axisLabel: { formatter: v => v + '×', color: C.ink2, fontSize: fs() } }), series };
   },
 };
@@ -549,16 +557,16 @@ V.yieldscatter = {
   option: () => {
     const rows = scoped().filter(b => b.gross_rental_yield_pct != null);
     const series = Object.entries(GROUP_C).filter(([g]) => S.group === 'All' || S.group === g).map(([g, col]) => ({
-      name: g, type: 'scatter', color: col, itemStyle: { borderColor: '#fff', borderWidth: 1.5 },
+      name: g, type: 'scatter', color: col, itemStyle: { borderColor: '#fff', borderWidth: 1.5 }, labelLayout: { hideOverlap: true, moveOverlap: 'shiftY' },
       data: rows.filter(b => b.group === g).map(b => ({ value: [b.average_price, b.gross_rental_yield_pct], code: b.area_code,
         symbolSize: b.area_code === S.borough ? 20 : 12, itemStyle: b.area_code === S.borough ? { borderColor: C.ink, borderWidth: 2.5 } : {},
         label: { show: b.area_code === S.borough || b.gross_rental_yield_pct > 5.4 || b.gross_rental_yield_pct < 3.6 || b.average_price > 850000,
-                 formatter: () => short(b.area_name), position: 'right', color: C.ink, fontSize: fs() - 1 } })),
+                 formatter: () => short(b.area_name), position: b.average_price > 900000 ? 'left' : 'right', color: C.ink, fontSize: fs() - 1 } })),
     }));
-    return { textStyle: baseText(), animation: ANIM, legend: legend(), grid: { left: 8, right: 30, top: 30, bottom: 30, containLabel: true },
+    return { textStyle: baseText(), animation: ANIM, legend: legend(), grid: { left: 24, right: 30, top: 30, bottom: 30, containLabel: true },
       tooltip: tooltip({ trigger: 'item', formatter: p => `<b>${byCode[p.data.code].area_name}</b><br>Price ${F.gbp(p.value[0])} · Yield ${F.pct(p.value[1])}` }),
       xAxis: valueAxis({ scale: true, name: 'Average price', nameLocation: 'middle', nameGap: 26, axisLabel: { formatter: v => '£' + v / 1000 + 'k', color: C.ink2, fontSize: fs() } }),
-      yAxis: valueAxis({ scale: true, name: 'Gross yield', nameLocation: 'middle', nameGap: 34, axisLabel: { formatter: v => v + '%', color: C.ink2, fontSize: fs() } }),
+      yAxis: valueAxis({ scale: true, name: 'Gross yield', nameLocation: 'middle', nameGap: 44, axisLabel: { formatter: v => v + '%', color: C.ink2, fontSize: fs() } }),
       series };
   },
   click: p => p.data && p.data.code && setBorough(p.data.code),
@@ -612,7 +620,7 @@ V.profiletype = {
     const med = types.map(t => median(D.propertyTypes.filter(r => r.property_type === t).map(r => r.average_price)));
     return { textStyle: baseText(), animation: ANIM, legend: legend(), grid: { left: 8, right: 8, top: 32, bottom: 8, containLabel: true },
       tooltip: tooltip({ trigger: 'axis', axisPointer: { type: 'shadow' }, valueFormatter: F.gbp }),
-      xAxis: catAxis({ data: ['Flat', 'Terraced', 'Semi', 'Detached'], axisLabel: { color: C.ink, fontSize: fs() } }),
+      xAxis: catAxis({ data: ['Flat', 'Terraced', 'Semi', 'Detached'], axisLabel: { color: C.ink, fontSize: fs(), interval: 0 } }),
       yAxis: valueAxis({ axisLabel: { formatter: v => '£' + v / 1000 + 'k', color: C.ink2, fontSize: fs() } }),
       series: [{ name: short(byCode[code].area_name), type: 'bar', color: C.ink, data: mine, itemStyle: { borderRadius: [3, 3, 0, 0] } },
                { name: 'London median borough', type: 'bar', color: C.neutral, data: med, itemStyle: { borderRadius: [3, 3, 0, 0] } }] };

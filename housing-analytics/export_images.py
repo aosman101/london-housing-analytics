@@ -68,6 +68,7 @@ def export(chrome: str, name: str, visual: str, width: int, height: int) -> None
         ]
         # Headless Chrome occasionally exits non-zero on macOS display-link errors; retry.
         for attempt in range(1, 4):
+            out.unlink(missing_ok=True)  # never mistake a stale image for success
             result = subprocess.run(cmd, capture_output=True, timeout=180)
             if result.returncode == 0 and out.exists():
                 break

@@ -103,6 +103,16 @@ def normalise_property_type_label(value: str) -> str:
     return PROPERTY_TYPE_LABELS.get(str(value).strip(), str(value).strip())
 
 
+def property_type_from_header(column: str) -> str | None:
+    """Read the property type from a wide HPI header such as ``Semi_Detached_Average_Price``."""
+    name = str(column).strip().lower()
+    for prefix, label in (("semi", "Semi-detached"), ("detached", "Detached"),
+                          ("terraced", "Terraced"), ("flat", "Flat/Maisonette")):
+        if name.startswith(prefix):
+            return label
+    return None
+
+
 def normalise_hpi_average():
     path = config.raw_path("hpi_average_prices")
     df = pd.read_csv(path, dtype=str)
@@ -177,6 +187,7 @@ def normalise_hpi_property_type():
             )
 
         group_count = (df.shape[1] - 3) // 4
+        raw_headers = list(df.columns)
         headers = ["date_month", "area_name", "area_code"]
         for i in range(1, group_count + 1):
             headers += [
@@ -219,8 +230,15 @@ def normalise_hpi_property_type():
                 f"Could not resolve property-type groups cleanly. Groups found: {groups_to_use}"
             )
 
+        # Prefer the type named in each group's header (e.g. "Flat_Average_Price"); fall back to the
+        # documented D/S/T/F order only when the headers carry no type names.
+        header_types = [property_type_from_header(raw_headers[3 + (i - 1) * 4]) for i in groups_to_use]
+        group_types = header_types if all(header_types) else property_types
+        if sorted(group_types) != sorted(property_types):
+            raise ValueError(f"Unexpected property-type columns: {header_types}. Update the parser.")
+
         frames = []
-        for i, prop in zip(groups_to_use, property_types, strict=False):
+        for i, prop in zip(groups_to_use, group_types, strict=True):
             sub = df[
                 [
                     "date_month",

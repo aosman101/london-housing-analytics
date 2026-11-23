@@ -70,7 +70,8 @@ def attach_earnings(df: pd.DataFrame, ashe: pd.DataFrame) -> pd.DataFrame:
 
     year = df["date_month"].dt.year
     in_window = ((year >= ref_year) & (year - ref_year <= EARNINGS_MAX_LAG_YEARS)).to_numpy()
-    df["earnings_fallback_used"] = df["median_gross_annual_pay"].isna()
+    # Only flag a fallback where earnings are actually attached (dbt leaves other months null).
+    df["earnings_fallback_used"] = df["median_gross_annual_pay"].isna().to_numpy() & in_window
     for c in cols:
         df[c] = df[c].where(df[c].notna(), london[c])
     df.loc[~in_window, cols] = np.nan
@@ -163,7 +164,8 @@ def group_trends(m: pd.DataFrame) -> pd.DataFrame:
         median_rent=("avg_monthly_rent", "median"),
         median_rent_yoy_pct=("rent_yoy_pct", "median"),
         median_price_yoy_pct=("house_price_yoy_pct", "median"),
-        sales=("sales_volume", "sum"),
+        # min_count=1: months Land Registry has not yet published stay null instead of summing to 0.
+        sales=("sales_volume", lambda s: s.sum(min_count=1)),
     ).reset_index()
     return g
 

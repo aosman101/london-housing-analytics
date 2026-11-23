@@ -51,6 +51,32 @@ class AttachEarningsTests(unittest.TestCase):
         self.assertEqual(len(out), len(shuffled))
         self.assertListEqual(list(out.date_month), list(shuffled.date_month))
 
+    def test_fallback_flag_only_set_where_earnings_attached(self) -> None:
+        city = pd.DataFrame({
+            "date_month": pd.to_datetime(["1995-01-01", "2026-02-01"]),
+            "area_code": ["E09000001", "E09000001"],
+        })
+        out = build_analytics.attach_earnings(city, ashe_fixture())
+        flags = dict(zip(out.date_month.dt.year, out.earnings_fallback_used, strict=True))
+        self.assertFalse(flags[1995], "no earnings were attached in 1995, so no fallback was used")
+        self.assertTrue(flags[2026])
+
+
+class GroupTrendsTests(unittest.TestCase):
+    def test_unpublished_sales_months_are_null_not_zero(self) -> None:
+        m = pd.DataFrame({
+            "date_month": pd.to_datetime(["2025-12-01", "2025-12-01", "2026-01-01", "2026-01-01"]),
+            "group": ["Inner London"] * 4,
+            "average_price": [1.0, 2.0, 1.0, 2.0],
+            "avg_monthly_rent": [1.0, 2.0, 1.0, 2.0],
+            "rent_yoy_pct": [1.0, 2.0, 1.0, 2.0],
+            "house_price_yoy_pct": [1.0, 2.0, 1.0, 2.0],
+            "sales_volume": [10.0, 5.0, float("nan"), float("nan")],
+        })
+        out = build_analytics.group_trends(m).set_index("date_month")["sales"]
+        self.assertEqual(out[pd.Timestamp("2025-12-01")], 15)
+        self.assertTrue(pd.isna(out[pd.Timestamp("2026-01-01")]), "Land Registry has not published these yet")
+
 
 class JsonableTests(unittest.TestCase):
     def test_nan_becomes_null_and_floats_round(self) -> None:

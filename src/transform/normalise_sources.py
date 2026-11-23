@@ -13,7 +13,8 @@ NORM = config.NORMALISED_DIR
 NORM.mkdir(parents=True, exist_ok=True)
 
 # ASHE Table 8.7a is "Annual pay - Gross". Glob by pattern so next year's file works.
-ASHE_EXTRACT_DIR = RAW / "ashe_extracted"
+# Each zip is extracted into its own sub-folder so a new vintage is never shadowed by an old one.
+ASHE_EXTRACT_ROOT = RAW / "ashe_extracted"
 ASHE_WORKBOOK_PATTERN = "*Table 8.7a*Annual pay*Gross*.xlsx"
 ASHE_CV_WORKBOOK_PATTERN = "*Table 8.7b*Annual pay*Gross*CV.xlsx"
 # Full-time employees, by place of residence.
@@ -35,25 +36,29 @@ PROPERTY_TYPE_LABELS = {
 }
 
 
-def _extract_ashe_zip() -> None:
-    zip_path = config.raw_path("ashe_table8")
+def _extract_ashe_zip(zip_path: Path, extract_dir: Path) -> None:
     if not zip_path.exists():
         raise FileNotFoundError(f"ASHE zip not found at {zip_path}. Run download_sources.py first.")
-    ASHE_EXTRACT_DIR.mkdir(parents=True, exist_ok=True)
+    extract_dir.mkdir(parents=True, exist_ok=True)
     with zipfile.ZipFile(zip_path, "r") as z:
         for member in z.namelist():
             if member.lower().endswith((".csv", ".xlsx")):
-                z.extract(member, path=ASHE_EXTRACT_DIR)
+                z.extract(member, path=extract_dir)
 
 
 def _find_ashe_workbook(pattern: str) -> Path:
-    """Return the single extracted ASHE workbook matching ``pattern``, extracting the zip if needed."""
-    matches = list(ASHE_EXTRACT_DIR.rglob(pattern)) if ASHE_EXTRACT_DIR.exists() else []
+    """Return the single ASHE workbook matching ``pattern`` for the configured vintage.
+
+    The configured zip is extracted on first use into ``ashe_extracted/<zip name>/``.
+    """
+    zip_path = config.raw_path("ashe_table8")
+    extract_dir = ASHE_EXTRACT_ROOT / zip_path.stem
+    matches = sorted(extract_dir.rglob(pattern)) if extract_dir.exists() else []
     if not matches:
-        _extract_ashe_zip()
-        matches = list(ASHE_EXTRACT_DIR.rglob(pattern))
+        _extract_ashe_zip(zip_path, extract_dir)
+        matches = sorted(extract_dir.rglob(pattern))
     if not matches:
-        raise FileNotFoundError(f"No ASHE workbook matched {pattern} in {ASHE_EXTRACT_DIR}.")
+        raise FileNotFoundError(f"No ASHE workbook matched {pattern} in {extract_dir}.")
     if len(matches) > 1:
         raise RuntimeError(f"Multiple ASHE workbooks matched {pattern}: {matches}")
     return matches[0]

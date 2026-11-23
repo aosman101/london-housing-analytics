@@ -1,0 +1,391 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pipeline Map</title>
+<meta name="description" content="Interactive map of the London Housing Analytics pipeline, from HM Land Registry and ONS releases to dbt marts, Tableau and the dashboard.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Overpass:wght@400;600;700;800&family=Overpass+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --paper: #f2f4f7;
+    --band: #e8ecf1;
+    --sheet: #ffffff;
+    --ink: #172033;
+    --ink-2: #4a5568;
+    --rule: #d5dae1;
+    --station: #ffffff;
+    --hpi: #12805c;
+    --pipr: #b4236e;
+    --ashe: #d98e04;
+    --marts: #1f2a44;
+    --dash: #0f7f8c;
+    --geo: #8792a2;
+    --ci: #8792a2;
+    --focus: #2a6fdb;
+    --sans: "Overpass", "Helvetica Neue", Arial, sans-serif;
+    --mono: "Overpass Mono", ui-monospace, Menlo, monospace;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --paper: #0f141c; --band: #151c27; --sheet: #182130; --ink: #e8ecf2; --ink-2: #a5b0c0;
+      --rule: #2b3647; --station: #0f141c; --marts: #8aa2d6; --geo: #6f7b8c; --ci: #6f7b8c; --focus: #7fb0ff;
+    }
+  }
+  :root[data-theme="dark"] {
+    --paper: #0f141c; --band: #151c27; --sheet: #182130; --ink: #e8ecf2; --ink-2: #a5b0c0;
+    --rule: #2b3647; --station: #0f141c; --marts: #8aa2d6; --geo: #6f7b8c; --ci: #6f7b8c; --focus: #7fb0ff;
+  }
+
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--paper); color: var(--ink); font: 400 16px/1.55 var(--sans); }
+  a { color: inherit; text-underline-offset: 3px; }
+  :focus-visible { outline: 3px solid var(--focus); outline-offset: 3px; }
+
+  .page { max-width: 1480px; margin: 0 auto; padding: 40px 32px 56px; }
+  header { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 8px 40px; align-items: end; margin-bottom: 20px; }
+  h1 { margin: 0; font-weight: 800; font-size: 46px; line-height: 1.05; letter-spacing: -0.015em; }
+  .lede { margin: 10px 0 0; max-width: 64ch; color: var(--ink-2); font-size: 17px; }
+
+  .key { display: flex; flex-wrap: wrap; gap: 6px 18px; margin: 0; padding: 0; list-style: none; justify-content: flex-end; max-width: 560px; }
+  .key button { display: inline-flex; align-items: center; gap: 9px; padding: 5px 2px; border: 0; background: none;
+    color: var(--ink); font: 600 14px var(--sans); cursor: pointer; }
+  .key button[aria-pressed="true"] { text-decoration: underline; text-decoration-thickness: 2px; text-underline-offset: 5px; }
+  .swatch { width: 30px; height: 8px; border-radius: 4px; flex: none; }
+  .swatch.dashed { height: 0; border-top: 4px dashed; border-radius: 0; background: none !important; }
+
+  .map-wrap { overflow-x: auto; margin: 0 -8px; padding: 0 8px; }
+  svg.map { display: block; width: 100%; min-width: 1020px; height: auto; }
+  .band { fill: var(--band); }
+  .zone { font: 700 15px var(--sans); fill: var(--ink-2); }
+  .line { fill: none; stroke-linecap: round; stroke-linejoin: round; transition: opacity .2s; }
+  .lbl { font: 700 15px var(--sans); fill: var(--ink); paint-order: stroke; stroke: var(--paper); stroke-width: 6px; stroke-linejoin: round; }
+  .sub { font: 400 12.5px var(--mono); fill: var(--ink-2); paint-order: stroke; stroke: var(--paper); stroke-width: 6px; stroke-linejoin: round; }
+  .on-band .lbl, .on-band .sub { stroke: var(--band); }
+  .stn { cursor: pointer; transition: opacity .2s; }
+  .stn .hit { fill: transparent; }
+  .stn .mark { fill: var(--station); stroke-width: 4; }
+  .stn .halo { fill: none; stroke: var(--focus); stroke-width: 3; opacity: 0; }
+  .stn:hover .mark { stroke-width: 6; }
+  .stn:focus { outline: none; }
+  .stn:focus-visible .halo, .stn[aria-pressed="true"] .halo { opacity: 1; }
+  .stn[aria-pressed="true"] .lbl { text-decoration: underline; }
+  svg.tracing .line:not(.lit), svg.tracing .stn:not(.lit) { opacity: .14; }
+
+  .board { margin-top: 22px; background: var(--sheet); border-left: 8px solid var(--rule); border-radius: 0 6px 6px 0;
+    padding: 24px 28px; display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr); gap: 12px 48px; min-height: 170px; }
+  .board.empty { display: block; color: var(--ink-2); }
+  .board h2 { margin: 0 0 6px; font-size: 26px; font-weight: 800; line-height: 1.15; }
+  .board .what { margin: 0 0 14px; max-width: 70ch; }
+  .board dl { margin: 0; display: grid; grid-template-columns: max-content minmax(0, 1fr); gap: 6px 16px; font-size: 15px; }
+  .board dt { color: var(--ink-2); font-weight: 600; }
+  .board dd { margin: 0; overflow-wrap: anywhere; }
+  .board code { font: 400 13.5px var(--mono); }
+  .board h3 { margin: 0 0 8px; font-size: 15px; font-weight: 700; color: var(--ink-2); }
+  .board ul { margin: 0 0 16px; padding-left: 18px; }
+  .hops { display: flex; flex-wrap: wrap; gap: 8px; margin: 0 0 16px; }
+  .hops button { font: 600 14px var(--sans); color: var(--ink); background: none; border: 2px solid var(--rule);
+    border-radius: 999px; padding: 4px 12px; cursor: pointer; }
+  .hops button:hover { border-color: var(--ink); }
+
+  footer { margin-top: 18px; color: var(--ink-2); font-size: 14px; display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+
+  body.export .board, body.export footer, body.export .hint { display: none; }
+  body.export .page { padding: 36px 40px 28px; max-width: none; }
+
+  @media (max-width: 900px) {
+    .page { padding: 24px 16px 40px; }
+    header { grid-template-columns: 1fr; }
+    h1 { font-size: 34px; }
+    .key { justify-content: flex-start; }
+    .board { grid-template-columns: 1fr; padding: 20px; }
+  }
+  @media (prefers-reduced-motion: reduce) { .line, .stn { transition: none; } }
+</style>
+</head>
+<body>
+<div class="page">
+  <header>
+    <div>
+      <h1>Pipeline map</h1>
+      <p class="lede">How official HM Land Registry and ONS releases become affordability metrics for all
+        33 London boroughs. Each coloured line is one data source; follow it from download to dashboard.
+        <span class="hint">Select any stop for details.</span></p>
+    </div>
+    <ul class="key" id="key" aria-label="Lines: select one to trace it"></ul>
+  </header>
+
+  <div class="map-wrap">
+    <svg class="map" id="map" viewBox="0 0 1600 720" role="group" aria-label="Pipeline map. Stops are buttons."></svg>
+  </div>
+
+  <section class="board empty" id="board" aria-live="polite">
+    Choose a stop on the map to see what runs there, which file does the work, what it reads and writes,
+    and the command that runs it.
+  </section>
+
+  <footer>
+    <span>Counts reflect the February 2026 HPI, April 2026 PIPR and 2025 ASHE vintages.</span>
+    <a href="https://github.com/aosman101/london-housing-analytics">github.com/aosman101/london-housing-analytics</a>
+  </footer>
+</div>
+
+<script>
+(() => {
+const GH = 'https://github.com/aosman101/london-housing-analytics/blob/main/';
+const NS = 'http://www.w3.org/2000/svg';
+const EXPORT = new URLSearchParams(location.search).has('export');
+if (EXPORT) document.body.classList.add('export');
+
+/* Lines: one per data source, plus the branches that leave the main route. */
+const LINES = [
+  { id: 'hpi', name: 'HM Land Registry HPI', color: 'var(--hpi)', w: 10, d: 'M100,200 H1030 L1130,300 M780,200 L870,110' },
+  { id: 'pipr', name: 'ONS private rents', color: 'var(--pipr)', w: 10, d: 'M100,300 H1130' },
+  { id: 'ashe', name: 'ONS earnings', color: 'var(--ashe)', w: 10, d: 'M100,400 H1030 L1130,300' },
+  { id: 'ashe', key: false, color: 'var(--ashe)', w: 4, dash: '1 9', d: 'M870,400 V110' },
+  { id: 'marts', name: 'dbt marts', color: 'var(--marts)', w: 10, d: 'M1130,300 H1440 M870,110 H1180 L1290,220 V300 M1320,300 L1380,240 H1440' },
+  { id: 'dash', name: 'Dashboard branch', color: 'var(--dash)', w: 10, d: 'M430,400 V560 H1300' },
+  { id: 'geo', name: 'Borough boundaries', color: 'var(--geo)', w: 6, d: 'M100,660 H1440 V300 M870,660 V560' },
+  { id: 'ci', name: 'CI test data', color: 'var(--ci)', w: 4, dash: '10 8', d: 'M590,470 V300' },
+];
+
+const ZONES = [
+  { x: 0, w: 185, name: 'Official sources' },
+  { x: 185, w: 490, name: 'Python' },
+  { x: 675, w: 540, name: 'dbt on PostgreSQL' },
+  { x: 1215, w: 385, name: 'Outputs' },
+];
+
+/* Stops. kind "hub" spans y..y2 (interchange); pos = label placement. */
+const S = [
+  { id: 'hpi_src', x: 100, y: 200, lines: ['hpi'], pos: 'above', name: 'HM Land Registry HPI', sub: '3 monthly CSVs',
+    what: 'The UK House Price Index: average prices, monthly sales volumes and prices by property type for every local authority, back to January 1995.',
+    files: ['config/sources.yml'], reads: 'publicdata.landregistry.gov.uk', writes: 'Nothing; the next stop downloads it',
+    facts: ['Borough prices are 3-month moving averages', 'Sales lag about two months and are revised upward'] },
+  { id: 'pipr_src', x: 100, y: 300, lines: ['pipr'], pos: 'above', name: 'ONS private rents', sub: 'PIPR workbook',
+    what: 'The ONS Price Index of Private Rents: average monthly private rent by local authority since January 2015.',
+    files: ['config/sources.yml'], reads: 'ons.gov.uk', writes: 'Nothing; the next stop downloads it',
+    facts: ['An official statistic in development', 'The latest two months are provisional', 'No rent series is published for the City of London'] },
+  { id: 'ashe_src', x: 100, y: 400, lines: ['ashe'], pos: 'above', name: 'ONS earnings', sub: 'ASHE Table 8',
+    what: 'The Annual Survey of Hours and Earnings: median gross annual pay for full-time employees by place of residence, with coefficients of variation.',
+    files: ['config/sources.yml'], reads: 'ons.gov.uk', writes: 'Nothing; the next stop downloads it',
+    facts: ['2025 provisional release', 'The City of London estimate is suppressed by ONS'] },
+
+  { id: 'download', kind: 'hub', x: 270, y: 200, y2: 400, lines: ['hpi', 'pipr', 'ashe'], pos: 'above', name: 'Download', sub: 'download_sources.py',
+    what: 'Builds every URL from the vintages in config/sources.yml and downloads each file once. Files land as .part first, so a failed download never leaves a half-written file behind.',
+    files: ['src/extract/download_sources.py', 'config/sources.yml'], reads: 'Source URLs', writes: 'data/raw/ (vintage-stamped file names)',
+    run: 'make download', facts: ['A new release is a config change, not a code change'] },
+  { id: 'normalise', kind: 'hub', x: 430, y: 200, y2: 400, lines: ['hpi', 'pipr', 'ashe', 'dash'], pos: 'above', name: 'Normalise', sub: 'normalise_sources.py',
+    what: 'Keeps the 33 London boroughs, names and types every column, reads property types from the HPI headers, and maps ASHE coefficients of variation to the ONS precision bands.',
+    files: ['src/transform/normalise_sources.py'], reads: 'data/raw/', writes: 'data/normalised/*.csv (5 files)',
+    run: 'make normalise', facts: ['12,342 price rows, 12,276 sales rows, 49,368 property-type rows', '4,320 rent rows, 33 earnings rows'] },
+  { id: 'load', kind: 'hub', x: 590, y: 200, y2: 400, lines: ['hpi', 'pipr', 'ashe', 'ci'], pos: 'above', name: 'Load to Postgres', sub: 'load_to_postgres.py',
+    what: 'Replaces the five raw.* tables in PostgreSQL. It refuses to run unless all five normalised files exist, so the warehouse is never half refreshed.',
+    files: ['src/load/load_to_postgres.py', 'src/common/db.py', 'docker-compose.yml'], reads: 'data/normalised/*.csv', writes: 'raw.* (5 tables, 78,339 rows)',
+    run: 'make up && make load', facts: ['Postgres 16 in Docker', 'Credentials come from .env, shared with dbt'] },
+
+  { id: 'stg_hpi', x: 740, y: 200, lines: ['hpi'], pos: 'below', name: 'HPI staging', sub: '3 stg_hpi_* views',
+    what: 'Three views that cast and rename the raw HPI tables: average prices, sales volumes and prices by property type.',
+    files: ['dbt/models/staging/stg_hpi_average_prices.sql', 'dbt/models/staging/stg_hpi_sales.sql', 'dbt/models/staging/stg_hpi_property_type_prices.sql', 'dbt/models/staging/schema.yml'],
+    reads: 'raw.hpi_*', writes: 'analytics.stg_hpi_* views', run: 'make dbt-build',
+    facts: ['Tested unique on borough × month (× property type)', 'Property types limited to the four HPI categories'] },
+  { id: 'stg_pipr', x: 740, y: 300, lines: ['pipr'], pos: 'below', name: 'Rents staging', sub: 'stg_pipr_local_rents',
+    what: 'Casts and renames the raw PIPR table into one row per borough per month.',
+    files: ['dbt/models/staging/stg_pipr_local_rents.sql', 'dbt/models/staging/schema.yml'], reads: 'raw.pipr_local_rents',
+    writes: 'analytics.stg_pipr_local_rents view', run: 'make dbt-build', facts: ['Source freshness thresholds match the ONS release lag'] },
+  { id: 'stg_ashe', x: 740, y: 400, lines: ['ashe'], pos: 'below', name: 'Earnings staging', sub: 'stg_ashe_earnings',
+    what: 'Casts and renames ASHE earnings, keeping the coefficient of variation and the ONS precision band for every row.',
+    files: ['dbt/models/staging/stg_ashe_earnings.sql', 'dbt/models/staging/schema.yml'], reads: 'raw.ashe_earnings',
+    writes: 'analytics.stg_ashe_earnings view', run: 'make dbt-build', facts: ['32 boroughs plus the London region row'] },
+  { id: 'lookup', x: 870, y: 400, lines: ['ashe'], pos: 'below-right', name: 'Earnings lookup', sub: 'dbt macro',
+    what: 'Attaches the borough’s own earnings, or London-wide pay where ONS suppresses the borough, and only within one year of the ASHE reference year. Historical prices are never divided by today’s pay.',
+    files: ['dbt/macros/earnings_lookup.sql'], reads: 'stg_ashe_earnings', writes: 'Used inside both earnings-based marts', run: 'make dbt-build',
+    facts: ['A dbt test fails the build if earnings are ever newer than the month they are attached to'] },
+
+  { id: 'prop', x: 870, y: 110, lines: ['hpi', 'ashe', 'marts'], pos: 'above', name: 'Property-type mart', sub: 'borough × type',
+    what: 'Latest month, one row per borough and property type, with each type’s price-to-earnings ratio.',
+    files: ['dbt/models/marts/mart_london_property_type_latest.sql', 'dbt/models/marts/schema.yml'], reads: 'stg_hpi_property_type_prices, earnings lookup',
+    writes: 'analytics.mart_london_property_type_latest (129 rows)', run: 'make dbt-build',
+    facts: ['Median flat 8.4× local pay, detached house 26.7×', 'The City of London only has a flat price, so it has one row, not four'] },
+  { id: 'monthly', kind: 'hub', x: 990, y: 200, y2: 400, lines: ['hpi', 'pipr', 'ashe', 'marts'], pos: 'above', name: 'Affordability mart', sub: 'borough × month',
+    what: 'The core table: prices, sales and rents for every borough and month since 1995, plus affordability ratios wherever earnings apply.',
+    files: ['dbt/models/marts/mart_london_affordability_monthly.sql', 'dbt/models/marts/schema.yml'],
+    reads: 'All staging views, earnings lookup', writes: 'analytics.mart_london_affordability_monthly', run: 'make dbt-build',
+    facts: ['Price-to-earnings, rent-to-earnings, months to save a 10% deposit', 'Rent growth minus pay growth, in percentage points'] },
+  { id: 'snapshot', x: 1170, y: 300, lines: ['marts'], pos: 'below', name: 'Borough snapshot', sub: 'latest month',
+    what: 'One row per borough for the latest month, with rankings and the latest published sales month reported separately.',
+    files: ['dbt/models/marts/mart_london_borough_snapshot_latest.sql'], reads: 'mart_london_affordability_monthly',
+    writes: 'analytics.mart_london_borough_snapshot_latest (33 rows)', run: 'make dbt-build', facts: ['Feeds the README charts and map views'] },
+
+  { id: 'export', x: 1290, y: 300, lines: ['marts'], pos: 'below', name: 'CSV export', sub: 'export_marts.py',
+    what: 'Writes the three marts to CSV for spreadsheets and BI tools.',
+    files: ['src/load/export_marts.py'], reads: 'analytics.mart_*', writes: 'data/exports/*.csv', run: 'make export' },
+  { id: 'charts', x: 1440, y: 240, lines: ['marts'], pos: 'right', name: 'README charts', sub: 'make_charts.py',
+    what: 'Renders the two headline charts in the project README from the exported snapshot.',
+    files: ['src/report/make_charts.py'], reads: 'data/exports/mart_london_borough_snapshot_latest.csv', writes: 'docs/images/*.png', run: 'make charts' },
+  { id: 'tableau', x: 1440, y: 300, lines: ['marts', 'geo'], pos: 'right', name: 'Tableau / BI', sub: 'analytics schema',
+    what: 'Connect Tableau, Power BI or Excel to the analytics schema in PostgreSQL, or open the CSV exports. Join the boundary files for borough maps.',
+    files: ['tableau/README.md'], reads: 'analytics.mart_* or data/exports/*.csv', writes: 'Your workbook' },
+
+  { id: 'build', x: 870, y: 560, lines: ['dash', 'geo'], pos: 'above', name: 'Dashboard build', sub: 'build_analytics.py',
+    what: 'Re-implements the mart logic in pandas straight from the normalised files, so the dashboard rebuilds without a database. Uses the same earnings rule as the dbt marts.',
+    files: ['housing-analytics/build_analytics.py', 'tests/test_housing_analytics.py'], reads: 'data/normalised/*.csv, data/spatial/',
+    writes: 'dashboard/data.js, tables/*.csv, key_metrics.json', run: 'make dashboard' },
+  { id: 'dashboard', x: 1100, y: 560, lines: ['dash'], pos: 'above', name: 'Interactive dashboard', sub: '8 report pages',
+    what: 'A self-contained dashboard with an Inner/Outer London slicer, borough drill-down and a switchable map. Open index.html in any browser.',
+    files: ['housing-analytics/dashboard/index.html', 'housing-analytics/README.md'], reads: 'dashboard/data.js', writes: 'Nothing' },
+  { id: 'png', x: 1300, y: 560, lines: ['dash'], pos: 'above', name: 'PNG images', sub: 'export_images.py',
+    what: 'Screenshots every dashboard visual at 2× with headless Chrome, ready for posts and slides.',
+    files: ['housing-analytics/export_images.py'], reads: 'dashboard/index.html', writes: 'housing-analytics/images/*.png (23 images)', run: 'make dashboard' },
+
+  { id: 'spatial', x: 100, y: 660, lines: ['geo'], pos: 'above', name: 'Borough boundaries', sub: 'GeoJSON + centroids',
+    what: 'London borough boundaries and centroids from the ONS Open Geography Portal (LAD May 2024), kept in the repository for mapping.',
+    files: ['data/spatial/london_borough_boundaries_only.geojson', 'data/spatial/london_borough_centroids.csv'], reads: 'ONS Open Geography Portal', writes: 'Nothing; read directly' },
+  { id: 'ci', x: 590, y: 470, lines: ['ci'], pos: 'right', name: 'CI test data', sub: 'runs on every push',
+    what: 'GitHub Actions lints the Python, runs the unit tests, then loads small fixture extracts into a throwaway Postgres 16 and runs dbt build, so every model and test runs without downloading source data.',
+    files: ['.github/workflows/ci.yml', 'tests/fixtures/normalised/'], reads: 'tests/fixtures/normalised/*.csv', writes: 'A disposable database',
+    run: 'make lint test', facts: ['16 Python unit tests', '8 dbt models, 41 dbt tests'] },
+];
+
+/* Lineage edges (from → to), used for the "comes from" and "feeds" links. */
+const EDGES = [
+  ['hpi_src', 'download'], ['pipr_src', 'download'], ['ashe_src', 'download'], ['download', 'normalise'],
+  ['normalise', 'load'], ['normalise', 'build'], ['ci', 'load'], ['load', 'stg_hpi'], ['load', 'stg_pipr'], ['load', 'stg_ashe'],
+  ['stg_hpi', 'monthly'], ['stg_hpi', 'prop'], ['stg_pipr', 'monthly'], ['stg_ashe', 'lookup'], ['lookup', 'monthly'], ['lookup', 'prop'],
+  ['monthly', 'snapshot'], ['monthly', 'export'], ['snapshot', 'export'], ['prop', 'export'], ['snapshot', 'charts'], ['export', 'charts'],
+  ['export', 'tableau'], ['spatial', 'tableau'], ['spatial', 'build'], ['build', 'dashboard'], ['dashboard', 'png'],
+];
+
+const byId = Object.fromEntries(S.map(s => [s.id, s]));
+const lineColor = id => LINES.find(l => l.id === id).color;
+const svg = document.getElementById('map');
+const el = (tag, attrs = {}, parent = svg) => {
+  const n = document.createElementNS(NS, tag);
+  for (const [k, v] of Object.entries(attrs)) n.setAttribute(k, v);
+  parent.appendChild(n);
+  return n;
+};
+const esc = v => String(v).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+
+/* ---- zones ---- */
+ZONES.forEach((z, i) => {
+  if (i % 2 === 1) el('rect', { class: 'band', x: z.x, y: 0, width: z.w, height: 500 });
+  el('text', { class: 'zone', x: z.x + 18, y: 30 }).textContent = z.name;
+});
+el('rect', { class: 'band', x: 0, y: 500, width: 1600, height: 220 });
+el('text', { class: 'zone', x: 18, y: 528 }).textContent = 'Dashboard branch: pandas, no database';
+const onBand = (x, y) => y > 500 || ZONES.some((z, i) => i % 2 === 1 && x >= z.x && x < z.x + z.w);
+
+/* ---- lines ---- */
+const lineEls = LINES.map(l => {
+  const p = el('path', { class: 'line', d: l.d, stroke: l.color, 'stroke-width': l.w, 'data-line': l.id });
+  if (l.dash) p.setAttribute('stroke-dasharray', l.dash);
+  return p;
+});
+
+/* ---- stops ---- */
+const stnEls = {};
+for (const s of S) {
+  const hub = s.kind === 'hub';
+  const top = s.y, bottom = hub ? s.y2 : s.y;
+  const g = el('g', { class: 'stn' + (onBand(s.x, s.y) ? ' on-band' : ''), tabindex: 0, role: 'button',
+    'aria-pressed': 'false', 'aria-label': `${s.name}, ${s.sub}`, 'data-id': s.id });
+  if (hub) {
+    el('rect', { class: 'hit', x: s.x - 26, y: top - 26, width: 52, height: bottom - top + 52, rx: 26 }, g);
+    el('rect', { class: 'halo', x: s.x - 24, y: top - 24, width: 48, height: bottom - top + 48, rx: 24 }, g);
+    el('rect', { class: 'mark', x: s.x - 16, y: top - 16, width: 32, height: bottom - top + 32, rx: 16, stroke: 'var(--ink)' }, g);
+  } else {
+    const shared = s.lines.filter(id => id !== 'ci').length > 1;
+    el('circle', { class: 'hit', cx: s.x, cy: s.y, r: 24 }, g);
+    el('circle', { class: 'halo', cx: s.x, cy: s.y, r: 19 }, g);
+    el('circle', { class: 'mark', cx: s.x, cy: s.y, r: shared ? 13 : 10, stroke: shared ? 'var(--ink)' : lineColor(s.lines[0]) }, g);
+  }
+  // Labels
+  let x = s.x, y1, y2, anchor = 'middle';
+  if (s.pos === 'above') { y1 = top - 44; y2 = top - 26; }
+  else if (s.pos === 'below') { y1 = bottom + 36; y2 = bottom + 54; }
+  else if (s.pos === 'below-right') { x = s.x + 16; anchor = 'start'; y1 = bottom + 36; y2 = bottom + 54; }
+  else { x = s.x + 24; anchor = 'start'; y1 = s.y - 2; y2 = s.y + 16; }
+  el('text', { class: 'lbl', x, y: y1, 'text-anchor': anchor }, g).textContent = s.name;
+  el('text', { class: 'sub', x, y: y2, 'text-anchor': anchor }, g).textContent = s.sub;
+  stnEls[s.id] = g;
+}
+
+/* ---- tracing a line ---- */
+let traced = null;
+function trace(lineId) {
+  traced = lineId;
+  svg.classList.toggle('tracing', !!lineId);
+  lineEls.forEach(p => p.classList.toggle('lit', p.dataset.line === lineId));
+  for (const s of S) stnEls[s.id].classList.toggle('lit', !!lineId && s.lines.includes(lineId));
+  document.querySelectorAll('#key button').forEach(b => b.setAttribute('aria-pressed', b.dataset.line === lineId));
+}
+const key = document.getElementById('key');
+for (const l of LINES.filter(l => l.name)) {
+  const li = document.createElement('li');
+  li.innerHTML = `<button type="button" data-line="${l.id}" aria-pressed="false">
+    <span class="swatch${l.dash ? ' dashed' : ''}" style="background:${l.color};border-color:${l.color}"></span>${esc(l.name)}</button>`;
+  const b = li.firstElementChild;
+  b.addEventListener('click', () => trace(traced === l.id ? null : l.id));
+  b.addEventListener('mouseenter', () => { if (!traced) { svg.classList.add('tracing'); lineEls.forEach(p => p.classList.toggle('lit', p.dataset.line === l.id));
+    S.forEach(s => stnEls[s.id].classList.toggle('lit', s.lines.includes(l.id))); } });
+  b.addEventListener('mouseleave', () => { if (!traced) trace(null); });
+  key.appendChild(li);
+}
+
+/* ---- the board ---- */
+const board = document.getElementById('board');
+const link = p => `<a href="${GH}${esc(p)}"><code>${esc(p)}</code></a>`;
+const hopButtons = ids => ids.length ? `<div class="hops">${ids.map(id => `<button type="button" data-go="${id}">${esc(byId[id].name)}</button>`).join('')}</div>` : '<p>None</p>';
+function select(id, { focus = false } = {}) {
+  const s = byId[id];
+  for (const [sid, g] of Object.entries(stnEls)) g.setAttribute('aria-pressed', sid === id);
+  if (!s) { board.className = 'board empty'; board.style.borderLeftColor = ''; return; }
+  const from = EDGES.filter(e => e[1] === id).map(e => e[0]);
+  const to = EDGES.filter(e => e[0] === id).map(e => e[1]);
+  board.className = 'board';
+  board.style.borderLeftColor = s.kind === 'hub' || s.lines.length > 1 ? 'var(--ink)' : lineColor(s.lines[0]);
+  board.innerHTML = `
+    <div>
+      <h2>${esc(s.name)}</h2>
+      <p class="what">${esc(s.what)}</p>
+      <dl>
+        <dt>Files</dt><dd>${s.files.map(link).join('<br>')}</dd>
+        <dt>Reads</dt><dd>${esc(s.reads)}</dd>
+        <dt>Writes</dt><dd>${esc(s.writes)}</dd>
+        ${s.run ? `<dt>Run</dt><dd><code>${esc(s.run)}</code></dd>` : ''}
+      </dl>
+    </div>
+    <div>
+      ${s.facts ? `<h3>Worth knowing</h3><ul>${s.facts.map(f => `<li>${esc(f)}</li>`).join('')}</ul>` : ''}
+      <h3>Comes from</h3>${hopButtons(from)}
+      <h3>Feeds</h3>${hopButtons(to)}
+    </div>`;
+  if (location.hash !== '#' + id) history.replaceState(null, '', '#' + id);
+  if (focus) stnEls[id].focus();
+}
+board.addEventListener('click', e => { const b = e.target.closest('[data-go]'); if (b) select(b.dataset.go, { focus: true }); });
+svg.addEventListener('click', e => { const g = e.target.closest('.stn'); if (g) select(g.dataset.id); });
+svg.addEventListener('keydown', e => {
+  const g = e.target.closest('.stn');
+  if (g && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); select(g.dataset.id); }
+});
+if (!EXPORT && byId[location.hash.slice(1)]) select(location.hash.slice(1));
+
+/* ---- one entrance: the lines draw in from the sources outward ---- */
+const calm = EXPORT || matchMedia('(prefers-reduced-motion: reduce)').matches;
+if (!calm && lineEls[0].animate) {
+  lineEls.forEach((p, i) => {
+    const len = p.getTotalLength();
+    const opts = { duration: 900, delay: 120 + i * 110, easing: 'cubic-bezier(.3,.7,.2,1)', fill: 'backwards' };
+    if (p.getAttribute('stroke-dasharray')) p.animate([{ opacity: 0 }, { opacity: 1 }], opts);
+    else p.animate([{ strokeDasharray: `${len} ${len}`, strokeDashoffset: len }, { strokeDasharray: `${len} ${len}`, strokeDashoffset: 0 }], opts);
+  });
+  Object.values(stnEls).forEach(g => g.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 400, delay: 700, fill: 'backwards' }));
+}
+})();
+</script>
+</body>
+</html>

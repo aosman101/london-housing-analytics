@@ -59,10 +59,19 @@ def find_chrome() -> str:
     raise FileNotFoundError("Chrome not found. Set CHROME=/path/to/chrome.")
 
 
-def export(chrome: str, name: str, visual: str, width: int, height: int) -> None:
-    out = IMAGES / f"{name}.png"
+# The README's pipeline map (docs/architecture.html), in GitHub's light and dark themes.
+ARCHITECTURE_PAGE = HERE.parent / "docs" / "architecture.html"
+ARCHITECTURE_IMAGES = [
+    ("architecture_light", "export=1&theme=light", 1600, 900),
+    ("architecture_dark", "export=1&theme=dark", 1600, 900),
+]
+
+
+def export(chrome: str, name: str, visual: str, width: int, height: int,
+           page: Path = DASHBOARD, out_dir: Path = IMAGES) -> None:
+    out = out_dir / f"{name}.png"
     query = visual if "=" in visual else f"export={visual}"
-    url = f"{DASHBOARD.as_uri()}?{query}"
+    url = f"{page.as_uri()}?{query}"
     with tempfile.TemporaryDirectory() as profile:
         cmd = [
             chrome, "--headless=new", "--disable-gpu", "--hide-scrollbars", "--no-first-run",
@@ -78,7 +87,7 @@ def export(chrome: str, name: str, visual: str, width: int, height: int) -> None
                 break
             if attempt == 3:
                 raise RuntimeError(f"Chrome failed to export {visual}: {result.stderr.decode()[-500:]}")
-    print(f"[image] {out.relative_to(HERE)}  ({width * SCALE}x{height * SCALE})")
+    print(f"[image] {out.relative_to(HERE.parent)}  ({width * SCALE}x{height * SCALE})")
 
 
 def main() -> None:
@@ -90,6 +99,9 @@ def main() -> None:
     for name, visual, w, h in VISUALS:
         if not wanted or visual in wanted or name in wanted:
             export(chrome, name, visual, w, h)
+    if not wanted or "architecture" in wanted:
+        for name, query, w, h in ARCHITECTURE_IMAGES:
+            export(chrome, name, query, w, h, page=ARCHITECTURE_PAGE, out_dir=ARCHITECTURE_PAGE.parent / "images")
 
 
 if __name__ == "__main__":

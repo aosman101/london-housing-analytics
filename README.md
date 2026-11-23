@@ -51,33 +51,21 @@ A Power BI-style dashboard with 8 report pages, slicers and borough drill-down, 
 
 ## Architecture
 
-```mermaid
-flowchart LR
-    subgraph S[Official sources]
-        HPI[HM Land Registry<br/>UK HPI]
-        PIPR[ONS PIPR<br/>private rents]
-        ASHE[ONS ASHE<br/>earnings + CVs]
-    end
+Each data source is a line on the map. Follow it from the official release, through Python and
+dbt, to the marts, Tableau and the dashboard. The dashboard branch reads the normalised files
+directly, so it rebuilds without a database. CI runs every dbt model and test against fixture data.
 
-    subgraph P[Python]
-        EX[download_sources.py]
-        NORM[normalise_sources.py<br/>London-only, typed]
-        LOAD[load_to_postgres.py]
-    end
+<a href="https://htmlpreview.github.io/?https://github.com/aosman101/london-housing-analytics/blob/main/docs/architecture.html">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="docs/images/architecture_dark.png">
+    <img alt="Pipeline map: HM Land Registry HPI, ONS private rents and ONS earnings lines run through Download, Normalise and Load to Postgres, into dbt staging views and the affordability, property-type and borough snapshot marts, then out to CSV export, README charts and Tableau. A dashboard branch leaves Normalise for build_analytics.py, the interactive dashboard and PNG images. Borough boundaries feed the dashboard build and Tableau, and CI fixture data feeds the Postgres load." src="docs/images/architecture_light.png">
+  </picture>
+</a>
 
-    subgraph W[PostgreSQL + dbt]
-        RAW[(raw.*)]
-        STG[staging views<br/>stg_*]
-        MART[marts<br/>tables]
-    end
-
-    OUT[CSV exports<br/>+ README charts]
-    BI[Tableau / BI]
-    GEO[Borough boundaries<br/>+ centroids]
-
-    HPI & PIPR & ASHE --> EX --> NORM --> LOAD --> RAW --> STG --> MART --> OUT --> BI
-    GEO -.-> BI
-```
+**[Open the interactive pipeline map](https://htmlpreview.github.io/?https://github.com/aosman101/london-housing-analytics/blob/main/docs/architecture.html)**
+(or open [`docs/architecture.html`](docs/architecture.html) locally). Select any stop to see what
+runs there, the file that does the work, what it reads and writes, and the `make` command that runs
+it. Select a line in the key to trace one source end to end.
 
 ## Engineering highlights
 
@@ -94,7 +82,8 @@ flowchart LR
 - **No era-mixing.** A reusable dbt macro (`earnings_lookup`) attaches earnings only to months
   within one year of the ASHE reference year, so historical prices are never divided by
   present-day pay. A dbt test enforces this.
-- **Tested at two levels.** Python unit tests cover parsing helpers. 41 dbt tests cover
+- **Tested at two levels.** 16 Python unit tests cover parsing helpers, release-vintage
+  handling and the dashboard's earnings logic. 41 dbt tests cover
   uniqueness, not-null, accepted values, value ranges and business rules, and source
   freshness thresholds reflect each publisher's release lag.
 - **CI on real Postgres.** GitHub Actions lints and unit-tests the Python, then loads
@@ -172,6 +161,9 @@ src/report/        README chart rendering
 dbt/               staging + mart models, tests, earnings_lookup macro
 tests/             unit tests and CI fixture extracts
 data/spatial/      borough boundaries (GeoJSON) and centroids for mapping
+housing-analytics/ interactive dashboard, PNG visuals and analysis tables (no database needed)
+docs/              interactive pipeline map and README images
+tableau/           how to connect Tableau to the marts
 ```
 
 ## Methodology & limitations

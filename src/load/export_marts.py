@@ -5,10 +5,7 @@ import pandas as pd
 from sqlalchemy import Engine
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
-from src.common import (
-    config,  # noqa: E402
-    db,  # noqa: E402
-)
+from src.common import config, db  # noqa: E402
 
 EXPORT_DIR = config.PROJECT_ROOT / "data" / "exports"
 

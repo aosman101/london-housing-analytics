@@ -27,6 +27,7 @@ help:
 	@echo "  export     — export marts to data/exports as CSV"
 	@echo "  charts     — render README charts from exported marts into docs/images"
 	@echo "  dashboard  — rebuild housing-analytics/ (tables, dashboard data, PNG images via Chrome)"
+	@echo "             and the README pipeline map images in docs/images"
 	@echo "  lint       — ruff check"
 	@echo "  test       — run Python unit tests"
 	@echo "  all        — lint + test + pipeline + dbt-deps + dbt-build + export + charts"

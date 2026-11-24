@@ -1,0 +1,340 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Where London housing is heading: 2027 outlook, risks and scenarios</title>
+<meta name="description" content="How the Middle East energy shock, a rate rise, US tariffs and new housing policy are likely to shape London house prices and rents in 2027, with three scenarios and the boroughs most exposed.">
+<meta property="og:title" content="Where London housing is heading: the 2027 outlook">
+<meta property="og:description" content="Energy shock, dearer mortgages, new rental rules: what they mean for London prices and rents.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%231f2a44'/%3E%3Cpath d='M7 24V14l9-6 9 6v10h-6v-6h-6v6z' fill='%23fff'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,400;6..72,500;6..72,600&family=Public+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="site/site.css">
+<script src="dashboard/vendor/echarts.min.js" defer></script>
+<script src="dashboard/data.js" defer></script>
+<script src="site/site.js" defer></script>
+<script src="site/outlook.js" defer></script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to the outlook</a>
+<header class="bar">
+  <a class="site" href="./">London Housing Analytics</a>
+  <nav aria-label="Site">
+    <a href="./">Report</a>
+    <a href="outlook.html" aria-current="page">Outlook 2027</a>
+    <a href="dashboard/" class="opt">Dashboard</a>
+    <a href="architecture.html" class="opt">Pipeline</a>
+    <a href="https://github.com/aosman101/london-housing-analytics">GitHub</a>
+  </nav>
+</header>
+<noscript><div class="nojs">The charts on this page need JavaScript. The written analysis works without it.</div></noscript>
+
+<section class="hero" aria-labelledby="h1" style="grid-template-columns:minmax(0,7fr) minmax(0,5fr)">
+  <div>
+    <h1 id="h1">London heads into 2027 with dearer mortgages, an energy shock and rising rents.</h1>
+    <p class="lede">The data to February 2026 showed a slow correction against pay. Since then, a war in the Middle East has pushed inflation up and the Bank of England has raised rates. This page looks at what that means for prices and rents next year, and who is most exposed.</p>
+    <p class="asof">Written 24 November 2026. Economic figures are the latest published at that date; sources are listed at the end. Scenarios are illustrations, not forecasts, and nothing here is financial advice.</p>
+  </div>
+  <div>
+    <table class="signals" aria-label="Headline view for 2027">
+      <thead><tr><th scope="col">In 2027, expect</th><th scope="col">Direction</th></tr></thead>
+      <tbody>
+        <tr><td>London house prices, in cash terms</td><td><span class="dir soft" data-dir="down">Slightly lower</span></td></tr>
+        <tr><td>Prime central London prices</td><td><span class="dir soft" data-dir="down">Lower</span></td></tr>
+        <tr><td>Private rents</td><td><span class="dir up" data-dir="up">Rising, about as fast as pay</span></td></tr>
+        <tr><td>Number of sales</td><td><span class="dir flat" data-dir="flat">Low, near 2023–25 levels</span></td></tr>
+        <tr><td>Price compared with pay</td><td><span class="dir down" data-dir="down">Improving slowly</span></td></tr>
+        <tr><td>Mortgage rates</td><td><span class="dir up" data-dir="up">High, about 5.5–6%</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<div class="doc">
+  <nav class="toc" aria-label="Sections on this page">
+    <h2>The outlook</h2>
+    <ol>
+      <li><a href="#since">What has changed since February</a></li>
+      <li><a href="#economy">The economy in November 2026</a></li>
+      <li><a href="#energy">The Middle East and energy</a></li>
+      <li><a href="#trade">Trade and US tariffs</a></li>
+      <li><a href="#policy">Politics and housing policy</a></li>
+      <li><a href="#signals">What our data signals</a></li>
+      <li><a href="#rents">Why rents keep rising</a></li>
+      <li><a href="#scenarios">Three scenarios for 2027</a></li>
+      <li><a href="#exposure">Which boroughs are exposed</a></li>
+      <li><a href="#you">What it means for you</a></li>
+      <li><a href="#watch">Dates to watch</a></li>
+      <li><a href="#sources">Sources</a></li>
+    </ol>
+  </nav>
+
+  <article id="main">
+
+  <section class="chapter" id="since" aria-labelledby="h-since">
+    <h2 id="h-since">What has changed since February</h2>
+    <p class="intro">The pipeline's data runs to February 2026. Official releases since then confirm the price trend and overturn the rent trend.</p>
+    <div class="qa">
+      <div class="tablewrap" style="max-height:none">
+        <table class="data plain">
+          <thead><tr><th>London measure</th><th>Our data (Feb 2026)</th><th>Latest published</th><th>What changed</th></tr></thead>
+          <tbody>
+            <tr><td>House prices, 12-month change</td><td>−1.9% (median borough)</td><td>−3.3% (Jul 2026), −2.2% (Aug 2026)</td><td style="white-space:normal">Falls continued and deepened mid-year</td></tr>
+            <tr><td>Average house price</td><td>£540k (median borough)</td><td>£554k (Aug 2026, London HPI)</td><td style="white-space:normal">Little changed in cash terms</td></tr>
+            <tr><td>Private rents, 12-month change</td><td>Inner +1.8%, Outer +4.1%</td><td>+3.5% (Sep 2026, London)</td><td style="white-space:normal">Rent growth bottomed at 1.1% in January, then picked up again</td></tr>
+            <tr><td>Average private rent</td><td>£1,935 (median borough)</td><td>£2,338 (Sep 2026, London)</td><td style="white-space:normal">London-wide average, weighted to pricier inner boroughs</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p style="margin-top:14px">Two figures above are not like-for-like. The pipeline reports the median <em>borough</em>, while HM Land Registry and ONS headline figures are London-wide averages, which give more weight to expensive inner boroughs. The direction of travel is what matters: prices drifting down, and rents rising again.</p>
+      <p class="note">To bring every chart up to date, run <code>make download normalise dashboard</code> once the new HPI, PIPR and ASHE vintages are set in <code>config/sources.yml</code>. Release dates and URLs are configuration, not code.</p>
+    </div>
+  </section>
+
+  <section class="chapter" id="economy" aria-labelledby="h-econ">
+    <h2 id="h-econ">The economy in November 2026</h2>
+    <p class="intro">Growth is holding up, but inflation is rising again, and the Bank of England has started raising rates. For housing, the cost of a mortgage matters most.</p>
+    <div class="qa">
+      <div class="tablewrap" style="max-height:none">
+        <table class="data plain">
+          <thead><tr><th>Indicator</th><th>Latest</th><th>Trend</th><th>Why it matters for housing</th></tr></thead>
+          <tbody>
+            <tr><td>Bank Rate</td><td>4.00%</td><td><span class="dir up">Raised from 3.75% on 5 Nov</span></td><td style="white-space:normal">First rise since August 2023. Markets expect another in December or February.</td></tr>
+            <tr><td>Average 2-year fixed mortgage</td><td>5.95%</td><td><span class="dir up">Up from 4.83% earlier in 2026</span></td><td style="white-space:normal">Highest since December 2023. Cuts buying power by about 12% at the same monthly payment.</td></tr>
+            <tr><td>CPI inflation</td><td>3.6% (Oct)</td><td><span class="dir up">Up from 3.5%</span></td><td style="white-space:normal">Bank of England expects about 5% by mid-2027, driven by energy. Core inflation is 2.8%.</td></tr>
+            <tr><td>GDP growth</td><td>+0.7% (Q3)</td><td><span class="dir flat">1.9% on a year ago</span></td><td style="white-space:normal">Services, including AI and cloud work, lead. A decent backdrop for London jobs.</td></tr>
+            <tr><td>Unemployment</td><td>4.6% (Jul–Sep)</td><td><span class="dir down">Down from 4.9%</span></td><td style="white-space:normal">Low forced selling. Survey quality issues mean read it with care.</td></tr>
+            <tr><td>Brent crude oil</td><td>about $89</td><td><span class="dir down">Down from over $100 in October</span></td><td style="white-space:normal">Easing, but the Strait of Hormuz is still disrupted.</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p style="margin-top:14px">The key point: a healthy job market limits forced sales, so a crash is unlikely. But dearer mortgages shrink what buyers can pay. The market adjusts through fewer sales and slowly falling prices, not panic selling. That is exactly the pattern of 2023, when sales fell 29% and prices fell less than 1%.</p>
+    </div>
+  </section>
+
+  <section class="chapter" id="energy" aria-labelledby="h-energy">
+    <h2 id="h-energy">The Middle East and energy: how a war reaches a London mortgage</h2>
+    <p class="intro">In March 2026, after US and Israeli strikes on Iran, Iran brought shipping through the Strait of Hormuz to a standstill. The International Energy Agency called it the largest disruption to global energy supplies in history.</p>
+    <div class="qa">
+      <p>Oil went above $100 a barrel in October. In its November forecast, the Bank of England assumed oil would peak at about $116 a barrel and wholesale gas at 215p a therm in the final quarter of 2026. Markets have since eased: Brent was about $89 on 24 November, a three-month low, as other supply returns. But tankers were still hitting mines in the strait that week. The risk has not gone away.</p>
+      <p class="flowlabel">How an energy shock feeds through to London housing</p>
+      <div class="flow" role="list">
+        <div class="step" role="listitem"><div class="k">Shock</div><div class="t">Oil and gas prices jump</div><div class="d">Hormuz closure cuts supply</div></div>
+        <div class="step" role="listitem"><div class="k">Prices</div><div class="t">Inflation rises</div><div class="d">CPI 3.6%, heading to about 5% in 2027</div></div>
+        <div class="step" role="listitem"><div class="k">Policy</div><div class="t">Bank Rate goes up</div><div class="d">3.75% → 4%, more possible</div></div>
+        <div class="step" role="listitem"><div class="k">Lending</div><div class="t">Mortgages cost more</div><div class="d">2-year fix 4.83% → 5.95%</div></div>
+        <div class="step" role="listitem"><div class="k">Housing</div><div class="t">Budgets shrink</div><div class="d">Fewer sales, softer prices</div></div>
+      </div>
+      <div class="flow" role="list" aria-label="Rental channel">
+        <div class="step" role="listitem"><div class="k">Shock</div><div class="t">Higher living costs</div><div class="d">Energy and fuel bills rise</div></div>
+        <div class="step" role="listitem"><div class="k">Landlords</div><div class="t">Costlier refinancing</div><div class="d">Yield 4.3% against borrowing at about 6%</div></div>
+        <div class="step" role="listitem"><div class="k">Supply</div><div class="t">Landlords sell up</div><div class="d">Taxes and new rules add to it</div></div>
+        <div class="step" role="listitem"><div class="k">Demand</div><div class="t">More would-be buyers rent</div><div class="d">They are priced out by mortgage rates</div></div>
+        <div class="step" role="listitem"><div class="k">Housing</div><div class="t">Rents rise</div><div class="d">Squeezing real incomes further</div></div>
+      </div>
+      <p style="margin-top:16px">The energy shock hurts London twice. It pushes buyers out of the market through mortgage rates and pushes rents up through landlord costs. The two channels work against each other for prices, which is why the most likely result is stagnation rather than a sharp fall.</p>
+    </div>
+  </section>
+
+  <section class="chapter" id="trade" aria-labelledby="h-trade">
+    <h2 id="h-trade">Trade and US tariffs</h2>
+    <p class="intro">London is mostly a services economy, so US tariffs matter less to it directly than energy does. Their main effect on housing is through confidence and the wider UK growth outlook.</p>
+    <div class="qa">
+      <ul>
+        <li><strong>Most UK goods</strong> still face a 10% US tariff on top of normal duties. After the US Supreme Court struck down some tariffs on 20 February 2026, the US said it would honour existing bilateral deals, so little changed for most UK exporters.</li>
+        <li><strong>Steel</strong> faces 25%, against 50% for most other countries. The promised quota has not been finalised, and since April 2026 the lower rate has required 95% UK-origin metal.</li>
+        <li><strong>Pharmaceuticals</strong> secured the clearest win. A 2 April 2026 deal means no US tariffs on UK medicines and medical technology until 19 January 2029, in return for higher NHS spending on new drugs.</li>
+        <li><strong>The OBR</strong> cut its 2026 UK growth forecast to 1.1% in March, before the Middle East escalation, and listed trade policy among the main risks.</li>
+      </ul>
+      <p>For prime central London, the bigger issue is global wealth and sentiment. Volatile markets, a strong or weak pound, and tax changes all move overseas demand. That demand has been falling for a decade, as the <a href="./#q11">shrinking Inner London premium</a> shows.</p>
+    </div>
+  </section>
+
+  <section class="chapter" id="policy" aria-labelledby="h-policy">
+    <h2 id="h-policy">Politics and housing policy</h2>
+    <p class="intro">A new Prime Minister, Andy Burnham, and Chancellor, John Healey, took office in July 2026. Healey's first Budget on 28 October 2026 left stamp duty alone, squeezed landlords and added help for first-time buyers.</p>
+    <div class="qa">
+      <div class="tablewrap" style="max-height:none">
+        <table class="data plain">
+          <thead><tr><th>Policy</th><th>When</th><th>Likely effect in London</th></tr></thead>
+          <tbody>
+            <tr><td style="white-space:normal">Renters' Rights Act, phase 1: no-fault (Section 21) evictions abolished, rolling tenancies, one rent rise a year, ban on bidding wars</td><td>From 1 May 2026</td><td style="white-space:normal">More secure tenancies. Some smaller landlords leave, cutting supply.</td></tr>
+            <tr><td style="white-space:normal">Renters' Rights Act, phase 2: landlord database and ombudsman</td><td>From late 2026</td><td style="white-space:normal">More compliance costs for landlords.</td></tr>
+            <tr><td style="white-space:normal">Higher income tax rates on rental income</td><td>From April 2027</td><td style="white-space:normal">Lower net yields. Adds to landlords selling up, especially in low-yield boroughs.</td></tr>
+            <tr><td style="white-space:normal">Your First Home: government equity loan covering a 2.5% deposit on new-build homes (£4.7bn)</td><td>Spring 2027</td><td style="white-space:normal">Helps the deposit barrier (<a href="./#q2">Q2</a>), but only for new-builds, which are mostly flats in London.</td></tr>
+            <tr><td style="white-space:normal">Stamp duty unchanged: first-time buyers pay none up to £300,000, on homes up to £500,000</td><td>Now</td><td style="white-space:normal">The relief covers fewer London homes each year. The median borough average is £540k.</td></tr>
+            <tr><td style="white-space:normal">High Value Council Tax Surcharge on homes worth £2m or more</td><td>From April 2028</td><td style="white-space:normal">Concentrated in Kensington and Chelsea, Westminster, Camden and parts of Wandsworth, Haringey and Merton.</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p style="margin-top:14px">The new Chancellor comes from Defence, and commentators expect pressure for higher defence spending. If that means more government borrowing, gilt yields and so fixed mortgage rates could stay higher for longer. That is a risk to watch, not yet a fact.</p>
+    </div>
+  </section>
+
+  <section class="chapter" id="signals" aria-labelledby="h-sig">
+    <h2 id="h-sig">What our data signals</h2>
+    <p class="intro">Before any of the 2026 shocks, the market's own indicators were already turning down. These are computed live from the pipeline's data.</p>
+    <div class="qa">
+      <table class="signals">
+        <thead><tr><th scope="col">Signal</th><th scope="col">Reading</th><th scope="col">Direction</th><th scope="col">What it suggests</th></tr></thead>
+        <tbody id="sigBody"></tbody>
+      </table>
+      <figure class="fig">
+        <p class="ft">Share of boroughs where prices are higher than a year ago</p>
+        <p class="fs">Breadth of the market. Falls below 50% have tended to come before or during weak years.</p>
+        <div class="chart" id="cBreadth" role="img" aria-label="Line chart of the share of London boroughs with rising annual prices since 2000"></div>
+        <figcaption>Source: HM Land Registry UK House Price Index, annual change in each borough's average price.</figcaption>
+      </figure>
+      <figure class="fig">
+        <p class="ft">Price momentum: annual change now against six months earlier</p>
+        <p class="fs">Each line runs from August 2025 (hollow) to February 2026 (filled). Most boroughs moved left, meaning growth slowed.</p>
+        <div class="chart tall" id="cMom" role="img" aria-label="Dumbbell chart showing annual price change in each borough in August 2025 and February 2026"></div>
+        <figcaption>Source: HM Land Registry UK House Price Index.</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <section class="chapter" id="rents" aria-labelledby="h-rents">
+    <h2 id="h-rents">Why rents are likely to keep rising</h2>
+    <p class="intro">Rent growth cooled sharply through 2025 and then picked up again in 2026. The economics of being a landlord explain why.</p>
+    <div class="qa">
+      <p class="short"><strong>For a landlord buying with a mortgage, the sums no longer work.</strong> London's median gross yield is 4.3%, before any costs, while a two-year fixed mortgage costs about 5.95%. A buy-to-let with a 75% mortgage now pays more in interest than it earns in rent before costs.</p>
+      <figure class="fig">
+        <p class="ft">Gross rental yield against the cost of borrowing</p>
+        <p class="fs">London median gross yield since 2015, with the November 2026 average two-year fixed mortgage rate.</p>
+        <div class="chart" id="cCarry" role="img" aria-label="Line chart of London median gross yield rising to 4.3 percent, below a reference line at 5.95 percent for mortgage rates"></div>
+        <figcaption>Sources: ONS PIPR and HM Land Registry (yield); Moneyfacts (mortgage rate, week to 20 November 2026).</figcaption>
+      </figure>
+      <ul>
+        <li><strong>Supply is shrinking.</strong> Negative returns on borrowed money, higher tax on rental income from April 2027, and new tenant rules all push smaller landlords to sell, and few new investors are replacing them.</li>
+        <li><strong>Demand is rising.</strong> Higher mortgage rates keep would-be first-time buyers renting for longer.</li>
+        <li><strong>But pay caps it.</strong> Rent already takes 52% of a median full-time salary. Rents cannot outgrow pay for long when they already take that much, which is why the 2024 peak of 10–11% faded so fast.</li>
+      </ul>
+      <p><strong>Our reading:</strong> London rents will probably grow about 3–5% in 2027, roughly the pace of pay or a little faster. Outer boroughs with the highest yields (Barking and Dagenham, Newham, Tower Hamlets) have the most room to rise. Prime inner boroughs already ask more than residents can pay.</p>
+    </div>
+  </section>
+
+  <section class="chapter" id="scenarios" aria-labelledby="h-scen">
+    <h2 id="h-scen">Three scenarios for 2027</h2>
+    <p class="intro">What happens next depends mainly on energy prices, and so on how far the Bank of England has to go. Each scenario names the conditions that would make it true.</p>
+    <div class="qa">
+      <div class="scen">
+        <div>
+          <h4>Central: a slow grind lower</h4>
+          <p class="odds">The most likely path</p>
+          <p>Oil settles at $80–95, inflation peaks near 5% in mid-2027, and Bank Rate tops out at about 4.25%. Mortgage rates stay at 5.5–6% through 2027.</p>
+          <ul><li>London prices about 3.5% lower in 2027, in line with Savills' November forecast</li><li>Prime central London weakest</li><li>Recovery of about 3% a year from 2028</li></ul>
+        </div>
+        <div>
+          <h4>Downside: the energy shock deepens</h4>
+          <p class="odds">Less likely, the main risk</p>
+          <p>The Strait of Hormuz stays shut, oil goes back above $110, and inflation stays over 5%. Bank Rate rises to 4.5–5%, and mortgage rates rise past 6.5%.</p>
+          <ul><li>London prices 6–8% lower in 2027, flat in 2028</li><li>Sales fall back towards the 2023 low of about 71,000</li><li>Rents keep rising as more would-be buyers rent</li></ul>
+        </div>
+        <div>
+          <h4>Upside: quick de-escalation</h4>
+          <p class="odds">Less likely</p>
+          <p>A lasting reopening of Hormuz sends oil below $80. Inflation falls back in 2027, and the Bank reverses the November rise. Mortgage rates ease to about 4.5–5%.</p>
+          <ul><li>London prices flat in 2027, up 3–4% a year after that</li><li>Pent-up buyers return, lifting sales first (see <a href="./#q10">Q10</a>)</li><li>Rent growth cools as some renters buy</li></ul>
+        </div>
+        <div>
+          <h4>In every scenario</h4>
+          <p class="odds">What does not change</p>
+          <p>Pay keeps growing about 3–4% a year. As long as prices rise more slowly than that, London becomes a little more affordable each year. That has been happening since about 2016.</p>
+          <ul><li>Outer London keeps outperforming Inner London</li><li>Flats remain the only option within reach for most single buyers</li></ul>
+        </div>
+      </div>
+      <figure class="fig">
+        <p class="ft">What each scenario means for affordability</p>
+        <p class="fs">Median borough price as a multiple of median pay, starting from 11.9× in February 2026. All scenarios assume prices fall 2.5% in 2026, close to what has happened so far.</p>
+        <div class="controls">
+          <label class="ctl">Pay growth per year <output id="oPay">3.6%</output>
+            <input type="range" id="rPay" min="0" max="6" step="0.1" value="3.6"></label>
+        </div>
+        <div class="chart" id="cScen" role="img" aria-label="Line chart projecting the median price-to-earnings ratio under three scenarios to 2031"></div>
+        <figcaption>Price paths. Central: −3.5% in 2027, then +2.9% a year (Savills, November 2026: London −3.5% in 2027, +8.1% over five years). Downside: −7% in 2027, 0% in 2028, then +2% a year. Upside: 0% in 2027, then +3.5% a year. Illustrations, not forecasts.</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <section class="chapter" id="exposure" aria-labelledby="h-exp">
+    <h2 id="h-exp">Which boroughs are most exposed?</h2>
+    <p class="intro">Different shocks hit different parts of London. These lists are computed from the borough data; select a column heading to sort.</p>
+    <div class="qa">
+      <div class="tablewrap" style="max-height:none"><table class="data plain" id="tExp"></table></div>
+      <p style="margin-top:14px">Boroughs show up on more than one list for a reason. Kensington and Chelsea and Westminster face higher mortgage costs, the £2m surcharge and volatile overseas demand together. The resilient group of outer boroughs is cheaper relative to pay and still had rising prices at the start of 2026, so dearer mortgages hurt them less.</p>
+    </div>
+  </section>
+
+  <section class="chapter" id="you" aria-labelledby="h-you">
+    <h2 id="h-you">What it means for you</h2>
+    <div class="qa">
+      <ul>
+        <li><strong>First-time buyers:</strong> prices are unlikely to run away from you in 2027, and slowly falling prices mean the deposit target stops moving. The constraint is the mortgage rate, not the price. Flats in outer east and south London are within reach of two median earners (<a href="./#q3">Q3</a>). Your First Home may help with new-builds from spring 2027.</li>
+        <li><strong>Homeowners moving:</strong> if you sell and buy in the same market, falling prices matter less than the rate on your new mortgage. Fixed rates near 6% make the size of the loan the main cost.</li>
+        <li><strong>Renters:</strong> expect rent rises of about 3–5% a year, now limited to one a year by law. You are better protected against no-fault eviction since May 2026.</li>
+        <li><strong>Landlords:</strong> borrowing costs more than gross yields in most boroughs, and tax rises from April 2027. Only higher-yield boroughs, or owning without a mortgage, still work on rental income alone.</li>
+        <li><strong>Policymakers:</strong> pay growing faster than prices is doing the slow work of restoring affordability. The rental market is where pressure is building.</li>
+      </ul>
+      <p class="note">This is general analysis of public data, not personal financial advice. Speak to a qualified adviser before making decisions about buying, selling or borrowing.</p>
+    </div>
+  </section>
+
+  <section class="chapter" id="watch" aria-labelledby="h-watch">
+    <h2 id="h-watch">Dates to watch</h2>
+    <div class="qa">
+      <ul class="watch">
+        <li><span class="when">15 Dec 2026</span><span>ONS labour market figures. A jump in unemployment would raise the risk of forced selling.</span></li>
+        <li><span class="when">17 Dec 2026</span><span>Bank of England rate decision. A second rise would point towards the downside scenario.</span></li>
+        <li><span class="when">22 Dec 2026</span><span>ONS second estimate of Q3 GDP.</span></li>
+        <li><span class="when">Late 2026</span><span>Renters' Rights Act phase 2: landlord database and ombudsman.</span></li>
+        <li><span class="when">Spring 2027</span><span>Your First Home equity loan scheme opens. Bank of England expects inflation to peak around mid-2027.</span></li>
+        <li><span class="when">April 2027</span><span>Higher income tax rates on rental income take effect.</span></li>
+        <li><span class="when">April 2028</span><span>High Value Council Tax Surcharge on £2m-plus homes begins.</span></li>
+        <li><span class="when">Monthly</span><span>HM Land Registry HPI and ONS private rents. Sales volumes are the early signal (<a href="./#q10">Q10</a>).</span></li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="chapter" id="sources" aria-labelledby="h-src">
+    <h2 id="h-src">Sources</h2>
+    <div class="qa" style="border-bottom:none">
+      <p>Borough-level analysis comes from this project's pipeline (HM Land Registry UK HPI, ONS PIPR and ONS ASHE 2025, to February 2026). Economic and policy context was checked against the sources below on 24 November 2026.</p>
+      <ol class="sources">
+        <li><a href="https://www.bankofengland.co.uk/monetary-policy-summary-and-minutes/2026/november-2026">Bank of England: Bank Rate increased to 4%, November 2026 Monetary Policy Summary</a></li>
+        <li><a href="https://www.bankofengland.co.uk/monetary-policy-report/2026/november-2026">Bank of England: Monetary Policy Report, November 2026</a></li>
+        <li><a href="https://www.ons.gov.uk/economy/inflationandpriceindices/bulletins/consumerpriceinflation/october2026">ONS: Consumer price inflation, UK, October 2026</a></li>
+        <li><a href="https://www.ons.gov.uk/economy/grossdomesticproductgdp/bulletins/gdpfirstquarterlyestimateuk/julytoseptember2026">ONS: GDP first quarterly estimate, July to September 2026</a></li>
+        <li><a href="https://www.fenews.co.uk/fe-voices/ons-labour-market-november-2026-uk-unemployment-rate-falls-to-4-6/">FE News: ONS labour market, November 2026</a></li>
+        <li><a href="https://www.mortgagestrategy.co.uk/news/mortgage-rates-nudge-up-again-says-moneyfacts/">Mortgage Strategy: Mortgage rates nudge up again, says Moneyfacts</a></li>
+        <li><a href="https://www.gov.uk/government/news/uk-house-price-index-for-july-2026">GOV.UK: UK House Price Index for July 2026</a></li>
+        <li><a href="https://www.ons.gov.uk/economy/inflationandpriceindices/bulletins/privaterentandhousepricesuk/august2026">ONS: Private rent and house prices, UK, August 2026</a></li>
+        <li><a href="https://www.harveywjames.com/london-rent-review">London Rent Review (citing ONS PIPR, September 2026)</a></li>
+        <li><a href="https://invezz.com/news/2026/11/24/oil-price-today-brent-below-89-supply-glut-hormuz/">Invezz: Brent below $89 despite Hormuz attacks, 24 November 2026</a></li>
+        <li><a href="https://aljazeera.com/economy/2026/3/16/oil-prices-keep-rising-as-trump-seeks-coalition-to-reopen-strait-of-hormuz">Al Jazeera: Oil prices rise as US seeks coalition to reopen Strait of Hormuz, March 2026</a></li>
+        <li><a href="https://commonslibrary.parliament.uk/research-briefings/cbp-10240/">House of Commons Library: US trade tariffs</a></li>
+        <li><a href="https://commonslibrary.parliament.uk/research-briefings/cbp-10850/">House of Commons Library: What is the UK–US pharmaceuticals deal?</a></li>
+        <li><a href="https://www.britishchambers.org.uk/news/2026/07/mixed-picture-for-uk-exporters-on-us-tariffs/">British Chambers of Commerce: Mixed picture for UK exporters on US tariffs, July 2026</a></li>
+        <li><a href="https://obr.uk/efo/economic-and-fiscal-outlook-march-2026/">OBR: Economic and fiscal outlook, March 2026</a></li>
+        <li><a href="https://www.gov.uk/government/news/ministerial-appointments-july-2026">GOV.UK: Ministerial appointments, July 2026</a></li>
+        <li><a href="https://thenegotiator.co.uk/news/uk-housing-market-news/autumn-budget-2026-what-did-chancellor-healey-announce-for-the-housing-market/">The Negotiator: Autumn Budget 2026 and the housing market</a></li>
+        <li><a href="https://www.propertymark.co.uk/resource/budget-2026-raises-landlord-taxes-as-new-support-targets-first-time-buyers.html">Propertymark: Budget 2026 raises landlord taxes as new support targets first-time buyers</a></li>
+        <li><a href="https://assets.publishing.service.gov.uk/media/6915beb8bc34c86ce4e6e730/Implementing_Renters_Rights_Act_2025_-_roadmap.pdf">GOV.UK: Implementing the Renters' Rights Act 2025, roadmap</a></li>
+        <li><a href="https://propertyindustryeye.com/house-prices-set-to-fall-again-as-savills-downgrades-forecast/">Property Industry Eye: Savills downgrades house price forecast</a></li>
+        <li><a href="https://news.bloomberglaw.com/daily-tax-report-international/burnham-names-ex-defense-chief-healey-to-be-uk-chancellor-2">Bloomberg: Burnham's chancellor pick signals higher defence spending</a></li>
+      </ol>
+    </div>
+  </section>
+  </article>
+</div>
+
+<footer class="foot">
+  <div>
+    <p>Contains HM Land Registry data © Crown copyright and database right 2026. Contains Office for National Statistics data licensed under the Open Government Licence v3.0. Charts use Apache ECharts (Apache-2.0).</p>
+    <p>An independent analysis for information only. It is not financial or property advice. Scenarios are illustrations of possible paths, not predictions.</p>
+  </div>
+</footer>
+</body>
+</html>

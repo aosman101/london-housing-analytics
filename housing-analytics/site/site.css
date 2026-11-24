@@ -13,6 +13,7 @@
   --link: #1f63b8;
   --inner: #2a78d6;
   --outer: #eb6834;
+  --series-3: #1baf7a;
   --neutral: #b9bec8;
   --good: #0a8a0a;
   --bad: #d03b3b;
@@ -38,6 +39,7 @@
     --link: #79b0f2;
     --inner: #3987e5;
     --outer: #d95926;
+    --series-3: #199e70;
     --neutral: #55585f;
     --good: #0ca30c;
     --bad: #e66767;
@@ -210,6 +212,8 @@ table.data thead th[aria-sort="descending"]::after { content: " \25BC"; font-siz
 table.data tbody tr:hover { background: var(--bg); }
 table.data td.grp { color: var(--ink-3); }
 table.plain th { cursor: default; position: static; }
+table.plain th, table.plain td { text-align: left; white-space: normal; vertical-align: top; }
+table.plain td:first-child { min-width: 150px; }
 
 /* ---------- borough lookup ---------- */
 .lookup-head { display: flex; gap: 16px; align-items: center; flex-wrap: wrap; margin: 10px 0 12px; }

@@ -121,12 +121,12 @@
     });
   };
   chart('cScen', t => {
-    const col = { Upside: t.seq[2], Central: t.inner, Downside: t.outer };
+    const col = { Central: t.inner, Downside: t.outer, Upside: t.s3 };
     return {
       grid: { left: 8, right: 110, top: 36, bottom: 8, containLabel: true },
       legend: legend(t),
       tooltip: tip(t, { trigger: 'axis', formatter: ps => `<b>${ps[0].axisValue}</b><br>` + ps.map(p => `${p.marker}${p.seriesName}: ${p.value.toFixed(1)}× (price ${F.gbpk(p.data.price)})`).join('<br>') }),
-      xAxis: ax(t, { type: 'category', data: years.map(y => y === 2025 ? 'Feb 2026' : String(y)), boundaryGap: false, splitLine: { show: false } }),
+      xAxis: ax(t, { type: 'category', data: years.map(y => y === 2025 ? 'Feb 2026' : 'End ' + y), boundaryGap: false, splitLine: { show: false } }),
       yAxis: ax(t, { type: 'value', min: 7, max: 13, axisLabel: { color: t.ink2, formatter: v => v + '×' } }),
       series: SCEN.map(s => ({
         name: s.name, type: 'line', symbolSize: 7, lineStyle: { width: 2, type: s.name === 'Central' ? 'solid' : 'dashed' }, color: col[s.name],

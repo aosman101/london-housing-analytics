@@ -42,7 +42,7 @@ window.LHA = (() => {
   const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
   const theme = () => ({
     ink: css('--ink'), ink2: css('--ink-2'), ink3: css('--ink-3'), rule: css('--rule'), grid: css('--grid'),
-    surface: css('--surface'), bg: css('--bg'), inner: css('--inner'), outer: css('--outer'),
+    surface: css('--surface'), bg: css('--bg'), inner: css('--inner'), outer: css('--outer'), s3: css('--series-3'),
     neutral: css('--neutral'), good: css('--good'), bad: css('--bad'),
     seq: [0, 1, 2, 3, 4, 5, 6].map(i => css('--seq-' + i)),
     div: ['--div-neg-2', '--div-neg-1', '--div-mid', '--div-pos-1', '--div-pos-2'].map(css),

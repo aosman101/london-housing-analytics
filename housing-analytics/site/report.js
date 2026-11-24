@@ -244,15 +244,15 @@
   /* ---------- Q7 rent vs price growth since 2015 ---------- */
   chart('cRvP', t => {
     const rows = boroughs.filter(b => b.rent_growth_since_2015_pct != null && b.price_growth_since_2015_pct != null);
-    const lab = new Set(['Barking and Dagenham', 'Havering', 'Kensington and Chelsea', 'City of Westminster', 'Hackney', 'Camden']);
+    const lab = new Set(['Barking and Dagenham', 'Kensington and Chelsea', 'City of Westminster', 'Hackney', 'Camden']);
     const pts = g => rows.filter(r => r.group === g).map(r => ({
       value: [r.price_growth_since_2015_pct, r.rent_growth_since_2015_pct], r,
-      label: { show: lab.has(r.area_name), formatter: short(r.area_name), position: 'right', color: t.ink2, fontSize: 12 },
+      label: { show: lab.has(r.area_name), formatter: short(r.area_name), position: r.price_growth_since_2015_pct > 35 ? 'left' : 'right', color: t.ink2, fontSize: 12 },
     }));
     const lo = -20, hi = 80;
     const mk = g => ({ name: g, type: 'scatter', symbolSize: 11, itemStyle: { color: groupColor(t, g), borderColor: t.surface, borderWidth: 2 }, data: pts(g) });
     return {
-      grid: { left: 8, right: 30, top: 36, bottom: 30, containLabel: true },
+      grid: { left: 8, right: 96, top: 36, bottom: 30, containLabel: true },
       legend: legend(t, { data: ['Inner London', 'Outer London'] }),
       tooltip: tip(t, { trigger: 'item', formatter: p => p.data.r ? `<b>${esc(p.data.r.area_name)}</b><br>Prices ${F.spct(p.value[0])}<br>Rents ${F.spct(p.value[1])}` : '' }),
       xAxis: ax(t, { type: 'value', name: 'House price growth', nameLocation: 'middle', nameGap: 28, min: lo, max: 60, axisLabel: { color: t.ink2, formatter: v => v + '%' } }),
@@ -331,15 +331,15 @@
     const n = pts.length, mx = pts.reduce((s, p) => s + p.x, 0) / n, my = pts.reduce((s, p) => s + p.y, 0) / n;
     const b1 = pts.reduce((s, p) => s + (p.x - mx) * (p.y - my), 0) / pts.reduce((s, p) => s + (p.x - mx) ** 2, 0), b0 = my - b1 * mx;
     const xs = pts.map(p => p.x), x0 = Math.min(...xs), x1 = Math.max(...xs);
-    const lab = new Set([2008, 2009, 2013, 2016, 2020, 2021, 2023, 2024]);
+    const lab = new Set([2008, 2013, 2021, 2023, 2024]);
     return {
       grid: { left: 8, right: 24, top: 20, bottom: 30, containLabel: true },
       tooltip: tip(t, { trigger: 'item', formatter: p => p.data.year ? `<b>${p.data.year}</b><br>Sales ${F.spct(p.value[0])}<br>Prices in ${p.data.year + 1}: ${F.spct(p.value[1])}` : '' }),
       xAxis: ax(t, { type: 'value', name: 'Change in sales', nameLocation: 'middle', nameGap: 28, axisLabel: { color: t.ink2, formatter: v => v + '%' } }),
-      yAxis: ax(t, { type: 'value', name: 'Price change next year', nameLocation: 'middle', nameGap: 36, axisLabel: { color: t.ink2, formatter: v => v + '%' } }),
+      yAxis: ax(t, { type: 'value', name: 'Price change next year', nameLocation: 'middle', nameGap: 40, axisLabel: { color: t.ink2, formatter: v => v + '%' } }),
       series: [
         { type: 'scatter', symbolSize: 10, itemStyle: { color: t.inner, borderColor: t.surface, borderWidth: 2 },
-          data: pts.map(p => ({ value: [p.x, p.y], year: p.year, label: { show: lab.has(p.year), formatter: String(p.year), position: 'right', color: t.ink3, fontSize: 11 } })) },
+          data: pts.map(p => ({ value: [p.x, p.y], year: p.year, label: { show: lab.has(p.year), formatter: String(p.year), position: p.x > 30 ? 'left' : 'right', color: t.ink2, fontSize: 11 } })) },
         { type: 'line', symbol: 'none', silent: true, lineStyle: { color: t.ink3, type: 'dashed', width: 1.5 }, data: [[x0, b0 + b1 * x0], [x1, b0 + b1 * x1]] },
       ],
     };
@@ -385,13 +385,13 @@
     const lab = new Set(['Tower Hamlets', 'Newham', 'Richmond upon Thames', 'Kensington and Chelsea', 'Barking and Dagenham', 'City of Westminster']);
     const mk = g => ({ name: g, type: 'scatter', symbolSize: 11, itemStyle: { color: groupColor(t, g), borderColor: t.surface, borderWidth: 2 },
       data: rows.filter(r => r.group === g).map(r => ({ value: [r.average_price, r.gross_rental_yield_pct], r,
-        label: { show: lab.has(r.area_name), formatter: short(r.area_name), position: r.average_price > 1e6 ? 'left' : 'right', color: t.ink2, fontSize: 11.5 } })) });
+        label: { show: lab.has(r.area_name), formatter: short(r.area_name), position: r.average_price > 1e6 ? 'top' : 'right', color: t.ink2, fontSize: 11.5 } })) });
     return {
       grid: { left: 8, right: 20, top: 36, bottom: 30, containLabel: true },
       legend: legend(t),
       tooltip: tip(t, { trigger: 'item', formatter: p => `<b>${esc(p.data.r.area_name)}</b><br>Average price ${F.gbp(p.value[0])}<br>Gross yield ${F.pct(p.value[1])}` }),
       xAxis: ax(t, { type: 'value', name: 'Average price', nameLocation: 'middle', nameGap: 28, axisLabel: { color: t.ink2, formatter: v => v >= 1e6 ? '£' + v / 1e6 + 'm' : '£' + v / 1000 + 'k' } }),
-      yAxis: ax(t, { type: 'value', min: 3, name: 'Gross yield', nameLocation: 'middle', nameGap: 36, axisLabel: { color: t.ink2, formatter: v => v + '%' } }),
+      yAxis: ax(t, { type: 'value', min: 3, name: 'Gross yield', nameLocation: 'middle', nameGap: 46, axisLabel: { color: t.ink2, formatter: v => v + '%' } }),
       series: [mk('Inner London'), mk('Outer London')],
     };
   });

@@ -33,7 +33,7 @@ A Power BI-style dashboard with 8 report pages, slicers and borough drill-down, 
 
 ![Rent growth minus pay growth by London borough](docs/images/rental_pressure_by_borough.png)
 
-- **Rents are outpacing pay in 18 of 32 boroughs.** The pressure is sharpest in outer east
+- **Rents are outpacing pay in 18 of 32 boroughs** (City of London has no ONS rent data). The pressure is sharpest in outer east
   London: Bexley (+9.7pp) and Barking and Dagenham (+8.6pp). Rents in several prime inner
   boroughs are falling year on year.
 - **Property type is as big a driver as location.** Across boroughs, the median flat costs 8.4x

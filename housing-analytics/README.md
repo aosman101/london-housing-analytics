@@ -48,7 +48,7 @@ everything you earn. At a realistic 15% saving rate, that is 6 to 16 years.
 **3. Rent takes 39–83% of median full-time pay, and every borough is above the 30% benchmark.**
 The median is 52%. Inner London is the most stretched (60% vs 46% in Outer London).
 
-**4. Rents are outpacing pay in 18 of 32 boroughs**, most sharply in outer east London: Bexley
+**4. Rents are outpacing pay in 18 of 32 boroughs** (City of London has no ONS rent data), most sharply in outer east London: Bexley
 (+9.7pp), Barking & Dagenham (+8.6pp). Since 2015, rents have grown faster than house prices
 in every borough with rent data: a median of +47.5% against +31.7% for prices. Outer London
 rents rose most (Barking & Dagenham +75%, Havering +70%, Bexley +70%).

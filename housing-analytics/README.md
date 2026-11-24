@@ -25,6 +25,10 @@ analysis.
 
 Rebuild everything with `make dashboard`, after `make download normalise` if the raw data is missing.
 
+To bring every chart on the report and outlook pages up to date, set the new HPI, PIPR and ASHE vintages in
+[`config/sources.yml`](../config/sources.yml) and run `make download normalise dashboard`. Release dates and URLs
+are configuration, not code.
+
 ## Dashboard pages
 
 | Page | Question it answers | Visuals |

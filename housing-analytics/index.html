@@ -1,0 +1,428 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>London housing affordability, explained: 33 boroughs, 30 years of data</title>
+<meta name="description" content="Who can afford to buy or rent in London, borough by borough. Fourteen questions answered with HM Land Registry and ONS data, with interactive charts and a mortgage reach calculator.">
+<meta property="og:title" content="London housing affordability, explained">
+<meta property="og:description" content="Fourteen questions about buying, renting and the London property market, answered with official data for all 33 boroughs.">
+<meta property="og:image" content="images/00_full_dashboard.png">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%231f2a44'/%3E%3Cpath d='M7 24V14l9-6 9 6v10h-6v-6h-6v6z' fill='%23fff'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,400;6..72,500;6..72,600&family=Public+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="site/site.css">
+<script src="dashboard/vendor/echarts.min.js" defer></script>
+<script src="dashboard/data.js" defer></script>
+<script src="site/site.js" defer></script>
+<script src="site/report.js" defer></script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to the report</a>
+<header class="bar">
+  <a class="site" href="./">London Housing Analytics</a>
+  <nav aria-label="Site">
+    <a href="./" aria-current="page">Report</a>
+    <a href="outlook.html">Outlook 2027</a>
+    <a href="dashboard/" class="opt">Dashboard</a>
+    <a href="architecture.html" class="opt">Pipeline</a>
+    <a href="https://github.com/aosman101/london-housing-analytics">GitHub</a>
+  </nav>
+</header>
+<noscript><div class="nojs">The charts on this page need JavaScript. The written answers below still work without it, and the numbers are in the <a href="tables/borough_scorecard.csv">borough scorecard CSV</a>.</div></noscript>
+
+<section class="hero" aria-labelledby="h1">
+  <div>
+    <h1 id="h1">A typical London home costs 11.9 years of a local full-time salary.</h1>
+    <p class="lede">Thirty years of HM Land Registry and ONS data for all 33 boroughs, turned into plain answers about who can buy, who can rent, and which way the market is moving.</p>
+    <p class="asof" id="asof">Data to February 2026. Earnings from ASHE 2025. Built from the open-source pipeline in this repository.</p>
+  </div>
+  <div class="mapbox">
+    <div class="tools">
+      <label for="mapMetric">Colour the map by</label>
+      <select id="mapMetric">
+        <option value="pe">House price as a multiple of pay</option>
+        <option value="rent">Rent as a share of pay</option>
+        <option value="dep">Months of pay for a 10% deposit</option>
+        <option value="pyoy">House prices, change over 12 months</option>
+        <option value="ryoy">Rents, change over 12 months</option>
+        <option value="yield">Gross rental yield</option>
+        <option value="peak">Price compared with its all-time high</option>
+        <option value="stress">Housing stress index</option>
+      </select>
+    </div>
+    <div id="heroMap" role="img" aria-label="Map of London's 33 boroughs coloured by the selected affordability measure"></div>
+    <p class="mapnote">Hover over a borough for its figure. Select one to open its profile further down the page.</p>
+  </div>
+</section>
+
+<section class="answers" aria-label="Short answers">
+  <div><a href="#q2"><p class="q">How long to save a 10% deposit, putting away 15% of pay?</p><p class="a" id="aDep">–</p><p class="n">in the median borough</p></a></div>
+  <div><a href="#q5"><p class="q">How much of a full-time salary does rent take?</p><p class="a" id="aRent">–</p><p class="n">median borough; 30% is the usual ceiling</p></a></div>
+  <div><a href="#q6"><p class="q">Where are rents rising faster than pay?</p><p class="a" id="aOut">–</p><p class="n">boroughs with ONS rent data</p></a></div>
+  <div><a href="#q9"><p class="q">Are house prices falling?</p><p class="a" id="aPyoy">–</p><p class="n">median borough, 12 months to February 2026</p></a></div>
+  <div><a href="#q10"><p class="q">How busy is the market?</p><p class="a" id="aSales">–</p><p class="n">sales in 2025, against the 2002 peak</p></a></div>
+  <div><a href="#q12"><p class="q">What does a landlord earn before costs?</p><p class="a" id="aYield">–</p><p class="n">median gross rental yield</p></a></div>
+</section>
+
+<div class="doc">
+  <nav class="toc" aria-label="Questions on this page">
+    <h2>Buying</h2>
+    <ol>
+      <li><a href="#q1">Where is London least affordable?</a></li>
+      <li><a href="#q2">How long does a deposit take?</a></li>
+      <li><a href="#q3">Can a typical earner get a mortgage?</a></li>
+      <li><a href="#q4">Does property type matter more than location?</a></li>
+    </ol>
+    <h2>Renting</h2>
+    <ol>
+      <li><a href="#q5">How much of pay goes on rent?</a></li>
+      <li><a href="#q6">Are rents outpacing pay?</a></li>
+      <li><a href="#q7">Have rents or prices risen more since 2015?</a></li>
+      <li><a href="#q8">Is rent inflation cooling?</a></li>
+    </ol>
+    <h2>The market</h2>
+    <ol>
+      <li><a href="#q9">Are house prices falling?</a></li>
+      <li><a href="#q10">What do sales volumes tell us?</a></li>
+      <li><a href="#q11">Inner or Outer London: which is winning?</a></li>
+    </ol>
+    <h2>Investors and risk</h2>
+    <ol>
+      <li><a href="#q12">Where are rental yields highest?</a></li>
+      <li><a href="#q13">Which boroughs are most volatile?</a></li>
+      <li><a href="#q14">Where is housing stress greatest?</a></li>
+    </ol>
+    <h2>Going further</h2>
+    <ol>
+      <li><a href="#next">Where is the market heading?</a></li>
+      <li><a href="#lookup">Borough profile</a></li>
+      <li><a href="#scorecard">All 33 boroughs</a></li>
+      <li><a href="#method">How the numbers work</a></li>
+    </ol>
+  </nav>
+
+  <article id="main">
+
+  <!-- ===================== BUYING ===================== -->
+  <section class="chapter" aria-labelledby="ch-buy">
+    <h2 id="ch-buy">Buying</h2>
+    <p class="intro">Every borough fails the old rule of thumb that a home should cost four to five times a salary. The question is by how much, and what that means for someone trying to buy.</p>
+
+    <section class="qa" id="q1" aria-labelledby="q1h">
+      <h3 id="q1h"><span class="qn">Q1</span>Which boroughs are least affordable when prices are compared with local pay?</h3>
+      <p class="short"><strong>Kensington and Chelsea, by a distance.</strong> An average home there costs 23.3 times the median full-time salary of the people who live there. The cheapest boroughs relative to pay, Tower Hamlets and Croydon, still sit at 8.8 times.</p>
+      <p>The ratio divides the average house price in each borough by the median gross annual pay of full-time employees who <em>live</em> there, wherever they work. That is the right lens for local affordability: it asks whether residents could buy where they live.</p>
+      <p>Westminster (16.6×) and Hammersmith and Fulham (15.4×) follow Kensington and Chelsea. The middle of the table is tightly bunched: half of all boroughs sit between about 10.5× and 13×. Inner London's median is 13.0×, against 11.3× in Outer London.</p>
+      <figure class="fig">
+        <p class="ft">House price as a multiple of local full-time pay</p>
+        <p class="fs">Average price in February 2026 divided by 2025 median resident pay. Longer bar means less affordable.</p>
+        <div class="chart tall" id="cPE" role="img" aria-label="Bar chart ranking boroughs by price-to-earnings ratio, from Kensington and Chelsea at 23.3 times to Tower Hamlets at 8.8 times"></div>
+        <figcaption>City of London's pay estimate is suppressed by ONS, so the London-wide median is used there. Source: HM Land Registry UK HPI; ONS ASHE 2025 Table 8.</figcaption>
+      </figure>
+      <p>Low ratios in Tower Hamlets and Newham are partly a mix effect: most homes sold there are flats, which pull the average price down. <a href="#q4">Q4</a> separates property type from place.</p>
+    </section>
+
+    <section class="qa" id="q2" aria-labelledby="q2h">
+      <h3 id="q2h"><span class="qn">Q2</span>How far does a typical 10% deposit sit from local earnings?</h3>
+      <p class="short"><strong>Between 10.5 and 28 months of gross pay.</strong> Few people can save their whole salary, so at a more realistic 15% saving rate that becomes 6 to 16 years, with 7.9 years in the median borough.</p>
+      <p>This is the hidden barrier. Even where mortgage payments might be manageable, the deposit is a multi-year project, and rent is being paid the whole time. Move the slider to see how saving rate and deposit size change the wait.</p>
+      <figure class="fig">
+        <p class="ft">Years to save a deposit on the average home</p>
+        <p class="fs">Saving a fixed share of gross median pay, with no interest, pay rises or price changes.</p>
+        <div class="controls">
+          <label class="ctl">Share of gross pay saved <output id="oSave">15%</output>
+            <input type="range" id="rSave" min="5" max="40" step="1" value="15"></label>
+          <label class="ctl">Deposit size
+            <select id="sDep"><option value="5">5%</option><option value="10" selected>10%</option><option value="15">15%</option><option value="20">20%</option><option value="25">25%</option></select></label>
+        </div>
+        <p class="readout" id="depRead" aria-live="polite"></p>
+        <div class="chart tall" id="cDep" role="img" aria-label="Bar chart of years needed to save a deposit, by borough"></div>
+        <figcaption>Months to save = (price × deposit share) ÷ (annual pay ÷ 12), then divided by the saving rate. Source: HM Land Registry UK HPI; ONS ASHE 2025.</figcaption>
+      </figure>
+    </section>
+
+    <section class="qa" id="q3" aria-labelledby="q3h">
+      <h3 id="q3h"><span class="qn">Q3</span>Can a typical earner get a big enough mortgage?</h3>
+      <p class="short"><strong>Not on one salary.</strong> Most lenders cap borrowing at about 4.5 times income. On that basis, a single median earner cannot reach the average home in any borough, even with a 10% deposit. Two median earners can reach 6 boroughs, and an average flat in 25.</p>
+      <p>The calculator sets your buying budget as income × lending multiple, plus the deposit. It then compares that budget with the average price in each borough, for the property type you choose. The monthly repayment uses the interest rate you set. The default of 5.95% is the average two-year fixed rate in November 2026 (Moneyfacts), up from 4.83% in the summer. At the same monthly payment, that rise alone cuts how much you can borrow by about 12%.</p>
+      <figure class="fig">
+        <p class="ft">Who can afford the average home? Buying budget against average price</p>
+        <div class="controls">
+          <div class="ctl">Buyers
+            <div class="seg" id="gBuyers" role="group" aria-label="Number of buyers">
+              <button data-v="1" aria-pressed="false">One</button><button data-v="2" aria-pressed="true">Two</button>
+            </div></div>
+          <label class="ctl">Property type
+            <select id="sType"><option value="All">All types</option><option value="Flat/Maisonette">Flat or maisonette</option><option value="Terraced">Terraced</option><option value="Semi-detached">Semi-detached</option><option value="Detached">Detached</option></select></label>
+          <label class="ctl">Income multiple <output id="oMult">4.5×</output>
+            <input type="range" id="rMult" min="3.5" max="6" step="0.1" value="4.5"></label>
+          <label class="ctl">Deposit <output id="oDp">10%</output>
+            <input type="range" id="rDp" min="5" max="40" step="1" value="10"></label>
+          <label class="ctl">Mortgage rate <output id="oRate">5.95%</output>
+            <input type="range" id="rRate" min="2" max="8" step="0.05" value="5.95"></label>
+        </div>
+        <p class="readout" id="mortRead" aria-live="polite"></p>
+        <div class="chart tall" id="cMort" role="img" aria-label="Bar chart comparing each borough's average price with a buying budget based on local median pay"></div>
+        <figcaption>Each borough uses its own residents' median full-time pay. Repayments assume a 30-year capital-and-interest mortgage, before stamp duty, fees and lender stress tests. Illustrative only, not financial advice.</figcaption>
+      </figure>
+    </section>
+
+    <section class="qa" id="q4" aria-labelledby="q4h">
+      <h3 id="q4h"><span class="qn">Q4</span>Does property type matter more than location?</h3>
+      <p class="short"><strong>Often, yes.</strong> Across boroughs, the median flat costs 8.4 times local pay, a terraced house 13.3×, a semi-detached 17.2× and a detached house 26.7×. Choosing a flat over a house usually changes affordability more than moving borough does.</p>
+      <p>Flats are under 10 times pay in 25 of 33 boroughs, and the cheapest relative to pay are in the outer east and south: Havering (5.5×), Bexley (5.5×) and Croydon (5.7×). At the other end, a detached house in Kensington and Chelsea averages £4.4m, which is 83.5 times local pay.</p>
+      <figure class="fig">
+        <p class="ft">Price as a multiple of pay, by borough and property type</p>
+        <p class="fs">Boroughs ordered by the all-types ratio. Darker means less affordable; the scale stops at 30×.</p>
+        <div class="chart tall" id="cHeat" role="img" aria-label="Heatmap of price-to-earnings ratio for flats, terraced, semi-detached and detached homes in each borough"></div>
+        <figcaption>Average price by property type, February 2026 (HM Land Registry), divided by 2025 median resident pay (ONS ASHE).</figcaption>
+      </figure>
+    </section>
+  </section>
+
+  <!-- ===================== RENTING ===================== -->
+  <section class="chapter" aria-labelledby="ch-rent">
+    <h2 id="ch-rent">Renting</h2>
+    <p class="intro">Renting is the default for younger Londoners and is no cheap alternative. Rents have risen faster than house prices for a decade, and the gap with pay only began to narrow in 2025.</p>
+
+    <section class="qa" id="q5" aria-labelledby="q5h">
+      <h3 id="q5h"><span class="qn">Q5</span>How much of a full-time salary does rent take?</h3>
+      <p class="short"><strong>About half, and more than 30% everywhere.</strong> The average private rent takes 39% to 83% of a borough's median full-time gross pay, with 52% in the median borough. All 32 boroughs with rent data are above the common 30% affordability benchmark.</p>
+      <p>Inner London is the most stretched, at 60% of pay against 46% in Outer London. Kensington and Chelsea (83%), Westminster (72%) and Hammersmith and Fulham (69%) top the list. Bromley (39%), Havering (41%) and Croydon (42%) are the least stretched, but still well above 30%. These figures use gross pay. After tax, the share is higher still.</p>
+      <figure class="fig">
+        <p class="ft">Average private rent as a share of median full-time pay</p>
+        <p class="fs">Twelve months of the average rent, divided by median gross annual resident pay.</p>
+        <div class="chart tall" id="cRentShare" role="img" aria-label="Bar chart of rent as a percentage of pay by borough, all above 30 percent"></div>
+        <figcaption>ONS publishes no private rent series for the City of London. Source: ONS Price Index of Private Rents; ONS ASHE 2025.</figcaption>
+      </figure>
+    </section>
+
+    <section class="qa" id="q6" aria-labelledby="q6h">
+      <h3 id="q6h"><span class="qn">Q6</span>Where is rental pressure rising faster than local income growth?</h3>
+      <p class="short"><strong>In 18 of 32 boroughs, led by outer east London.</strong> Rents in Bexley rose 9.7 percentage points faster than local pay, and in Barking and Dagenham 8.6 points faster. In several prime inner boroughs, rents are now falling.</p>
+      <p>The chart subtracts each borough's annual pay growth from its annual rent growth. Above zero means rents are pulling away from what residents earn. Read the extremes with care. Borough-level pay comes from a sample survey, so a single year's change can be noisy. Camden's pay rose 19.1% in the survey, which is why it looks like the borough with the least rental pressure. Boroughs marked with an asterisk have less precise pay estimates.</p>
+      <figure class="fig">
+        <p class="ft">Rent growth minus pay growth, percentage points</p>
+        <p class="fs">12-month rent change to February 2026, minus 2024–25 change in median resident pay.</p>
+        <div class="chart tall" id="cGap" role="img" aria-label="Diverging bar chart of rent growth minus pay growth by borough"></div>
+        <figcaption>* Pay estimate is less precise (ONS coefficient of variation above 5%). Source: ONS PIPR; ONS ASHE 2025.</figcaption>
+      </figure>
+    </section>
+
+    <section class="qa" id="q7" aria-labelledby="q7h">
+      <h3 id="q7h"><span class="qn">Q7</span>Have rents or house prices risen more since 2015?</h3>
+      <p class="short"><strong>Rents, in every borough.</strong> Since January 2015, the median borough's rent is up 47.5% and its average house price 31.7%. Outer London rents grew most: Barking and Dagenham up 75%, Havering and Bexley up 70%.</p>
+      <p>Every point in the chart sits above the diagonal, where rents and prices would have grown equally. Prime central London shows the starkest split: prices in the City, Westminster and Kensington and Chelsea are lower than in 2015, while rents there still rose by roughly a quarter to a third. For renters hoping to switch to buying, the deposit has got cheaper relative to rent, but saving it from a larger rent bill has got harder.</p>
+      <figure class="fig">
+        <p class="ft">Growth since January 2015: house prices against rents</p>
+        <p class="fs">Each dot is a borough. Dots above the dashed line saw rents rise faster than prices.</p>
+        <div class="chart mid" id="cRvP" role="img" aria-label="Scatter chart of price growth against rent growth since 2015, every borough above the equal-growth line"></div>
+        <figcaption>Nominal growth, January 2015 to February 2026. Source: HM Land Registry UK HPI; ONS PIPR.</figcaption>
+      </figure>
+    </section>
+
+    <section class="qa" id="q8" aria-labelledby="q8h">
+      <h3 id="q8h"><span class="qn">Q8</span>Is rent inflation cooling?</h3>
+      <p class="short"><strong>It was, sharply, until early 2026.</strong> Annual rent growth peaked at 11.2% in Inner London in January 2025 and 10.7% in Outer London in October 2024. By February 2026 it was down to 1.8% and 4.1%, against London pay growth of 3.6%.</p>
+      <p>That made Inner London the first part of the city in years where rents were rising more slowly than pay. The relief may be short-lived. Newer ONS releases, after this dataset ends, show London rent growth picking up again to about 3.5% by September 2026, as landlords leave the market and new regulation and tax rises arrive. The <a href="outlook.html#rents">outlook page</a> covers why.</p>
+      <figure class="fig">
+        <p class="ft">Annual change in average private rent</p>
+        <p class="fs">Median of boroughs in each area. The dashed line is London-wide pay growth in 2025.</p>
+        <div class="chart" id="cRentTrend" role="img" aria-label="Line chart of annual rent inflation in Inner and Outer London since 2016, peaking in 2024 to 2025 and falling to 1.8 and 4.1 percent"></div>
+        <figcaption>Source: ONS Price Index of Private Rents (official statistic in development; the latest two months are revised); ONS ASHE 2025.</figcaption>
+      </figure>
+    </section>
+  </section>
+
+  <!-- ===================== MARKET ===================== -->
+  <section class="chapter" aria-labelledby="ch-mkt">
+    <h2 id="ch-mkt">The market</h2>
+    <p class="intro">London prices have barely moved in cash terms for nearly a decade, while pay and rents have kept rising. That slow, quiet correction is the main story of the market.</p>
+
+    <section class="qa" id="q9" aria-labelledby="q9h">
+      <h3 id="q9h"><span class="qn">Q9</span>Are house prices falling?</h3>
+      <p class="short"><strong>In cash terms, slightly. Against pay, clearly.</strong> The median borough's average price fell 1.9% in the year to February 2026, while median pay rose 3.6%. Prime central London is still well below its peak: the City is 31.7% below its all-time high, Westminster 28.8% and Kensington and Chelsea 26.0%.</p>
+      <p>Over 2015–2025, Inner London prices grew just 0.9% a year, against 2.8% in Outer London. Nine boroughs are more than 10% below their record price. At the other end, Barking and Dagenham, Sutton and Redbridge are at or within half a percent of theirs. Because these figures are not adjusted for inflation, they understate the real fall. Prices that are flat in cash terms are falling in real terms every year.</p>
+      <figure class="fig">
+        <p class="ft">Average house price, 1995 to 2026</p>
+        <p class="fs">Median of borough average prices in each area, in cash terms.</p>
+        <div class="chart" id="cPrice" role="img" aria-label="Line chart of Inner and Outer London house prices since 1995"></div>
+        <figcaption>Borough prices are 3-month moving averages. Source: HM Land Registry UK House Price Index.</figcaption>
+      </figure>
+      <figure class="fig">
+        <p class="ft">How far below its all-time high is each borough?</p>
+        <p class="fs">February 2026 average price compared with the highest monthly average on record.</p>
+        <div class="chart tall" id="cPeak" role="img" aria-label="Bar chart of how far each borough's price is below its peak"></div>
+        <figcaption>Source: HM Land Registry UK House Price Index, January 1995 to February 2026.</figcaption>
+      </figure>
+    </section>
+
+    <section class="qa" id="q10" aria-labelledby="q10h">
+      <h3 id="q10h"><span class="qn">Q10</span>How do sales volumes and prices move together?</h3>
+      <p class="short"><strong>Sales move first.</strong> London recorded 77,988 sales in 2025, less than half the 173,993 of 2002. In the same year, changes in sales and prices are only weakly linked (r = 0.17). But this year's change in sales is a much better guide to next year's change in prices (r = 0.53).</p>
+      <p>That makes transaction volume a useful early warning. Sales fell 5.5% in 2025 after a brief rebound in 2024, which points to soft prices in 2026. That is what has happened so far: HM Land Registry's July 2026 figure put London prices 3.3% lower than a year earlier. Every borough is now 23% to 50% below its 2021 sales level, when the stamp duty holiday pulled purchases forward.</p>
+      <div class="figrow">
+        <figure class="fig">
+          <p class="ft">London house sales per year</p>
+          <p class="fs">All 33 boroughs, 1995 to 2025.</p>
+          <div class="chart" id="cSales" role="img" aria-label="Bar chart of annual London house sales since 1995, peaking in 2002"></div>
+          <figcaption>Recent months are revised up as late registrations arrive. Source: HM Land Registry.</figcaption>
+        </figure>
+        <figure class="fig">
+          <p class="ft">This year's sales change against next year's price change</p>
+          <p class="fs">Each dot is a year, 1996 to 2025.</p>
+          <div class="chart" id="cLead" role="img" aria-label="Scatter chart showing that the change in sales in one year is positively related to the change in prices the next year"></div>
+          <figcaption>The line is a least-squares fit. Source: HM Land Registry.</figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <section class="qa" id="q11" aria-labelledby="q11h">
+      <h3 id="q11h"><span class="qn">Q11</span>Inner or Outer London: which is winning?</h3>
+      <p class="short"><strong>Outer London, for over a decade.</strong> In 2013 a typical Inner London home cost 1.69 times one in Outer London. That premium has since shrunk to about 1.3×, back to roughly where it was in the early 2000s.</p>
+      <p>Several forces have pushed in the same direction: tax changes that hit expensive and second homes hardest, weaker overseas demand for prime central property, and a lasting shift towards space and gardens after 2020. Outer boroughs such as Barking and Dagenham, Havering and Bexley grew about 4% a year over 2015–2025. Kensington and Chelsea and Westminster went slightly backwards.</p>
+      <figure class="fig">
+        <p class="ft">The Inner London price premium</p>
+        <p class="fs">Median Inner London borough price divided by the median Outer London borough price.</p>
+        <div class="chart" id="cPrem" role="img" aria-label="Line chart of the Inner to Outer London price ratio, peaking at 1.69 in 2013 and falling to about 1.3"></div>
+        <figcaption>Source: HM Land Registry UK House Price Index.</figcaption>
+      </figure>
+    </section>
+  </section>
+
+  <!-- ===================== INVESTORS ===================== -->
+  <section class="chapter" aria-labelledby="ch-inv">
+    <h2 id="ch-inv">Investors and risk</h2>
+    <p class="intro">Landlords weigh rents against prices. Prices have stalled while rents have climbed, so rental yields are the highest in the decade of data, but so are borrowing costs.</p>
+
+    <section class="qa" id="q12" aria-labelledby="q12h">
+      <h3 id="q12h"><span class="qn">Q12</span>Where are rental yields highest?</h3>
+      <p class="short"><strong>In the cheaper east London boroughs.</strong> Gross yields reach 6.3% in Tower Hamlets and 6.0% in Newham, against 3.4% in Richmond and 3.5% in Kensington and Chelsea. The London median has risen from 3.3% in 2022 to 4.3%.</p>
+      <p>Cheaper boroughs pay higher yields (the correlation between yield and price is −0.44), because rents vary less across London than prices do. These are gross figures, before mortgage interest, letting fees, maintenance, empty periods and tax. With two-year fixed mortgage rates near 6% in late 2026, a buy-to-let bought mostly with borrowed money in a 4% yield borough loses money before any price growth. That is one reason landlords are selling up.</p>
+      <div class="figrow">
+        <figure class="fig">
+          <p class="ft">London median gross rental yield</p>
+          <p class="fs">Median of boroughs, annual rent ÷ average price.</p>
+          <div class="chart" id="cYieldT" role="img" aria-label="Line chart of London's median gross yield rising from 3.3 percent in 2022 to 4.3 percent"></div>
+          <figcaption>Source: ONS PIPR; HM Land Registry UK HPI.</figcaption>
+        </figure>
+        <figure class="fig">
+          <p class="ft">Yield against price</p>
+          <p class="fs">Each dot is a borough, February 2026.</p>
+          <div class="chart" id="cYieldS" role="img" aria-label="Scatter chart showing that boroughs with lower prices have higher gross yields"></div>
+          <figcaption>Source: ONS PIPR; HM Land Registry UK HPI.</figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <section class="qa" id="q13" aria-labelledby="q13h">
+      <h3 id="q13h"><span class="qn">Q13</span>Which boroughs have the most volatile prices?</h3>
+      <p class="short"><strong>Prime central London.</strong> Monthly price changes vary most in the City of London, Westminster and Kensington and Chelsea. Havering, Hillingdon and Bromley are the steadiest.</p>
+      <p>Volatility here is the standard deviation of monthly price changes over the last five years. The City's figure partly reflects how few homes sell there, so one large sale can move the average. Westminster and Kensington and Chelsea are volatile because their buyers are more sensitive to tax changes, currency moves and global wealth. Those are the same boroughs that have fallen furthest from their peaks.</p>
+      <figure class="fig">
+        <p class="ft">Price volatility</p>
+        <p class="fs">Standard deviation of monthly price change over 5 years, in percentage points.</p>
+        <div class="chart tall" id="cVol" role="img" aria-label="Bar chart of price volatility by borough"></div>
+        <figcaption>Source: HM Land Registry UK House Price Index.</figcaption>
+      </figure>
+    </section>
+
+    <section class="qa" id="q14" aria-labelledby="q14h">
+      <h3 id="q14h"><span class="qn">Q14</span>Where is overall housing stress greatest?</h3>
+      <p class="short"><strong>Kensington and Chelsea, Hounslow and Westminster.</strong> The housing stress index combines how expensive it is to buy, how expensive it is to rent, and how fast rents have risen over five years. Bromley, Newham and Croydon score lowest.</p>
+      <p>Each of the three measures is turned into a z-score (how far a borough is from the London average, in standard deviations), and the three are averaged with equal weight. It is a ranking tool, not a forecast. Hounslow ranks highly not because it is the most expensive, but because its rents have grown fast relative to its residents' pay.</p>
+      <figure class="fig">
+        <p class="ft">Housing stress index</p>
+        <p class="fs">Above zero means more stressed than the average borough.</p>
+        <div class="chart tall" id="cStress" role="img" aria-label="Diverging bar chart of the housing stress index by borough"></div>
+        <figcaption>Equal-weighted mean of z-scores for price-to-earnings, rent-to-earnings and 5-year rent growth. City of London is excluded because it has no rent data.</figcaption>
+      </figure>
+    </section>
+  </section>
+
+  <!-- ===================== NEXT ===================== -->
+  <section class="chapter" id="next" aria-labelledby="ch-next">
+    <h2 id="ch-next">Where is the market heading?</h2>
+    <p class="intro">Our data points to a slow correction measured against pay, not a crash in prices. Events since February 2026 have shifted the near-term picture, and the <a href="outlook.html">outlook page</a> covers them in full.</p>
+    <div class="qa">
+      <p class="short"><strong>The short version:</strong> expect flat-to-lower London prices into 2027, led by prime central boroughs, with outer London steadier. Expect rents to keep rising at about the pace of pay or faster. Affordability improves only slowly, because pay grows while prices stand still.</p>
+      <ul>
+        <li><strong>Momentum is fading.</strong> The share of boroughs with rising prices fell from 82% in December 2024 to <span id="nBreadth">45%</span> in February 2026. Price growth slowed over the previous six months in 30 of 33 boroughs.</li>
+        <li><strong>Sales point the same way.</strong> Volumes fell 5.5% in 2025. Historically, falling sales come before softer prices the next year (<a href="#q10">Q10</a>).</li>
+        <li><strong>Borrowing got dearer.</strong> A war in the Middle East pushed up energy prices and inflation. The Bank of England raised Bank Rate to 4% in November 2026, and two-year fixed mortgages now average about 5.95%.</li>
+        <li><strong>Rents are back on the rise.</strong> Landlords face higher taxes from April 2027 and new tenant protections from May 2026. Fewer homes to rent tends to mean higher rents.</li>
+        <li><strong>Pay is doing the work.</strong> If pay keeps rising about 3.6% a year and prices stay flat, the median price-to-earnings ratio falls from 11.9× to about 10× by 2031.</li>
+      </ul>
+      <p><a href="outlook.html">Read the full 2027 outlook</a>. It covers the economic and geopolitical risks, three scenarios, the boroughs most exposed, and dates to watch.</p>
+    </div>
+  </section>
+
+  <!-- ===================== LOOKUP ===================== -->
+  <section class="chapter" id="lookup" aria-labelledby="ch-look">
+    <h2 id="ch-look">Borough profile</h2>
+    <p class="intro">Choose a borough to see all of its numbers and its history against the London median. Ranks run from 1 (highest) to 33.</p>
+    <div class="lookup-head">
+      <label for="sBorough" class="ctl">Borough<select id="sBorough"></select></label>
+      <div class="ctl">Area<span id="bGroup" style="font-size:16px;color:var(--ink)"></span></div>
+    </div>
+    <div class="stats" id="bStats"></div>
+    <div class="figrow">
+      <figure class="fig">
+        <p class="ft" id="bPriceT">Average house price</p>
+        <p class="fs">Against the median London borough, 1995 to 2026.</p>
+        <div class="chart short" id="cBPrice" role="img" aria-label="Line chart of the selected borough's house price history against the London median"></div>
+      </figure>
+      <figure class="fig">
+        <p class="ft" id="bRentT">Average monthly rent</p>
+        <p class="fs">Against the median London borough, 2015 to 2026.</p>
+        <div class="chart short" id="cBRent" role="img" aria-label="Line chart of the selected borough's rent history against the London median"></div>
+      </figure>
+    </div>
+  </section>
+
+  <!-- ===================== SCORECARD ===================== -->
+  <section class="chapter" id="scorecard" aria-labelledby="ch-score">
+    <h2 id="ch-score">All 33 boroughs</h2>
+    <p class="intro">The scorecard behind every chart. Select a column heading to sort. You can also download it as a <a href="tables/borough_scorecard.csv">CSV file</a>.</p>
+    <div class="tablewrap"><table class="data" id="tScore"></table></div>
+  </section>
+
+  <!-- ===================== METHOD ===================== -->
+  <section class="chapter" id="method" aria-labelledby="ch-method">
+    <h2 id="ch-method">How the numbers work</h2>
+    <div class="qa" style="border-bottom:none">
+      <h3>Sources</h3>
+      <ul>
+        <li><strong>House prices and sales:</strong> HM Land Registry UK House Price Index, covering average prices, sales volumes and prices by property type for each borough from January 1995.</li>
+        <li><strong>Rents:</strong> ONS Price Index of Private Rents (PIPR), average monthly private rent by borough from January 2015.</li>
+        <li><strong>Pay:</strong> ONS Annual Survey of Hours and Earnings (ASHE) 2025 provisional, Table 8: median gross annual pay for full-time employees by place of residence, with coefficients of variation.</li>
+        <li><strong>Boundaries:</strong> ONS Open Geography Portal, local authority districts (May 2024).</li>
+      </ul>
+      <h3>Rules the pipeline follows</h3>
+      <ul>
+        <li><strong>No mixing of eras.</strong> Pay is attached only to 2025–26 months, so 1990s prices are never divided by today's salaries. A dbt test enforces this.</li>
+        <li><strong>Precision travels with the data.</strong> ASHE coefficients of variation are mapped to ONS precision bands, and less precise borough pay estimates are flagged in the charts.</li>
+        <li><strong>City of London.</strong> ONS suppresses its pay estimate because the sample is too small, so the London-wide figure is used. PIPR publishes no rent series for it.</li>
+        <li><strong>Inner and Outer London</strong> follow the ONS statistical definition: 14 inner and 19 outer authorities.</li>
+        <li><strong>Prices are nominal</strong> (not inflation-adjusted). Borough HPI is a 3-month moving average, and recent sales counts are revised up as registrations arrive.</li>
+        <li><strong>Gross yield</strong> is average rent ÷ average price across all homes. It is indicative, before costs, empty periods and tax.</li>
+      </ul>
+      <h3>Coverage</h3>
+      <div class="tablewrap" style="max-height:none"><table class="data plain" id="tCov"></table></div>
+      <h3 style="margin-top:22px">Rebuild it yourself</h3>
+      <p>Everything on this page comes from <code>housing-analytics/dashboard/data.js</code>, which <code>build_analytics.py</code> generates from the pipeline's normalised files. Run <code>make download normalise dashboard</code> to refresh it with the latest releases. The full engineering pipeline (Python, PostgreSQL, dbt with 41 tests, and CI) is described in the <a href="https://github.com/aosman101/london-housing-analytics#readme">repository README</a> and the <a href="architecture.html">interactive pipeline map</a>. The <a href="dashboard/">eight-page dashboard</a> offers the same data with slicers and drill-down.</p>
+    </div>
+  </section>
+  </article>
+</div>
+
+<footer class="foot">
+  <div>
+    <p>Contains HM Land Registry data © Crown copyright and database right 2026. Contains Office for National Statistics data licensed under the Open Government Licence v3.0. Charts use Apache ECharts (Apache-2.0).</p>
+    <p>An independent analysis for information only. It is not financial or property advice. Code released under the MIT licence.</p>
+  </div>
+</footer>
+</body>
+</html>

@@ -1,0 +1,65 @@
+name: Publish site
+
+# Publishes the report (housing-analytics/index.html), the 2027 outlook, the interactive
+# dashboard and the pipeline map to GitHub Pages. No build step: the pages read the
+# committed dashboard/data.js, which `make dashboard` regenerates.
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "housing-analytics/**"
+      - "docs/architecture.html"
+      - ".github/workflows/pages.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Assemble site
+        run: |
+          mkdir -p _site
+          cp housing-analytics/index.html housing-analytics/outlook.html _site/
+          cp -r housing-analytics/site housing-analytics/dashboard housing-analytics/images housing-analytics/tables _site/
+          cp housing-analytics/key_metrics.json _site/
+          cp docs/architecture.html _site/architecture.html
+          touch _site/.nojekyll
+
+      - name: Check every local link resolves
+        run: |
+          cd _site
+          missing=0
+          for page in index.html outlook.html; do
+            for ref in $(grep -oE '(src|href)="[^"#:]+"' "$page" | sed -E 's/^(src|href)="//; s/"$//'); do
+              target="$ref"; [ "${target%/}" != "$target" ] && target="${target}index.html"
+              if [ ! -e "$target" ]; then echo "::error file=$page::missing $ref"; missing=1; fi
+            done
+          done
+          exit $missing
+
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

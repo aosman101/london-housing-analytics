@@ -169,7 +169,7 @@ figure.fig { margin: 18px 0 18px; background: var(--surface); border: 1px solid 
 .fig .chart { height: 360px; }
 .fig .chart.tall { height: 700px; }
 .fig .chart.mid { height: 470px; }
-.fig .chart.short { height: 300px; }
+.fig .chart.compact { height: 300px; }
 .fig figcaption { font-size: 12.5px; color: var(--ink-3); margin-top: 6px; line-height: 1.45; }
 .figrow { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
 .figrow figure.fig { margin: 18px 0; }

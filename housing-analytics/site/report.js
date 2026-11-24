@@ -59,7 +59,8 @@
         trigger: 'axis', axisPointer: { type: 'shadow', shadowStyle: { color: t.grid, opacity: .5 } },
         formatter: ps => { const r = rows[ps[0].dataIndex]; return `<b>${esc(r.area_name)}</b><br>${fmt(val(r))}${o.extra ? '<br>' + o.extra(r) : ''}`; },
       }),
-      xAxis: ax(t, { type: 'value', axisLabel: { color: t.ink2, formatter: o.axisFmt || (v => v) } }),
+      // Pad the negative side so end labels on the longest negative bars clear the category labels.
+      xAxis: ax(t, { type: 'value', min: v => v.min - (v.max - v.min) * 0.14, axisLabel: { color: t.ink2, formatter: o.axisFmt || (v => v), showMinLabel: false } }),
       yAxis: ax(t, { type: 'category', data: rows.map(r => short(r.area_name) + (o.flag && o.flag(r) ? ' *' : '')), axisLabel: { color: t.ink2, fontSize: 12, interval: 0 }, splitLine: { show: false } }),
       series: [{
         type: 'bar', barWidth: '64%',

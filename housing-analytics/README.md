@@ -7,10 +7,15 @@ analysis.
 
 ![Full dashboard](images/00_full_dashboard.png)
 
+**Live site:** [report](https://aosman101.github.io/london-housing-analytics/) · [2027 outlook](https://aosman101.github.io/london-housing-analytics/outlook.html) · [dashboard](https://aosman101.github.io/london-housing-analytics/dashboard/)
+
 ## What's in this folder
 
 | Path | What it is |
 | --- | --- |
+| [`index.html`](index.html) | The report: 14 questions answered with interactive charts, a mortgage reach calculator, a borough profile and the full scorecard. Published as the GitHub Pages home page. |
+| [`outlook.html`](outlook.html) | Outlook 2027: what has changed since the data ends, the economy, energy, tariffs and policy, leading indicators, three scenarios and borough exposure. |
+| [`site/`](site) | Shared styles and chart code for the two pages above. |
 | [`dashboard/index.html`](dashboard/index.html) | Interactive dashboard: 8 report pages, Inner/Outer London slicer, borough highlight and drill-down, map metric switcher, hover tooltips. Open it in any browser; it works offline. |
 | [`images/`](images) | PNG exports: the full dashboard, 19 single visuals and 3 app-page screenshots (2× resolution, ready to post). |
 | [`tables/`](tables) | The numbers behind every visual as CSV, for Excel, Tableau or Power BI. |

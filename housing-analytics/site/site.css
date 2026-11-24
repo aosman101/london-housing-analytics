@@ -289,4 +289,6 @@ footer.foot p { margin: 0 0 6px; max-width: 900px; }
   .signals { font-size: 14px; }
   .signals th:nth-child(4), .signals td:nth-child(4) { display: none; }
   .watch li { grid-template-columns: 96px 1fr; }
+  table.plain { min-width: 860px; }
+  .bar nav a { white-space: nowrap; }
 }

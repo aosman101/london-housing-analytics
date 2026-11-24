@@ -12,6 +12,21 @@ borough-level affordability metrics for all 33 London local authorities. Python 
 download and normalisation, PostgreSQL stores the data, dbt builds and tests the models, and
 the marts are exported for BI tools such as Tableau.
 
+## Read the report
+
+**[London housing affordability, explained](https://aosman101.github.io/london-housing-analytics/)** is a one-page report that answers 14
+questions about buying, renting, the market and investment, with interactive charts, a
+mortgage reach calculator and a profile for every borough.
+
+**[Outlook 2027](https://aosman101.github.io/london-housing-analytics/outlook.html)** covers where the market is heading. It sets the data's
+leading indicators against the November 2026 economy: the Middle East energy shock, the Bank
+of England rate rise, US tariffs and new housing policy. It includes three scenarios and the
+boroughs most exposed to each risk.
+
+Both pages are published to GitHub Pages by [`pages.yml`](.github/workflows/pages.yml) from
+[`housing-analytics/`](housing-analytics). They read the same `data.js` as the dashboard, so
+`make dashboard` refreshes everything.
+
 ## Interactive dashboard
 
 A Power BI-style dashboard with 8 report pages, slicers and borough drill-down, plus 20 ready-to-post visuals, lives in [`housing-analytics/`](housing-analytics). Rebuild it with `make dashboard`.
